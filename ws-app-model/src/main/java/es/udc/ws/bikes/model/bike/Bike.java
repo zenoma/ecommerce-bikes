@@ -1,15 +1,28 @@
 package es.udc.ws.bikes.model.bike;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Bike {
 	//Attributes - Pueden faltar
 	String modelName;
 	String description;
-	Date startDate;
+	Calendar startDate;
 	float price;
 	int availableNumber;
-	Date adquisitionDate;//Fecha de alta del modelo - nombre puede variar
+	Calendar adquisitionDate;//Fecha de alta del modelo - nombre puede variar
+	
+	//Constructor
+	public Bike (String modelName, String description, Calendar startDate, float price, 
+			int availableNumber, Calendar adquisitionDate) {
+		
+			this.modelName=modelName;
+			this.description=description;
+			this.startDate=startDate;
+			this.price=price;
+			this.availableNumber=availableNumber;
+			this.adquisitionDate=adquisitionDate;
+	}
+	
 	//getters
 	public String getModelName() {
 		return modelName;
@@ -17,7 +30,7 @@ public class Bike {
 	public String getDescription() {
 		return description;
 	}
-	public Date getStartDate() {
+	public Calendar getStartDate() {
 		return startDate;
 	}
 	public float getPrice() {
@@ -26,10 +39,82 @@ public class Bike {
 	public int getAvailableNumber() {
 		return availableNumber;
 	}
-	public Date getAdquisitionDate() {
+	public Calendar getAdquisitionDate() {
 		return adquisitionDate;
 	}
-	//Los setters no se deberían generar ya que podrían concurrir en modificaciones de información indeseada
-	//La información debería ser inicializada con métodos constructores
-	// TODO constructores, hash, equals
+
+	//setters
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setStartDate(Calendar startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
+	public void setAvailableNumber(int availableNumber) {
+		this.availableNumber = availableNumber;
+	}
+
+	public void setAdquisitionDate(Calendar adquisitionDate) {
+		this.adquisitionDate = adquisitionDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((adquisitionDate == null) ? 0 : adquisitionDate.hashCode());
+		result = prime * result + availableNumber;
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
+		result = prime * result + Float.floatToIntBits(price);
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bike other = (Bike) obj;
+		if (adquisitionDate == null) {
+			if (other.adquisitionDate != null)
+				return false;
+		} else if (!adquisitionDate.equals(other.adquisitionDate))
+			return false;
+		if (availableNumber != other.availableNumber)
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (modelName == null) {
+			if (other.modelName != null)
+				return false;
+		} else if (!modelName.equals(other.modelName))
+			return false;
+		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
+			return false;
+		if (startDate == null) {
+			if (other.startDate != null)
+				return false;
+		} else if (!startDate.equals(other.startDate))
+			return false;
+		return true;
+	}
+	
 }
