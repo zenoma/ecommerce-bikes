@@ -11,7 +11,7 @@ public class Bike {
 	int availableNumber;
 	Calendar adquisitionDate; //Fecha y hora de alta del modelo
 	int numberOfRents;
-	double scoreAverage;
+	double averageScore;
 	
 	//Constructor
 	public Bike (String modelName, String description, Calendar startDate, float price, 
@@ -25,7 +25,7 @@ public class Bike {
 	}
 	
 	public Bike(String modelName, String description, Calendar startDate, float price, int availableNumber,
-			Calendar adquisitionDate, int numberOfRents, double scoreAverage) {
+			Calendar adquisitionDate, int numberOfRents, double averageScore) {
 
 		this.modelName = modelName;
 		this.description = description;
@@ -34,7 +34,7 @@ public class Bike {
 		this.availableNumber = availableNumber;
 		this.adquisitionDate = adquisitionDate;
 		this.numberOfRents = numberOfRents;
-		this.scoreAverage = scoreAverage;
+		this.averageScore = averageScore;
 	}
 
 
@@ -64,7 +64,7 @@ public class Bike {
 	}
 
 	public double getScoreAverage() {
-		return scoreAverage;
+		return averageScore;
 	}
 
 	//setters
@@ -96,7 +96,7 @@ public class Bike {
 		this.numberOfRents = numberOfRents;
 	}
 	public void setScoreAverage(double scoreAverage) {
-		this.scoreAverage = scoreAverage;
+		this.averageScore = scoreAverage;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class Bike {
 		result = prime * result + numberOfRents;
 		result = prime * result + Float.floatToIntBits(price);
 		long temp;
-		temp = Double.doubleToLongBits(scoreAverage);
+		temp = Double.doubleToLongBits(averageScore);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		return result;
@@ -146,7 +146,7 @@ public class Bike {
 			return false;
 		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
 			return false;
-		if (Double.doubleToLongBits(scoreAverage) != Double.doubleToLongBits(other.scoreAverage))
+		if (Double.doubleToLongBits(averageScore) != Double.doubleToLongBits(other.averageScore))
 			return false;
 		if (startDate == null) {
 			if (other.startDate != null)

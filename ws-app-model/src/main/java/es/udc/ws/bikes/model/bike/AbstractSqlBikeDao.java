@@ -67,7 +67,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 	@Override
 	public void update(Connection connection, Bike bike) throws InstanceNotFoundException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
