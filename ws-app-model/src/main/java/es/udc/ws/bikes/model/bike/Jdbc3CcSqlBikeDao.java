@@ -5,14 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Calendar;
 
 public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 
 	@Override
 	public Bike create(Connection connection, Bike bike) {
-		// TODO Auto-generated method stub
-
 		// Create queryString
 		String queryString = "INSERT INTO Bike" + "(modelName, description, startDate, price, availableNumber, )"
 				+ "adquisitionDate, numberOfRents, averageScore)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -24,13 +21,11 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 			int i = 1;
 			preparedStatement.setString(i++, bike.getModelName());
 			preparedStatement.setString(i++, bike.getDescription());
-			// FIXME Calendar startDate
 			Timestamp timeStamp = bike.getStartDate() != null ? 
 					new Timestamp(bike.getStartDate().getTime().getTime()) : null;
 			preparedStatement.setTimestamp(i++, timeStamp);
 			preparedStatement.setFloat(i++, bike.getPrice());
 			preparedStatement.setInt(i++, bike.getAvailableNumber());
-			// FIXME Calendar AdquisitionDate
 			timeStamp = bike.getAdquisitionDate() != null ? 
 					new Timestamp(bike.getAdquisitionDate().getTime().getTime()) : null;
 			preparedStatement.setTimestamp(i++, timeStamp);
