@@ -24,6 +24,21 @@ public class Bike {
 			this.availableNumber=availableNumber;
 	}
 	
+	public Bike(String modelName, String description, Calendar startDate, float price, int availableNumber,
+			Calendar adquisitionDate, int numberOfRents, double scoreAverage) {
+
+		this.modelName = modelName;
+		this.description = description;
+		this.startDate = startDate;
+		this.price = price;
+		this.availableNumber = availableNumber;
+		this.adquisitionDate = adquisitionDate;
+		this.numberOfRents = numberOfRents;
+		this.scoreAverage = scoreAverage;
+	}
+
+
+
 	//getters
 	public String getModelName() {
 		return modelName;
