@@ -13,19 +13,19 @@ DROP TABLE Bike;
 
 ------------------------------------ Bike ------------------------------------
 CREATE TABLE Bike (
-	modelName BIGINT NOT NULL,
+	modelName VARCHAR(255) COLLATE latin1_bin NOT NULL,
 	description VARCHAR(255) COLLATE latin1_bin NOT NULL,
 	startDate DATETIME NOT NULL,
 	price FLOAT NOT NULL,
 	availableNumber INT NOT NULL,
 	adquisitionDate DATETIME NOT NULL,
 	numberOfRents INT NOT NULL,
-	averageScoreFLOAT NOT NULL,
+	averageScore FLOAT NOT NULL,
 	CONSTRAINT BikePK PRIMARY KEY(modelName),
 	CONSTRAINT validPrice CHECK (price >= 0),
 	CONSTRAINT validAvailableNumber CHECK (availableNumber >= 0),
 	CONSTRAINT validNumberOfRents CHECK (numberOfRents >= 0),
-	CONSTRAINT validAverageScore CHECK (averageScore>= 0) ) ENGINE = InnoDB;
+	CONSTRAINT validAverageScore CHECK (averageScore >= 0) ) ENGINE = InnoDB;
 
 
 ------------------------------------ Sale ------------------------------------
@@ -39,7 +39,7 @@ CREATE TABLE Rent (
 	finishRentDate DATETIME NOT NULL,
 	numberOfBikes INT NOT NULL,
 	rentDate DATETIME NOT NULL,
-	CONSTRAINT RentPK PRIMARY KEY(rendId),
+	CONSTRAINT RentPK PRIMARY KEY(rentId),
+	CONSTRAINT validNumberOfBikes CHECK (numberOfBikes >= 0),
 	CONSTRAINT RentModelName FOREIGN KEY(modelName)
-		REFERENCES Bike(modelName) ON DELETE CASCADE),
-	CONSTRAINT validNumberOfBikes CHECK (numberOfBikes >= 0) ) ENGINE = InnoDB;
+		REFERENCES Bike(modelName) ON DELETE CASCADE ) ENGINE = InnoDB;
