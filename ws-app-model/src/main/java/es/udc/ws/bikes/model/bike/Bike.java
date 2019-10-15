@@ -9,18 +9,19 @@ public class Bike {
 	Calendar startDate;
 	float price;
 	int availableNumber;
-	Calendar adquisitionDate;//Fecha de alta del modelo - nombre puede variar
+	Calendar adquisitionDate; //Fecha y hora de alta del modelo
+	int numberOfRents;
+	double scoreAverage;
 	
 	//Constructor
 	public Bike (String modelName, String description, Calendar startDate, float price, 
-			int availableNumber, Calendar adquisitionDate) {
+			int availableNumber) {
 		
 			this.modelName=modelName;
 			this.description=description;
 			this.startDate=startDate;
 			this.price=price;
 			this.availableNumber=availableNumber;
-			this.adquisitionDate=adquisitionDate;
 	}
 	
 	//getters
@@ -41,6 +42,14 @@ public class Bike {
 	}
 	public Calendar getAdquisitionDate() {
 		return adquisitionDate;
+	}
+	
+	public int getNumberOfRents() {
+		return numberOfRents;
+	}
+
+	public double getScoreAverage() {
+		return scoreAverage;
 	}
 
 	//setters
@@ -68,6 +77,13 @@ public class Bike {
 		this.adquisitionDate = adquisitionDate;
 	}
 
+	public void setNumberOfRents(int numberOfRents) {
+		this.numberOfRents = numberOfRents;
+	}
+	public void setScoreAverage(double scoreAverage) {
+		this.scoreAverage = scoreAverage;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -76,7 +92,11 @@ public class Bike {
 		result = prime * result + availableNumber;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
+		result = prime * result + numberOfRents;
 		result = prime * result + Float.floatToIntBits(price);
+		long temp;
+		temp = Double.doubleToLongBits(scoreAverage);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		return result;
 	}
@@ -107,7 +127,11 @@ public class Bike {
 				return false;
 		} else if (!modelName.equals(other.modelName))
 			return false;
+		if (numberOfRents != other.numberOfRents)
+			return false;
 		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
+			return false;
+		if (Double.doubleToLongBits(scoreAverage) != Double.doubleToLongBits(other.scoreAverage))
 			return false;
 		if (startDate == null) {
 			if (other.startDate != null)
@@ -116,5 +140,6 @@ public class Bike {
 			return false;
 		return true;
 	}
+
 	
 }
