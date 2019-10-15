@@ -5,7 +5,7 @@ import java.util.Calendar;
 public class Rent {
 
 	//Attributes
-	long rentID;
+	long rentId;
 	String userEmail;
 	String modelName;
 	Integer creditCard;//puede que necesite otro tipo por la longitud del código de als tarjetas
@@ -27,12 +27,12 @@ public class Rent {
 
 	// Getters & Setters
 	public long getRentID() {
-		return rentID;
+		return rentId;
 	}
 
 
-	public void setRentID(long rentID) {
-		this.rentID = rentID;
+	public void setRentID(long rentId) {
+		this.rentId = rentId;
 	}
 
 
@@ -114,7 +114,7 @@ public class Rent {
 		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfBikes;
 		result = prime * result + ((rentDate == null) ? 0 : rentDate.hashCode());
-		result = prime * result + (int) (rentID ^ (rentID >>> 32));
+		result = prime * result + (int) (rentId ^ (rentId >>> 32));
 		result = prime * result + ((startRentDate == null) ? 0 : startRentDate.hashCode());
 		result = prime * result + ((userEmail == null) ? 0 : userEmail.hashCode());
 		return result;
@@ -151,7 +151,7 @@ public class Rent {
 				return false;
 		} else if (!rentDate.equals(other.rentDate))
 			return false;
-		if (rentID != other.rentID)
+		if (rentId != other.rentId)
 			return false;
 		if (startRentDate == null) {
 			if (other.startRentDate != null)
