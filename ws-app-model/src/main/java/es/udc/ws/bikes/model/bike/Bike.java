@@ -63,7 +63,7 @@ public class Bike {
 		return numberOfRents;
 	}
 
-	public double getScoreAverage() {
+	public double getAverageScore() {
 		return averageScore;
 	}
 
@@ -95,7 +95,7 @@ public class Bike {
 	public void setNumberOfRents(int numberOfRents) {
 		this.numberOfRents = numberOfRents;
 	}
-	public void setScoreAverage(double scoreAverage) {
+	public void setAverageScore(double scoreAverage) {
 		this.averageScore = scoreAverage;
 	}
 
