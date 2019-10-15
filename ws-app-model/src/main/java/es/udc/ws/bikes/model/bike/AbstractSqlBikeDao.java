@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
@@ -17,26 +18,26 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 		// Create queryString
 		String queryString = "SELECT modelName, description, startDate, price, availableNumber, adquisitionDate, "
 				+ " numberOfRents, scoreAverage FROM Bike WHERE modelName = ?";
-		
+
 		String queryString2 = "SELECT * FROM Bike WHERE modelName = ?";
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
-			//Fill preparedStatement
-			//Precompiled SQL statement
-			int i= 1;
+			// Fill preparedStatement
+			// Precompiled SQL statement
+			int i = 1;
 			preparedStatement.setString(i++, modelName);
 
-			//Execute query/consulta
+			// Execute query/consulta
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			if (!resultSet.next()) {
-				//Bike.class.getName() -> Nombre de la clase
+				// Bike.class.getName() -> Nombre de la clase
 				throw new InstanceNotFoundException(modelName, Bike.class.getName());
 			}
 
-			//Get results from query
-			i=1;
+			// Get results from query
+			i = 1;
 			String modelName1 = resultSet.getString(i++);
 			String description = resultSet.getString(i++);
 			Calendar startDate = Calendar.getInstance();
@@ -48,9 +49,9 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			int numberOfRents = resultSet.getInt(i++);
 			double scoreAverage = resultSet.getDouble(i++);
 
-			//Return bike
-			return new Bike(modelName1, description, startDate, price, availableNumber, 
-					adquisitionDate, numberOfRents, scoreAverage);
+			// Return bike
+			return new Bike(modelName1, description, startDate, price, availableNumber, adquisitionDate, numberOfRents,
+					scoreAverage);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -66,14 +67,55 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
 	@Override
 	public void update(Connection connection, Bike bike) throws InstanceNotFoundException {
-		// TODO Auto-generated method stub
-		
+		// Create "queryString"
+		String queryString = "UPDATE Bike" + "SET description = ?, startDate = ?, price = ?, "
+				+ "availableNumber = ?, adquisitionDate = ?, numberOfRents = ?, " + "averageScore = ? WHERE modelName";
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+			// Fill "preparedStatement"
+			int i = 1;
+			preparedStatement.setString(i++, bike.getDescription());
+			Timestamp timestamp = bike.getStartDate() != null ? new Timestamp(bike.getStartDate().getTime().getTime())
+					: null;
+			preparedStatement.setTimestamp(i++, timestamp);
+			preparedStatement.setFloat(i++, bike.getPrice());
+			preparedStatement.setInt(i++, bike.getAvailableNumber());
+			timestamp = bike.getStartDate() != null ? new Timestamp(bike.getAdquisitionDate().getTime().getTime()) : null;
+			preparedStatement.setTimestamp(i++, timestamp);
+			preparedStatement.setInt(i++, bike.getNumberOfRents());
+			preparedStatement.setDouble(i++, bike.getAverageScore());
+
+			// Execute query.
+			int updatedRows = preparedStatement.executeUpdate();
+
+			if (updatedRows == 0) {
+				throw new InstanceNotFoundException(bike.getModelName(), Bike.class.getName());
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void remove(Connection connection, String modelName) throws InstanceNotFoundException {
-		// TODO Auto-generated method stub
+		// Create "queryString.
+		String queryString = "DELETE FROM Bike WHERE " + "modelName = ?";
 
+		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+			// Fill "preparedStatement"
+			int i = 1;
+			preparedStatement.setString(i++, modelName);
+
+			// Execute query.
+			int removedRows = preparedStatement.executeUpdate();
+
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException(modelName, Bike.class.getName());
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
 }
