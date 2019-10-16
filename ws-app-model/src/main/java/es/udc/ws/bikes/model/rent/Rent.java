@@ -5,17 +5,17 @@ import java.util.Calendar;
 public class Rent {
 
 	//Attributes
-	long rentId;
+	Long rentId;
 	String userEmail;
 	String modelName;
-	Integer creditCard;//puede que necesite otro tipo por la longitud del código de als tarjetas
+	Long creditCard;//puede que necesite otro tipo por la longitud del código de als tarjetas
 	Calendar startRentDate;
 	Calendar finishRentDate;
 	int numberOfBikes;
 	Calendar rentDate;
 
 
-	public Rent(String userEmail, String modelName, Integer creditCard, Calendar startRentDate, Calendar finishRentDate,
+	public Rent(String userEmail, String modelName, Long creditCard, Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes) {
 		this.userEmail = userEmail;
 		this.modelName = modelName;
@@ -25,13 +25,28 @@ public class Rent {
 		this.numberOfBikes = numberOfBikes;
 	}
 
+	public Rent(Long rentId, String userEmail, String modelName, Long creditCard, Calendar startRentDate,
+			Calendar finishRentDate, int numberOfBikes, Calendar rentDate) {
+		super();
+		this.rentId = rentId;
+		this.userEmail = userEmail;
+		this.modelName = modelName;
+		this.creditCard = creditCard;
+		this.startRentDate = startRentDate;
+		this.finishRentDate = finishRentDate;
+		this.numberOfBikes = numberOfBikes;
+		this.rentDate = rentDate;
+	}
+
+
+
 	// Getters & Setters
-	public long getRentID() {
+	public Long getRentID() {
 		return rentId;
 	}
 
 
-	public void setRentID(long rentId) {
+	public void setRentID(Long rentId) {
 		this.rentId = rentId;
 	}
 
@@ -56,12 +71,12 @@ public class Rent {
 	}
 
 
-	public Integer getCreditCard() {
+	public Long getCreditCard() {
 		return creditCard;
 	}
 
 
-	public void setCreditCard(Integer creditCard) {
+	public void setCreditCard(Long creditCard) {
 		this.creditCard = creditCard;
 	}
 
@@ -109,7 +124,7 @@ public class Rent {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((creditCard == null) ? 0 : creditCard.hashCode());
+		result = prime * result + (int) (creditCard ^ (creditCard >>> 32));
 		result = prime * result + ((finishRentDate == null) ? 0 : finishRentDate.hashCode());
 		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfBikes;
@@ -129,10 +144,7 @@ public class Rent {
 		if (getClass() != obj.getClass())
 			return false;
 		Rent other = (Rent) obj;
-		if (creditCard == null) {
-			if (other.creditCard != null)
-				return false;
-		} else if (!creditCard.equals(other.creditCard))
+		if (creditCard != other.creditCard)
 			return false;
 		if (finishRentDate == null) {
 			if (other.finishRentDate != null)
@@ -165,4 +177,7 @@ public class Rent {
 			return false;
 		return true;
 	}
+
+	
+
 }
