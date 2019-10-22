@@ -19,6 +19,8 @@ import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.sql.DataSourceLocator;
+import es.udc.ws.util.validation.PropertyValidator;
+import es.udc.ws.bikes.model.util.BikesPropertyValidator;
 
 import static es.udc.ws.bikes.model.util.ModelConstants.BIKE_DATA_SOURCE;
 
@@ -34,13 +36,26 @@ public class BikeServiceImpl implements BikeService {
 		rentDao = SqlRentDaoFactory.getDao();
 	}
 	
-	@Override
-	public Bike addBike(Bike bike) throws InputValidationException, InvalidDateException {
-		// TODO Auto-generated method stub
+	private void validateBike (Bike bike) throws InputValidationException {
+		
+		Calendar actualDate = Calendar.getInstance();
+		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
+		BikesPropertyValidator.validateLowerInt("availableNumber", bike.getAvailableNumber(), 1);
+	}
+	
+	private void inizializeBike (Bike bike) {
 		
 		Calendar actualDate = Calendar.getInstance();
 		bike.setAdquisitionDate(actualDate);
-		bike.setAverageScore(0);
+		bike.setAverageScore(0);	
+	}
+	
+	@Override
+	public Bike addBike(Bike bike) throws InputValidationException, InvalidDateException {
+		// TODO Auto-generated method stub
+
+		inizializeBike(bike);
+		validateBike(bike);
 		
 		/*
 		Calendar startDate = bike.getStartDate();
@@ -54,6 +69,8 @@ public class BikeServiceImpl implements BikeService {
 			throw new InputValidationException("Precio inferior a 0");
 		}
 		*/
+		
+		
 		
 		try (Connection connection = dataSource.getConnection()) {
 			

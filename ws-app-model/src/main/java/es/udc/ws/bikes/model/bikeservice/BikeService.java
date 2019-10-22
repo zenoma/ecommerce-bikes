@@ -15,11 +15,11 @@ public interface BikeService {
 
 	public void update(Bike bike) throws InputValidationException, InstanceNotFoundException, InvalidDateException;
 
-	public Bike findBikeById(String modelName) throws InputValidationException, InstanceNotFoundException;
+	public Bike findBikeById(Long bikeId) throws InputValidationException, InstanceNotFoundException;
 
 	public List<Bike> findBikeByKeyword(String keywords, Calendar date) throws InputValidationException;
 
-	public Long rentBike(String email, Long creditCard, String modelName, Calendar startRentDate,
+	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate,
 			Calendar finishRentDate, int numberOfBikes)
 			throws InputValidationException, NumberOfBikesException, InvalidDateException;
 
