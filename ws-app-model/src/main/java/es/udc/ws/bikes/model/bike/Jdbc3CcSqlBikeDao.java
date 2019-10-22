@@ -2,6 +2,7 @@ package es.udc.ws.bikes.model.bike;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -34,9 +35,18 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 
 			// Execute query
 			preparedStatement.executeUpdate();
+			
+			/* Get generated identifier. */
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+            if (!resultSet.next()) {
+                throw new SQLException(
+                        "JDBC driver did not return generated key.");
+            }
+			Long bikeId = resultSet.getLong(1);
 
 			// Return bike
-			return new Bike(bike.getModelName(), bike.getDescription(), bike.getStartDate(), bike.getPrice(),
+			return new Bike(bikeId, bike.getModelName(), bike.getDescription(), bike.getStartDate(), bike.getPrice(),
 					bike.getAvailableNumber(), bike.getAdquisitionDate(), bike.getNumberOfRents(),
 					bike.getAverageScore());
 

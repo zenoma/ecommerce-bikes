@@ -17,7 +17,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 	@Override
 	public Rent find(Connection connection, Long rentId) throws InstanceNotFoundException {
 		// Create queryString
-		String queryString = "SELECT userEmail, modelName, creditCard, startRentDate, "
+		String queryString = "SELECT userEmail, bikeId, creditCard, startRentDate, "
 				+ "finishRentDate, numberOfBikes, rentDate FROM Rent WHERE rentID=?";
 		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 			// Fill preparedStatement
@@ -34,7 +34,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			// Get results from query
 			i = 1;
 			String userEmail = resultSet.getString(i++);
-			String modelName = resultSet.getString(i++);
+			Long bikeId = resultSet.getLong(i++);
 			Long creditCard = resultSet.getLong(i++);
 			Calendar startRentDate = Calendar.getInstance();
 			startRentDate.setTime(resultSet.getTimestamp(i++));
@@ -45,7 +45,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			rentDate.setTime(resultSet.getTimestamp(i++));
 
 			// Return Rent
-			return new Rent(userEmail, modelName, creditCard, startRentDate, finishRentDate, numberOfBikes);
+			return new Rent(userEmail, bikeId, creditCard, startRentDate, finishRentDate, numberOfBikes);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -55,7 +55,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 	@Override
 	public List<Rent> findByUser(Connection connection, String userEmail) {
 		// Create "queryString"
-		String queryString = "SELECT rentID, userEmail, modelName, creditCard, startRentDate, "
+		String queryString = "SELECT rentID, modelName, creditCard, startRentDate, "
 				+ "finishRentDate, numberOfBikes, rentDate FROM Rent WHERE userEmail=?";
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
@@ -69,8 +69,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			while (resultSet.next()) {
 				i = 1;
 				Long rentId = resultSet.getLong(i++);
-				String userEmail1 = resultSet.getString(i++);
-				String modelName = resultSet.getString(i++);
+				Long bikeId = resultSet.getLong(i++);
 				Long creditCard = resultSet.getLong(i++);
 				Calendar startRentDate = Calendar.getInstance();
 				startRentDate.setTime(resultSet.getTimestamp(i++));
@@ -80,7 +79,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 				Calendar rentDate = Calendar.getInstance();
 				rentDate.setTime(resultSet.getTimestamp(i++));
 
-				Rent rent = new Rent(rentId, userEmail1, modelName, creditCard, startRentDate, finishRentDate,
+				Rent rent = new Rent(rentId, userEmail, bikeId, creditCard, startRentDate, finishRentDate,
 						numberOfBikes, rentDate);
 				rents.add(rent);
 			}
@@ -101,7 +100,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			// Fill "preparedStatement"
 			int i = 1;
 			preparedStatement.setString(i++, rent.getUserEmail());
-			preparedStatement.setString(i++, rent.getModelName());
+			preparedStatement.setLong(i++, rent.getBikeId());
 			preparedStatement.setLong(i++, rent.getCreditCard());
 			Timestamp timestamp = rent.getStartRentDate() != null
 					? new Timestamp(rent.getStartRentDate().getTime().getTime())

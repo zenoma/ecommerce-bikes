@@ -7,7 +7,7 @@ public class Rent {
 	//Attributes
 	Long rentId;
 	String userEmail;
-	String modelName;
+	Long bikeId;
 	Long creditCard;//puede que necesite otro tipo por la longitud del código de als tarjetas
 	Calendar startRentDate;
 	Calendar finishRentDate;
@@ -15,22 +15,22 @@ public class Rent {
 	Calendar rentDate;
 
 
-	public Rent(String userEmail, String modelName, Long creditCard, Calendar startRentDate, Calendar finishRentDate,
+	public Rent(String userEmail, Long bikeId, Long creditCard, Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes) {
 		this.userEmail = userEmail;
-		this.modelName = modelName;
+		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
 	}
 
-	public Rent(Long rentId, String userEmail, String modelName, Long creditCard, Calendar startRentDate,
+	public Rent(Long rentId, String userEmail, Long bikeId, Long creditCard, Calendar startRentDate,
 			Calendar finishRentDate, int numberOfBikes, Calendar rentDate) {
 		super();
 		this.rentId = rentId;
 		this.userEmail = userEmail;
-		this.modelName = modelName;
+		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
@@ -61,13 +61,13 @@ public class Rent {
 	}
 
 
-	public String getModelName() {
-		return modelName;
+	public Long getBikeId() {
+		return bikeId;
 	}
 
 
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
+	public void setBikeId(Long bikeId) {
+		this.bikeId = bikeId;
 	}
 
 
@@ -124,12 +124,12 @@ public class Rent {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (creditCard ^ (creditCard >>> 32));
+		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
+		result = prime * result + ((creditCard == null) ? 0 : creditCard.hashCode());
 		result = prime * result + ((finishRentDate == null) ? 0 : finishRentDate.hashCode());
-		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfBikes;
 		result = prime * result + ((rentDate == null) ? 0 : rentDate.hashCode());
-		result = prime * result + (int) (rentId ^ (rentId >>> 32));
+		result = prime * result + ((rentId == null) ? 0 : rentId.hashCode());
 		result = prime * result + ((startRentDate == null) ? 0 : startRentDate.hashCode());
 		result = prime * result + ((userEmail == null) ? 0 : userEmail.hashCode());
 		return result;
@@ -144,17 +144,20 @@ public class Rent {
 		if (getClass() != obj.getClass())
 			return false;
 		Rent other = (Rent) obj;
-		if (creditCard != other.creditCard)
+		if (bikeId == null) {
+			if (other.bikeId != null)
+				return false;
+		} else if (!bikeId.equals(other.bikeId))
+			return false;
+		if (creditCard == null) {
+			if (other.creditCard != null)
+				return false;
+		} else if (!creditCard.equals(other.creditCard))
 			return false;
 		if (finishRentDate == null) {
 			if (other.finishRentDate != null)
 				return false;
 		} else if (!finishRentDate.equals(other.finishRentDate))
-			return false;
-		if (modelName == null) {
-			if (other.modelName != null)
-				return false;
-		} else if (!modelName.equals(other.modelName))
 			return false;
 		if (numberOfBikes != other.numberOfBikes)
 			return false;
@@ -163,7 +166,10 @@ public class Rent {
 				return false;
 		} else if (!rentDate.equals(other.rentDate))
 			return false;
-		if (rentId != other.rentId)
+		if (rentId == null) {
+			if (other.rentId != null)
+				return false;
+		} else if (!rentId.equals(other.rentId))
 			return false;
 		if (startRentDate == null) {
 			if (other.startRentDate != null)

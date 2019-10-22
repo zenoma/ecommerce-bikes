@@ -9,7 +9,7 @@ public interface SqlBikeDao {
 
 	public Bike create(Connection connection, Bike bike);
 
-    public Bike find(Connection connection, String modelName)
+    public Bike find(Connection connection, Long bikeId)
             throws InstanceNotFoundException;
 
     public List<Bike> findByKeywords(Connection connection,
@@ -18,6 +18,6 @@ public interface SqlBikeDao {
     public void update(Connection connection, Bike bike)
             throws InstanceNotFoundException;
 
-    public void remove(Connection connection, String modelName)
+    public void remove(Connection connection, Long bikeId)
             throws InstanceNotFoundException;
 }

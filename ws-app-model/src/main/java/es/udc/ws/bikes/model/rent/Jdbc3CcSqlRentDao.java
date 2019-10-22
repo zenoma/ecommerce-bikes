@@ -11,7 +11,7 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 	@Override
 	public Rent create(Connection connection, Rent rent) {
 		//Create queryString
-		String queryString = "INSERT INTO Rent" + "(rentId, userEmail, modelName, creditCard, startRentDate, "
+		String queryString = "INSERT INTO Rent" + "(rentId, userEmail, bikeId, creditCard, startRentDate, "
 				+ "finishRentDate, numberOfBikes, rentDate)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try(PreparedStatement preparedStatement = connection.prepareStatement(queryString, 
@@ -20,7 +20,7 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 			int i = 1;
 			preparedStatement.setLong(i++, rent.getRentID());
 			preparedStatement.setString(i++, rent.getUserEmail());
-			preparedStatement.setString(i++, rent.getModelName());
+			preparedStatement.setLong(i++, rent.getBikeId());
 			preparedStatement.setLong(i++, rent.getCreditCard());
 			Timestamp timeStamp = rent.getStartRentDate() != null ? 
 					new Timestamp(rent.getStartRentDate().getTime().getTime()) : null;
@@ -35,7 +35,7 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 			
 			//execute query
 			preparedStatement.executeUpdate();
-			return new Rent(rent.getUserEmail(), rent.getModelName(), rent.getCreditCard(),
+			return new Rent(rent.getUserEmail(), rent.getBikeId(), rent.getCreditCard(),
 					rent.getStartRentDate(), rent.getFinishRentDate(), rent.getNumberOfBikes());
 		}catch (SQLException e) {
 			throw new RuntimeException(e);

@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 public class Bike {
 	//Attributes - Pueden faltar
+	Long bikeId;
 	String modelName;
 	String description;
 	Calendar startDate;
@@ -24,9 +25,10 @@ public class Bike {
 			this.availableNumber=availableNumber;
 	}
 	
-	public Bike(String modelName, String description, Calendar startDate, float price, int availableNumber,
+	public Bike(Long bikeId, String modelName, String description, Calendar startDate, float price, int availableNumber,
 			Calendar adquisitionDate, int numberOfRents, double averageScore) {
-
+		super();
+		this.bikeId = bikeId;
 		this.modelName = modelName;
 		this.description = description;
 		this.startDate = startDate;
@@ -38,8 +40,10 @@ public class Bike {
 	}
 
 
-
 	//getters
+	public Long getBikeId() {
+		return bikeId;
+	}
 	public String getModelName() {
 		return modelName;
 	}
@@ -68,6 +72,9 @@ public class Bike {
 	}
 
 	//setters
+	public void setBikeId(Long bikeId) {
+		this.bikeId = bikeId;
+	}
 	public void setModelName(String modelName) {
 		this.modelName = modelName;
 	}
@@ -105,13 +112,14 @@ public class Bike {
 		int result = 1;
 		result = prime * result + ((adquisitionDate == null) ? 0 : adquisitionDate.hashCode());
 		result = prime * result + availableNumber;
+		long temp;
+		temp = Double.doubleToLongBits(averageScore);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfRents;
 		result = prime * result + Float.floatToIntBits(price);
-		long temp;
-		temp = Double.doubleToLongBits(averageScore);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		return result;
 	}
@@ -132,6 +140,13 @@ public class Bike {
 			return false;
 		if (availableNumber != other.availableNumber)
 			return false;
+		if (Double.doubleToLongBits(averageScore) != Double.doubleToLongBits(other.averageScore))
+			return false;
+		if (bikeId == null) {
+			if (other.bikeId != null)
+				return false;
+		} else if (!bikeId.equals(other.bikeId))
+			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
@@ -145,8 +160,6 @@ public class Bike {
 		if (numberOfRents != other.numberOfRents)
 			return false;
 		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
-			return false;
-		if (Double.doubleToLongBits(averageScore) != Double.doubleToLongBits(other.averageScore))
 			return false;
 		if (startDate == null) {
 			if (other.startDate != null)
