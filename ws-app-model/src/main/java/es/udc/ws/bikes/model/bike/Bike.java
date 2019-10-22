@@ -26,16 +26,18 @@ public class Bike {
 	}
 	
 	public Bike(Long bikeId, String modelName, String description, Calendar startDate, float price, int availableNumber,
-			Calendar adquisitionDate, int numberOfRents, double averageScore) {
-		super();
+			int numberOfRents) {
+		
+		this(modelName, description, startDate, price, availableNumber);
 		this.bikeId = bikeId;
-		this.modelName = modelName;
-		this.description = description;
-		this.startDate = startDate;
-		this.price = price;
-		this.availableNumber = availableNumber;
-		this.adquisitionDate = adquisitionDate;
 		this.numberOfRents = numberOfRents;
+	}
+	
+	public Bike(Long bikeId, String modelName, String description, Calendar startDate, float price, int availableNumber,
+			Calendar adquisitionDate, int numberOfRents, double averageScore) {
+		
+		this(bikeId, modelName, description, startDate, price, availableNumber, numberOfRents);
+		this.adquisitionDate = adquisitionDate;
 		this.averageScore = averageScore;
 	}
 

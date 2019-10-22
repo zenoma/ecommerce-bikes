@@ -3,6 +3,7 @@ package es.udc.ws.bikes.model.bikeservice;
 import java.util.Calendar;
 import java.util.List;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
@@ -38,45 +39,55 @@ public class BikeServiceImpl implements BikeService {
 	
 	private void validateBike (Bike bike) throws InputValidationException {
 		
-		Calendar actualDate = Calendar.getInstance();
+		PropertyValidator.validateMandatoryString("modelName", bike.getModelName());
+		PropertyValidator.validateMandatoryString("description", bike.getDescription());
 		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
 		BikesPropertyValidator.validateLowerInt("availableNumber", bike.getAvailableNumber(), 1);
+		PropertyValidator.validatePastDate("startDate", bike.getStartDate());
+		
 	}
 	
-	private void inizializeBike (Bike bike) {
+	private void initBike (Bike bike) {
 		
-		Calendar actualDate = Calendar.getInstance();
-		bike.setAdquisitionDate(actualDate);
-		bike.setAverageScore(0);	
+		bike.setAdquisitionDate(Calendar.getInstance());
+		bike.setAverageScore(0);
+		bike.setNumberOfRents(0);
 	}
 	
 	@Override
 	public Bike addBike(Bike bike) throws InputValidationException, InvalidDateException {
 		// TODO Auto-generated method stub
 
-		inizializeBike(bike);
 		validateBike(bike);
-		
-		/*
-		Calendar startDate = bike.getStartDate();
-		if (startDate.compareTo(actualDate) < 0) {
-			throw new InvalidDateException("Fecha anterior a la actual");
-		}
-		if (bike.getAvailableNumber() <= 0) {
-			throw new InputValidationException("Numero de bicis igual o inferior a 0");
-		}
-		if (bike.getPrice() < 0) {
-			throw new InputValidationException("Precio inferior a 0");
-		}
-		*/
-		
-		
-		
+		initBike(bike);
+			
 		try (Connection connection = dataSource.getConnection()) {
 			
-		} catch (Exception e) {}
-		
-		return null; 
+			try {
+
+				/* Prepare connection. */
+				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				connection.setAutoCommit(false);
+
+				/* Do work. */
+				Bike createdBike = bikeDao.create(connection, bike);
+
+				/* Commit. */
+				connection.commit();
+
+				return createdBike;
+
+			} catch (SQLException e) {
+				connection.rollback();
+				throw new RuntimeException(e);
+			} catch (RuntimeException | Error e) {
+				connection.rollback();
+				throw e;
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -86,7 +97,7 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Bike findBikeById(String modelName) throws InputValidationException, InstanceNotFoundException {
+	public Bike findBikeById(Long bikeId) throws InputValidationException, InstanceNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -98,7 +109,7 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Long rentBike(String email, Long creditCard, String modelName, Calendar startRentDate,
+	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate,
 			Calendar finishRentDate, int numberOfBikes)
 			throws InputValidationException, NumberOfBikesException, InvalidDateException {
 		// TODO Auto-generated method stub
