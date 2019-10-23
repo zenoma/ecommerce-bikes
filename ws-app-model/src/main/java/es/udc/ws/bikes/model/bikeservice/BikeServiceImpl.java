@@ -43,7 +43,7 @@ public class BikeServiceImpl implements BikeService {
 		PropertyValidator.validateMandatoryString("description", bike.getDescription());
 		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
 		BikesPropertyValidator.validateLowerInt("availableNumber", bike.getAvailableNumber(), 1);
-		PropertyValidator.validatePastDate("adquisitionDate", bike.getStartDate());
+		BikesPropertyValidator.validatePreviousDate("adquisitionDate", bike.getStartDate());
 		
 	}
 	
