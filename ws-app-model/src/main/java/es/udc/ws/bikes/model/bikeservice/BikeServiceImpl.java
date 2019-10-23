@@ -43,7 +43,7 @@ public class BikeServiceImpl implements BikeService {
 		PropertyValidator.validateMandatoryString("description", bike.getDescription());
 		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
 		BikesPropertyValidator.validateLowerInt("availableNumber", bike.getAvailableNumber(), 1);
-		PropertyValidator.validatePastDate("startDate", bike.getStartDate());
+		PropertyValidator.validatePastDate("adquisitionDate", bike.getStartDate());
 		
 	}
 	
@@ -56,8 +56,6 @@ public class BikeServiceImpl implements BikeService {
 	
 	@Override
 	public Bike addBike(Bike bike) throws InputValidationException, InvalidDateException {
-		// TODO Auto-generated method stub
-
 		validateBike(bike);
 		initBike(bike);
 			
@@ -97,13 +95,17 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Bike findBikeById(Long bikeId) throws InputValidationException, InstanceNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+	public Bike findBike(Long bikeId) throws InputValidationException, InstanceNotFoundException {
+
+		try(Connection connection = dataSource.getConnection()){
+			return bikeDao.find(connection, bikeId);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public List<Bike> findBikeByKeyword(String keywords, Calendar date) throws InputValidationException {
+	public List<Bike> findBikes(String keywords, Calendar date) throws InputValidationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -117,7 +119,7 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public List<Rent> findRentByUser(String email) throws InputValidationException {
+	public List<Rent> findRents(String email) throws InputValidationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -128,7 +130,6 @@ public class BikeServiceImpl implements BikeService {
 		// TODO Auto-generated method stub
 		
 	}
-	// TODO Imp Casos Uso
 	
 
 }

@@ -13,7 +13,7 @@ DROP TABLE Bike;
 
 ------------------------------------ Bike ------------------------------------
 CREATE TABLE Bike (
-	bikeId BIGINT NOT NULL,
+	bikeId BIGINT NOT NULL AUTO_INCREMENT,
 	modelName VARCHAR(255) COLLATE latin1_bin NOT NULL,
 	description VARCHAR(255) COLLATE latin1_bin NOT NULL,
 	startDate DATETIME NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE Bike (
 ------------------------------------ Sale ------------------------------------
 
 CREATE TABLE Rent (
-	rentId BIGINT NOT NULL,
+	rentId BIGINT NOT NULL AUTO_INCREMENT,
 	userEmail VARCHAR(255) COLLATE latin1_bin NOT NULL,
 	bikeId BIGINT NOT NULL,
 	creditCard BIGINT NOT NULL,

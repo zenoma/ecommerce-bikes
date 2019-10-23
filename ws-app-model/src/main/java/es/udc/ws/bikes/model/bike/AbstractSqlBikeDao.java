@@ -13,13 +13,20 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
+	protected AbstractSqlBikeDao() {
+	}
+	
 	@Override
-	public Bike find(Connection connection, Long bikeId) throws InstanceNotFoundException {
+	public Bike find(Connection connection, Long bikeId)
+			throws InstanceNotFoundException {
+		
 		// Create queryString
-		String queryString = "SELECT modelName, description, startDate, price, availableNumber, adquisitionDate, "
-				+ " numberOfRents, averageScore FROM Bike WHERE modelName = ?";
+		String queryString = "SELECT modelName, description, startDate, price, "
+				+ "availableNumber, adquisitionDate, numberOfRents, averageScore "
+				+ "FROM Bike WHERE bikeId = ?";
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 
 			// Fill preparedStatement
 			// Precompiled SQL statement
@@ -31,7 +38,8 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
 			if (!resultSet.next()) {
 				// Bike.class.getName() -> Nombre de la clase
-				throw new InstanceNotFoundException(bikeId, Bike.class.getName());
+				throw new InstanceNotFoundException(bikeId,
+						Bike.class.getName());
 			}
 
 			// Get results from query
@@ -48,7 +56,8 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			double averageScore = resultSet.getDouble(i++);
 
 			// Return bike
-			return new Bike(bikeId, modelName, description, startDate, price, availableNumber, adquisitionDate, numberOfRents,
+			return new Bike(bikeId, modelName, description, startDate, price,
+					availableNumber, adquisitionDate, numberOfRents,
 					averageScore);
 
 		} catch (SQLException e) {
@@ -58,13 +67,15 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 	}
 
 	@Override
-	public List<Bike> findByKeywords(Connection connection, String keywords, Calendar searchDate) {
+	public List<Bike> findByKeywords(Connection connection, String keywords,
+			Calendar searchDate) {
 
 		// Create "queryString"
 		// Tokeniza las keywords en un array
 		String[] words = keywords != null ? keywords.split(" ") : null;
-		String queryString = " SELECT bikeId, modelName, description, startDate, price, availableNumber, "
-				+ "adquisitionDate, numberOfRents, averageScore FROM Bike";
+		String queryString = " SELECT bikeId, modelName, description, startDate, "
+				+ "price, availableNumber, adquisitionDate, numberOfRents, averageScore "
+				+ "FROM Bike";
 		if (words != null && words.length > 0) {
 			queryString += " WHERE";
 			for (int i = 0; i < words.length; i++) {
@@ -76,11 +87,13 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 		} // Si keywords es null o 0, devolvemos todas las tuplas.
 		queryString += " ORDER BY modelName";
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 			if (words != null) {
 				// Fill "preparedStatment".
 				for (int i = 0; i < words.length; i++) {
-					// Se sustituyen las ? por cada keyword con la forma %keyword%
+					// Se sustituyen las ? por cada keyword con la forma
+					// %keyword%
 					preparedStatement.setString(i + 1, "%" + words[i] + "%");
 				}
 			}
@@ -105,8 +118,9 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 				int numberOfRents = resultSet.getInt(i++);
 				double averageScore = resultSet.getDouble(i++);
 
-				Bike bike = new Bike(bikeId, modelName, description, startDate, price, availableNumber, adquisitionDate,
-						numberOfRents, averageScore);
+				Bike bike = new Bike(bikeId, modelName, description, startDate,
+						price, availableNumber, adquisitionDate, numberOfRents,
+						averageScore);
 
 				bikes.add(bike);
 			}
@@ -121,32 +135,41 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 	}
 
 	@Override
-	public void update(Connection connection, Bike bike) throws InstanceNotFoundException {
+	public void update(Connection connection, Bike bike)
+			throws InstanceNotFoundException {
 		// Create "queryString"
-		String queryString = "UPDATE Bike" + "SET description = ?, startDate = ?, price = ?, "
-				+ "availableNumber = ?, adquisitionDate = ?, numberOfRents = ?, " + "averageScore = ? WHERE modelName";
+		String queryString = "UPDATE Bike"
+				+ "SET description = ?, startDate = ?, price = ?, "
+				+ "availableNumber = ?, adquisitionDate = ?, numberOfRents = ?, "
+				+ "averageScore = ? WHERE bikeId = ?";
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 
 			// Fill "preparedStatement"
 			int i = 1;
 			preparedStatement.setString(i++, bike.getDescription());
-			Timestamp timestamp = bike.getStartDate() != null ? new Timestamp(bike.getStartDate().getTime().getTime())
+			Timestamp timestamp = bike.getStartDate() != null
+					? new Timestamp(bike.getStartDate().getTime().getTime())
 					: null;
 			preparedStatement.setTimestamp(i++, timestamp);
 			preparedStatement.setFloat(i++, bike.getPrice());
 			preparedStatement.setInt(i++, bike.getAvailableNumber());
-			timestamp = bike.getStartDate() != null ? new Timestamp(bike.getAdquisitionDate().getTime().getTime())
+			timestamp = bike.getStartDate() != null
+					? new Timestamp(
+							bike.getAdquisitionDate().getTime().getTime())
 					: null;
 			preparedStatement.setTimestamp(i++, timestamp);
 			preparedStatement.setInt(i++, bike.getNumberOfRents());
 			preparedStatement.setDouble(i++, bike.getAverageScore());
+			preparedStatement.setLong(i++, bike.getBikeId());
 
 			// Execute query.
 			int updatedRows = preparedStatement.executeUpdate();
 
 			if (updatedRows == 0) {
-				throw new InstanceNotFoundException(bike.getModelName(), Bike.class.getName());
+				throw new InstanceNotFoundException(bike.getBikeId(),
+						Bike.class.getName());
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -154,21 +177,24 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 	}
 
 	@Override
-	public void remove(Connection connection, Long modelName) throws InstanceNotFoundException {
+	public void remove(Connection connection, Long bikeId)
+			throws InstanceNotFoundException {
 		// Create "queryString.
 		String queryString = "DELETE FROM Bike WHERE " + "bikeId = ?";
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 
 			// Fill "preparedStatement"
 			int i = 1;
-			preparedStatement.setLong(i++, modelName);
+			preparedStatement.setLong(i++, bikeId);
 
 			// Execute query.
 			int removedRows = preparedStatement.executeUpdate();
 
 			if (removedRows == 0) {
-				throw new InstanceNotFoundException(modelName, Bike.class.getName());
+				throw new InstanceNotFoundException(bikeId,
+						Bike.class.getName());
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
