@@ -15,9 +15,9 @@ public interface BikeService {
 
 	public void update(Bike bike) throws InputValidationException, InstanceNotFoundException, InvalidDateException;
 
-	public Bike findBike(Long bikeId) throws InputValidationException, InstanceNotFoundException;
+	public Bike findBike(Long bikeId) throws InstanceNotFoundException;
 
-	public List<Bike> findBikes(String keywords, Calendar date) throws InputValidationException;
+	public List<Bike> findBikes(String keywords, Calendar date);
 
 	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate,
 			Calendar finishRentDate, int numberOfBikes)
@@ -25,6 +25,6 @@ public interface BikeService {
 
 	public List<Rent> findRents(String email) throws InputValidationException;
 	
-	public void rateRent(Long rentId, int score) throws InputValidationException, InstanceNotFoundException, RateRentDateException;
+	public void rateRent(Long rentId, int score) throws InputValidationException, InstanceNotFoundException, RateRentDateException, InvalidDateException;
 
 }

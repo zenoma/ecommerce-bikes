@@ -2,43 +2,85 @@ package es.udc.ws.bikes.model.util;
 
 import java.util.Calendar;
 
+import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidDateException;
 import es.udc.ws.util.exceptions.InputValidationException;
 
 public final class BikesPropertyValidator {
 
-	private BikesPropertyValidator() {}
-	
-    public static void validateLowerFloat(String propertyName,
-            float value, int lowerValidLimit)
-            throws InputValidationException {
+	private BikesPropertyValidator() {
+	}
 
-        if (value < lowerValidLimit) {
-            throw new InputValidationException("Invalid " + propertyName +
-                    " value (it must be greater than " + lowerValidLimit +
-                     "): " + value);
-        }
-    }
-    
-    public static void validateLowerInt(String propertyName,
-            int value, int lowerValidLimit)
-            throws InputValidationException {
+	public static void validateLowerFloat(String propertyName, float value, int lowerValidLimit)
+			throws InputValidationException {
 
-        if (value < lowerValidLimit) {
-            throw new InputValidationException("Invalid " + propertyName +
-                    " value (it must be greater than " + lowerValidLimit +
-                     "): " + value);
-        }
-    }
-    
-    public static void validatePreviousDate(String propertyName,
-            Calendar propertyValue) throws InputValidationException {
+		if (value < lowerValidLimit) {
+			throw new InputValidationException(
+					"Invalid " + propertyName + " value (it must be greater than " + lowerValidLimit + "): " + value);
+		}
+	}
 
+	public static void validateLowerInt(String propertyName, int value, int lowerValidLimit)
+			throws InputValidationException {
+
+		if (value < lowerValidLimit) {
+			throw new InputValidationException(
+					"Invalid " + propertyName + " value (it must be greater than " + lowerValidLimit + "): " + value);
+		}
+	}
+
+	public static void validatePreviousDate(String propertyName,
+            Calendar propertyValue) throws InputValidationException, InvalidDateException {
+    	
         Calendar now = Calendar.getInstance();
-        if ( (propertyValue == null) || (propertyValue.before(now)) ) {
-            throw new InputValidationException("Invalid " + propertyName +
-                    " value (it must be a past date): " +
-                    propertyValue);
+    	if (propertyValue == null) {
+    		throw new InputValidationException("Invalid " + propertyName +
+                    " value (it cannot be null): ");
+    	} else {
+    		if (propertyValue.after(now)) {
+            throw new InvalidDateException("Invalid " + propertyName +
+                    " value (it must be a past date): " + propertyValue);
+    		}
         }
-
     }
+
+	public static void validatePairDates(Calendar calendarPrev, Calendar calendarPost) throws InputValidationException, InvalidDateException {
+		
+		if (calendarPrev == null && calendarPost == null) {
+    		throw new InputValidationException("Invalid " + calendarPrev + "and "
+                    + calendarPost + " values cannot be null");
+    	} else {
+    		if (calendarPrev.before(calendarPost)) {
+    			throw new InvalidDateException(
+    					"Invalid: calendarPrev" + calendarPrev + "must be previous than calendarPost)" + calendarPost);
+    		}
+        }	
+	}
+
+	public static void validateFutureDate(String propertyName, Calendar propertyValue) throws InputValidationException, InvalidDateException {
+
+		Calendar now = Calendar.getInstance();
+		if (propertyValue == null) {
+    		throw new InputValidationException("Invalid " + propertyName +
+                    " value (it cannot be null): ");
+    	} else {
+    		if (propertyValue.before(now)) {
+    			throw new InvalidDateException(
+    					"Invalid " + propertyName + " value (it must be a future date): " + propertyValue);
+    		}
+        }	
+	}
+
+	public static void validateCreditCard(String propertyName, Long creditCard) throws InputValidationException {
+
+		if (String.valueOf(creditCard).length() != 16) {
+			throw new InputValidationException("Invalid " + propertyName + " size (it must be 16)");
+		}
+	}
+
+	public static void validateScore(String propertyName, int score) throws InputValidationException {
+
+		if (score < 0 && score > 10) {
+			throw new InputValidationException("Invalid " + propertyName + " score (it must be between 0 and 10)");
+		}
+	}
 }
