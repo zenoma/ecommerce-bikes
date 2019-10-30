@@ -21,7 +21,7 @@ public interface BikeService {
 
 	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate,
 			Calendar finishRentDate, int numberOfBikes)
-			throws InputValidationException, NumberOfBikesException, InvalidDateException;
+			throws InputValidationException, NumberOfBikesException, InvalidDateException, InvalidRentPeriod;
 
 	public List<Rent> findRents(String email) throws InputValidationException;
 	

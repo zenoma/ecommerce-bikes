@@ -15,6 +15,7 @@ import es.udc.ws.bikes.model.rent.SqlRentDao;
 import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
 
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidDateException;
+import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -147,16 +148,47 @@ public class BikeServiceImpl implements BikeService {
 
 	@Override
 	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes) throws InputValidationException, NumberOfBikesException, InvalidDateException {
+			int numberOfBikes) throws InputValidationException, NumberOfBikesException, InvalidDateException, InvalidRentPeriod {
 		// TODO Auto-generated method stub
 		BikesPropertyValidator.validateCreditCard("creditCard", creditCard);
-		return null;
+		BikesPropertyValidator.validateEmail("email", email);
+		BikesPropertyValidator.validateRentPeriod(startRentDate, finishRentDate);
+		try (Connection connection = dataSource.getConnection()) {
+			try {
+				/* Prepare connection. */
+				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				connection.setAutoCommit(false);
+
+				/* Do work. */
+				//Bike createdBike = bikeDao.create(connection, bike);
+				Rent rent = new Rent(email, bikeId, creditCard, startRentDate, finishRentDate, numberOfBikes);
+				Rent createdRent = rentDao.create(connection, rent);
+				
+
+				/* Commit. */
+				connection.commit();
+
+				return createdRent.getRentID();
+			}catch (SQLException e) {
+				connection.rollback();
+				throw new RuntimeException(e);
+			
+			}catch (RuntimeException | Error e) {
+				connection.rollback();
+				throw e;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public List<Rent> findRents(String email) throws InputValidationException {
-		// TODO Auto-generated method stub
-		return null;
+		try (Connection connection = dataSource.getConnection()) {
+			return rentDao.findByUser(connection, email);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
