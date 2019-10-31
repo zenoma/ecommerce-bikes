@@ -20,6 +20,15 @@ public final class BikesPropertyValidator {
 					"Invalid " + propertyName + " value (it must be greater than " + lowerValidLimit + "): " + value);
 		}
 	}
+	
+	public static void validateLowerDouble(String propertyName, double value, int lowerValidLimit)
+			throws InputValidationException {
+
+		if (value < lowerValidLimit) {
+			throw new InputValidationException(
+					"Invalid " + propertyName + " value (it must be greater than " + lowerValidLimit + "): " + value);
+		}
+	}
 
 	public static void validateLowerInt(String propertyName, int value, int lowerValidLimit)
 			throws InputValidationException {
@@ -38,7 +47,7 @@ public final class BikesPropertyValidator {
     		throw new InputValidationException("Invalid " + propertyName +
                     " value (it cannot be null): ");
     	} else {
-    		if (propertyValue.after(now)) {
+    		if (propertyValue.before(now)) {
             throw new InvalidDateException("Invalid " + propertyName +
                     " value (it must be a past date): " + propertyValue);
     		}
@@ -47,11 +56,11 @@ public final class BikesPropertyValidator {
 
 	public static void validatePairDates(Calendar calendarPrev, Calendar calendarPost) throws InputValidationException, InvalidDateException {
 		
-		if (calendarPrev == null && calendarPost == null) {
+		if (calendarPrev == null || calendarPost == null) {
     		throw new InputValidationException("Invalid " + calendarPrev + "and "
                     + calendarPost + " values cannot be null");
     	} else {
-    		if (calendarPrev.before(calendarPost)) {
+    		if (calendarPrev.equals(calendarPost) || calendarPrev.after(calendarPost)) {
     			throw new InvalidDateException(
     					"Invalid: calendarPrev" + calendarPrev + "must be previous than calendarPost)" + calendarPost);
     		}

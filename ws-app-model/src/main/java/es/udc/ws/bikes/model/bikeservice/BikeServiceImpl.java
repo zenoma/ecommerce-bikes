@@ -46,6 +46,10 @@ public class BikeServiceImpl implements BikeService {
 		BikesPropertyValidator.validateLowerInt("availableNumber", bike.getAvailableNumber(), 1);
 		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(), bike.getStartDate());
 		BikesPropertyValidator.validatePreviousDate("adquisitionDate", bike.getStartDate());
+		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(), Calendar.getInstance());
+		BikesPropertyValidator.validateLowerInt("numberOfRents", bike.getNumberOfRents(), 0);
+		BikesPropertyValidator.validateLowerDouble("averageScore", bike.getAverageScore(), 0);
+		
 
 	}
 

@@ -139,8 +139,8 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			throws InstanceNotFoundException {
 		// Create "queryString"
 		String queryString = "UPDATE Bike"
-				+ "SET description = ?, startDate = ?, price = ?, "
-				+ "availableNumber = ?, adquisitionDate = ?, numberOfRents = ?, "
+				+ " SET modelName = ?, description = ?, startDate = ?, price = ?, "
+				+ "availableNumber = ?, numberOfRents = ?, "
 				+ "averageScore = ? WHERE bikeId = ?";
 
 		try (PreparedStatement preparedStatement = connection
@@ -148,6 +148,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
 			// Fill "preparedStatement"
 			int i = 1;
+			preparedStatement.setString(i++,bike.getModelName());
 			preparedStatement.setString(i++, bike.getDescription());
 			Timestamp timestamp = bike.getStartDate() != null
 					? new Timestamp(bike.getStartDate().getTime().getTime())
@@ -155,11 +156,6 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			preparedStatement.setTimestamp(i++, timestamp);
 			preparedStatement.setFloat(i++, bike.getPrice());
 			preparedStatement.setInt(i++, bike.getAvailableNumber());
-			timestamp = bike.getStartDate() != null
-					? new Timestamp(
-							bike.getAdquisitionDate().getTime().getTime())
-					: null;
-			preparedStatement.setTimestamp(i++, timestamp);
 			preparedStatement.setInt(i++, bike.getNumberOfRents());
 			preparedStatement.setDouble(i++, bike.getAverageScore());
 			preparedStatement.setLong(i++, bike.getBikeId());

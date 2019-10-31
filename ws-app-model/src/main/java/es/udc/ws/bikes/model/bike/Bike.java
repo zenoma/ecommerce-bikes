@@ -3,7 +3,7 @@ package es.udc.ws.bikes.model.bike;
 import java.util.Calendar;
 
 public class Bike {
-	
+
 	Long bikeId;
 	String modelName;
 	String description;
@@ -23,6 +23,11 @@ public class Bike {
 		this.startDate = startDate;
 		this.price = price;
 		this.availableNumber = availableNumber;
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.SECOND, 0);
+		this.setAdquisitionDate(calendar);
+
 	}
 
 	public Bike(Long bikeId, String modelName, String description,
@@ -40,7 +45,8 @@ public class Bike {
 
 		this(bikeId, modelName, description, startDate, price, availableNumber,
 				numberOfRents);
-		this.adquisitionDate = adquisitionDate;
+
+		this.setAdquisitionDate(adquisitionDate);
 		this.averageScore = averageScore;
 	}
 
@@ -107,6 +113,10 @@ public class Bike {
 	}
 
 	public void setAdquisitionDate(Calendar adquisitionDate) {
+		if (adquisitionDate != null) {
+			adquisitionDate.set(Calendar.MILLISECOND, 0);
+			adquisitionDate.set(Calendar.SECOND, 0);
+		}
 		this.adquisitionDate = adquisitionDate;
 	}
 
