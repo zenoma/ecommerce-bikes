@@ -55,7 +55,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 	@Override
 	public List<Rent> findByUser(Connection connection, String userEmail) {
 		// Create "queryString"
-		String queryString = "SELECT rentID, modelName, creditCard, startRentDate, "
+		String queryString = "SELECT rentID, bikeId, creditCard, startRentDate, "
 				+ "finishRentDate, numberOfBikes, rentDate FROM Rent WHERE userEmail=?";
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
@@ -80,7 +80,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 				rentDate.setTime(resultSet.getTimestamp(i++));
 
 				Rent rent = new Rent(rentId, userEmail, bikeId, creditCard, startRentDate, finishRentDate,
-						numberOfBikes, rentDate);
+						numberOfBikes);
 				rents.add(rent);
 			}
 			return rents;
@@ -117,7 +117,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			int updatedRows = preparedStatement.executeUpdate();
 
 			if (updatedRows == 0) {
-				throw new InstanceNotFoundException(rent.getRentID(), Bike.class.getName());
+				throw new InstanceNotFoundException(rent.getRentId(), Bike.class.getName());
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

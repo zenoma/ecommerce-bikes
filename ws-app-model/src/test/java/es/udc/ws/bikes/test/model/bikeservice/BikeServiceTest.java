@@ -11,6 +11,9 @@ import es.udc.ws.bikes.model.bike.SqlBikeDaoFactory;
 import es.udc.ws.bikes.model.bikeservice.BikeService;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidDateException;
+import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
+import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.bikes.model.rent.SqlRentDao;
 import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -29,6 +32,11 @@ import java.util.List;
 
 public class BikeServiceTest {
 	private final long NON_EXISTENT_BIKE_ID = -1;
+	private final long NON_EXISTENT_RENT_ID = -1;
+	private final String USER_EMAIL = "ws@email.com";
+
+	private final long VALID_CREDIT_CARD_NUMBER = 1234_5678_9012_3456L;
+	private final long INVALID_CREDIT_CARD_NUMBER = 1L;
 
 	private static BikeService bikeService = null;
 
@@ -59,7 +67,7 @@ public class BikeServiceTest {
 		startDate.add(Calendar.DAY_OF_YEAR, +5);
 		return new Bike(modelName, "Bike description", startDate, 199.95F, 5);
 	}
-	
+
 	private Bike getValidBike(String modelName, Calendar startDate) {
 		return new Bike(modelName, "Bike description", startDate, 199.95F, 5);
 	}
@@ -104,6 +112,41 @@ public class BikeServiceTest {
 				connection.rollback();
 				throw e;
 			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void removeRent(Long rentId) {
+		DataSource dataSource = DataSourceLocator
+				.getDataSource(BIKE_DATA_SOURCE);
+
+		try (Connection connection = dataSource.getConnection()) {
+
+			try {
+
+				/* Prepare connection. */
+				connection.setTransactionIsolation(
+						Connection.TRANSACTION_SERIALIZABLE);
+				connection.setAutoCommit(false);
+
+				/* Do work. */
+				rentDao.remove(connection, rentId);
+
+				/* Commit. */
+				connection.commit();
+
+			} catch (InstanceNotFoundException e) {
+				connection.commit();
+				throw new RuntimeException(e);
+			} catch (SQLException e) {
+				connection.rollback();
+				throw new RuntimeException(e);
+			} catch (RuntimeException | Error e) {
+				connection.rollback();
+				throw e;
+			}
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -369,7 +412,7 @@ public class BikeServiceTest {
 			}
 		}
 	}
-	
+
 	@Test
 	public void testFindBikesWithDate() {
 
@@ -383,7 +426,7 @@ public class BikeServiceTest {
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.add(Calendar.DAY_OF_YEAR, 10);
-		Bike bike3 = createBike(getValidBike("bike 3",calendar));
+		Bike bike3 = createBike(getValidBike("bike 3", calendar));
 
 		try {
 			calendar = Calendar.getInstance();
@@ -401,51 +444,82 @@ public class BikeServiceTest {
 			removeBike(bike3.getBikeId());
 		}
 	}
-	
+
 	@Test
-	public void testRentBikeAndFindRent() {
+	public void testRentBikeAndFindRent()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 3);
+			System.out.println(rent);
+			// Find rent
+			List<Rent> foundRents = bikeService.findRents(USER_EMAIL);
+
+			assertEquals(rent, foundRents.get(0).getRentId());
+
+		} finally {
+			// Clear Database
+			if (rent != null) {
+				removeRent(rent);
+			}
+			removeBike(bike.getBikeId());
+		}
+	}
+
+	@Test
+	public void testFindRents() {
 		
 	}
-	
 	@Test
 	public void testRentBikeWithInvalidEmail() {
-		
+
 	}
-	
+
 	@Test
 	public void testRentBikeWithInvalidCreditCard() {
-		
+
 	}
-	
+
 	@Test
 	public void testRentNonExistentBike() {
-		
+
 	}
-	
+
 	@Test
 	public void testRentWithInvalidDate() {
 		// TODO startDate, más 15 días
 	}
-	
-	
+
 	@Test
 	public void testRentWithInvalidNumberOfBikes() {
 		// TODO negativo, mayor que las disponibles
 	}
-	
-	
+
 	@Test
 	public void testFindNonExistentRent() {
-		
+
 	}
-	
+
 	@Test
 	public void testFindRentWithInvalidEmail() {
-		
+
 	}
-	
+
 	// TODO Rate rent
-	
-	
-	
+
 }

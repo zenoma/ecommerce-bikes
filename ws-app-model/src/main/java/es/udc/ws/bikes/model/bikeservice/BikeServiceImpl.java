@@ -198,8 +198,8 @@ public class BikeServiceImpl implements BikeService {
 
 				/* Commit. */
 				connection.commit();
-
-				return createdRent.getRentID();
+				
+				return createdRent.getRentId();
 			} catch (SQLException e) {
 				connection.rollback();
 				throw new RuntimeException(e);
