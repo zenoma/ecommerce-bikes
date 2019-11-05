@@ -183,6 +183,7 @@ public class BikeServiceImpl implements BikeService {
 				Bike bike = bikeDao.find(connection, bikeId);
 				BikesPropertyValidator.validatePairDates(bike.getStartDate(),
 						startRentDate);
+				// TODO Validar numero de bicis disponibles
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(Calendar.MILLISECOND, 0);
 				calendar.set(Calendar.SECOND, 0);

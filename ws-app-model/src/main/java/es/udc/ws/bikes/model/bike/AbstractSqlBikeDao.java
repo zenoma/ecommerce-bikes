@@ -15,11 +15,11 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
 	protected AbstractSqlBikeDao() {
 	}
-	
+
 	@Override
 	public Bike find(Connection connection, Long bikeId)
 			throws InstanceNotFoundException {
-		
+
 		// Create queryString
 		String queryString = "SELECT modelName, description, startDate, price, "
 				+ "availableNumber, adquisitionDate, numberOfRents, averageScore "
@@ -87,9 +87,9 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 		} // Si keywords es null o 0, devolvemos todas las tuplas.
 
 		if (searchDate != null) {
-			if (words != null) 
+			if (words != null)
 				queryString += " AND";
-			else 
+			else
 				queryString += " WHERE";
 			queryString += " startDate <= (?)";
 		}
@@ -107,8 +107,10 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 				}
 			}
 			if (searchDate != null) {
-				Timestamp timestamp = new Timestamp(searchDate.getTime().getTime());
-				preparedStatement.setTimestamp(i++, timestamp);
+				Timestamp timestamp = new Timestamp(
+						searchDate.getTime().getTime());
+				System.out.println(timestamp);
+				preparedStatement.setTimestamp(++i, timestamp);
 			}
 
 			// Execute query.
@@ -161,7 +163,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
 			// Fill "preparedStatement"
 			int i = 1;
-			preparedStatement.setString(i++,bike.getModelName());
+			preparedStatement.setString(i++, bike.getModelName());
 			preparedStatement.setString(i++, bike.getDescription());
 			Timestamp timestamp = bike.getStartDate() != null
 					? new Timestamp(bike.getStartDate().getTime().getTime())

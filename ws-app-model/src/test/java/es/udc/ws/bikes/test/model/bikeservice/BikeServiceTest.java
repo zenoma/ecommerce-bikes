@@ -59,6 +59,10 @@ public class BikeServiceTest {
 		startDate.add(Calendar.DAY_OF_YEAR, +5);
 		return new Bike(modelName, "Bike description", startDate, 199.95F, 5);
 	}
+	
+	private Bike getValidBike(String modelName, Calendar startDate) {
+		return new Bike(modelName, "Bike description", startDate, 199.95F, 5);
+	}
 
 	private Bike getValidBike() {
 		return getValidBike("Bike model");
@@ -367,6 +371,38 @@ public class BikeServiceTest {
 	}
 	
 	@Test
+	public void testFindBikesWithDate() {
+
+		// Add bikes
+		List<Bike> bikes = new LinkedList<Bike>();
+		Bike bike1 = createBike(getValidBike("bike 1"));
+		bikes.add(bike1);
+		Bike bike2 = createBike(getValidBike("bike 2"));
+		bikes.add(bike2);
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.add(Calendar.DAY_OF_YEAR, 10);
+		Bike bike3 = createBike(getValidBike("bike 3",calendar));
+
+		try {
+			calendar = Calendar.getInstance();
+			calendar.set(Calendar.MILLISECOND, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.add(Calendar.DAY_OF_YEAR, 5);
+			List<Bike> foundBikes = bikeService.findBikes("biKe", calendar);
+			assertEquals(bikes, foundBikes);
+
+		} finally {
+			// Clear Database
+			for (Bike bike : bikes) {
+				removeBike(bike.getBikeId());
+			}
+			removeBike(bike3.getBikeId());
+		}
+	}
+	
+	@Test
 	public void testRentBikeAndFindRent() {
 		
 	}
@@ -377,13 +413,39 @@ public class BikeServiceTest {
 	}
 	
 	@Test
-	public void testRentNonExistentMovie() {
+	public void testRentBikeWithInvalidCreditCard() {
 		
 	}
+	
+	@Test
+	public void testRentNonExistentBike() {
+		
+	}
+	
+	@Test
+	public void testRentWithInvalidDate() {
+		// TODO startDate, más 15 días
+	}
+	
+	
+	@Test
+	public void testRentWithInvalidNumberOfBikes() {
+		// TODO negativo, mayor que las disponibles
+	}
+	
 	
 	@Test
 	public void testFindNonExistentRent() {
 		
 	}
+	
+	@Test
+	public void testFindRentWithInvalidEmail() {
+		
+	}
+	
+	// TODO Rate rent
+	
+	
 	
 }
