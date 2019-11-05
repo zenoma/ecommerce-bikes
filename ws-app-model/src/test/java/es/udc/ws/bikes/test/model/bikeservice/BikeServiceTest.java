@@ -32,8 +32,7 @@ import java.util.List;
 
 public class BikeServiceTest {
 	private final long NON_EXISTENT_BIKE_ID = -1;
-	private final long NON_EXISTENT_RENT_ID = -1;
-	private final String USER_EMAIL = "ws@email.com";
+	final String USER_EMAIL = "ws@email.com";
 
 	private final long VALID_CREDIT_CARD_NUMBER = 1234_5678_9012_3456L;
 	private final long INVALID_CREDIT_CARD_NUMBER = 1L;
@@ -466,11 +465,14 @@ public class BikeServiceTest {
 
 			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
 					bike.getBikeId(), startRentDate, finishRentDate, 3);
-			System.out.println(rent);
 			// Find rent
 			List<Rent> foundRents = bikeService.findRents(USER_EMAIL);
 
 			assertEquals(rent, foundRents.get(0).getRentId());
+			assertEquals(3, foundRents.get(0).getNumberOfBikes());
+			assertEquals(bike.getBikeId(), foundRents.get(0).getBikeId());
+			assertEquals(startRentDate, foundRents.get(0).getStartRentDate());
+			assertEquals(finishRentDate, foundRents.get(0).getFinishRentDate());
 
 		} finally {
 			// Clear Database
@@ -482,42 +484,220 @@ public class BikeServiceTest {
 	}
 
 	@Test
-	public void testFindRents() {
-		
+	public void testFindRents()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		List<Long> foundIdRents = new LinkedList<Long>();
+
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 3);
+			foundIdRents.add(rent);
+
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 2);
+			foundIdRents.add(rent);
+
+			// Find rent
+			bikeService.findRents(USER_EMAIL);
+			int i = 0;
+			for (Long id : foundIdRents) {
+				assertEquals(id,
+						bikeService.findRents(USER_EMAIL).get(i).getRentId());
+				i++;
+			}
+
+		} finally {
+			// Clear Database
+			if (rent != null) {
+				removeRent(rent);
+			}
+			removeBike(bike.getBikeId());
+		}
 	}
-	@Test
-	public void testRentBikeWithInvalidEmail() {
 
+	@Test(expected = InputValidationException.class)
+	public void testRentBikeWithInvalidEmail()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+			rent = bikeService.rentBike("", VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 5);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
 	}
 
-	@Test
-	public void testRentBikeWithInvalidCreditCard() {
-
+	@Test(expected = InputValidationException.class)
+	public void testRentBikeWithInvalidCreditCard()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+			rent = bikeService.rentBike(USER_EMAIL, INVALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 4);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
 	}
 
-	@Test
-	public void testRentNonExistentBike() {
-
+	@Test(expected = InstanceNotFoundException.class)
+	public void testRentNonExistentBike()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					NON_EXISTENT_BIKE_ID, startRentDate, finishRentDate, 4);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
 	}
 
-	@Test
-	public void testRentWithInvalidDate() {
-		// TODO startDate, más 15 días
+	@Test(expected = InvalidDateException.class)
+	public void testRentWithInvalidDate()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 5);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
 	}
 
-	@Test
-	public void testRentWithInvalidNumberOfBikes() {
-		// TODO negativo, mayor que las disponibles
+	@Test(expected = InvalidRentPeriod.class)
+	public void testRentWithInvalidPeriod()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 25);
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 4);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
 	}
 
-	@Test
-	public void testFindNonExistentRent() {
-
+	@Test(expected = InputValidationException.class)
+	public void testRentWithInvalidNumberOfBikes()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, -2);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
+	}
+	
+	@Test(expected = NumberOfBikesException.class)
+	public void testRentWithOverMaxAvailableBikes()
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+		Bike bike = createBike(getValidBike());
+		Long rent = null;
+		try {
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, 5);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					bike.getBikeId(), startRentDate, finishRentDate, 1000);
+		} finally {
+			// Clear database
+			removeBike(bike.getBikeId());
+		}
 	}
 
-	@Test
-	public void testFindRentWithInvalidEmail() {
-
+	@Test(expected = InputValidationException.class)
+	public void testFindRentWithInvalidEmail() throws InputValidationException {
+		bikeService.findRents("");
 	}
 
 	// TODO Rate rent

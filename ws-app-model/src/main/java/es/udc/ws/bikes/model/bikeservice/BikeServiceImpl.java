@@ -171,7 +171,8 @@ public class BikeServiceImpl implements BikeService {
 		BikesPropertyValidator.validateEmail("email", email);
 		BikesPropertyValidator.validateRentPeriod(startRentDate,
 				finishRentDate);
-		BikesPropertyValidator.validateLowerInt("numberOfBikes", numberOfBikes, 1);
+		BikesPropertyValidator.validateLowerInt("numberOfBikes", numberOfBikes,
+				1);
 		try (Connection connection = dataSource.getConnection()) {
 			try {
 				/* Prepare connection. */
@@ -184,21 +185,25 @@ public class BikeServiceImpl implements BikeService {
 				BikesPropertyValidator.validatePairDates(bike.getStartDate(),
 						startRentDate);
 				// TODO Validar numero de bicis disponibles
+				BikesPropertyValidator.validateNumberOfBikes("numberOfBikes",
+						bike, numberOfBikes);
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(Calendar.MILLISECOND, 0);
 				calendar.set(Calendar.SECOND, 0);
 				calendar.add(Calendar.DAY_OF_YEAR, 1);
 				BikesPropertyValidator.validatePairDates(calendar,
 						startRentDate);
-				
+
 				/* Do work. */
 				Rent rent = new Rent(email, bikeId, creditCard, startRentDate,
 						finishRentDate, numberOfBikes);
 				Rent createdRent = rentDao.create(connection, rent);
+				bike.setAvailableNumber(bike.getAvailableNumber() -  numberOfBikes);
+				bikeDao.update(connection, bike);
 
 				/* Commit. */
 				connection.commit();
-				
+
 				return createdRent.getRentId();
 			} catch (SQLException e) {
 				connection.rollback();

@@ -3,8 +3,10 @@ package es.udc.ws.bikes.model.util;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
+import es.udc.ws.bikes.model.bike.Bike;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidDateException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
+import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.util.exceptions.InputValidationException;
 
 public final class BikesPropertyValidator {
@@ -111,12 +113,19 @@ public final class BikesPropertyValidator {
     		throw new InvalidDateException(
     			"Invalid: calendarPrev" + startDate + "must be previous than calendarPost)" + finishDate);
     	}
-		long hours = ChronoUnit.HOURS.between(startDate.toInstant(), finishDate.toInstant());
-		int days = (int) hours/24;
+		long days = ChronoUnit.DAYS.between(startDate.toInstant(), finishDate.toInstant());
 		if (days > 15) {
 			throw new InvalidRentPeriod(
 	    			"Invalid: Period between Startdate: " + startDate + " and FinishDate: " + finishDate+ "must be greater than 15, and it actually is:" + days);
     	}
         
+	}
+
+	public static void validateNumberOfBikes(String string, Bike bike,
+			int numberOfBikes) throws NumberOfBikesException {
+		if (bike.getAvailableNumber() - numberOfBikes < 0 ) {
+			throw new NumberOfBikesException("Invalid number of bikes: There is not available ");
+		}
+		
 	}
 }

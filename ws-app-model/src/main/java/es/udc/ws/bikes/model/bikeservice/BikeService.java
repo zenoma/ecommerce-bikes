@@ -9,7 +9,6 @@ import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.util.exceptions.*;
 
 public interface BikeService {
-	// TODO Casos de uso
 
 	public Bike addBike(Bike bike)
 			throws InputValidationException, InvalidDateException;
