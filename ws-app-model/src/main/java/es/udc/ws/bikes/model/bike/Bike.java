@@ -4,15 +4,15 @@ import java.util.Calendar;
 
 public class Bike {
 
-	Long bikeId;
-	String modelName;
-	String description;
-	Calendar startDate; // Fecha y hora desde que se permite alquilar
-	float price;
-	int availableNumber;
-	Calendar adquisitionDate; // Fecha y hora de alta del modelo
-	int numberOfRents;
-	double averageScore;
+	private Long bikeId;
+	private String modelName;
+	private String description;
+	private Calendar startDate; // Fecha y hora desde que se permite alquilar
+	private float price;
+	private int availableNumber;
+	private Calendar adquisitionDate; // Fecha y hora de alta del modelo
+	private int numberOfRents;
+	private double averageScore;
 
 	// Constructor
 	public Bike(String modelName, String description, Calendar startDate,

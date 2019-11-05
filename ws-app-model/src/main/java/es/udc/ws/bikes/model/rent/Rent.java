@@ -5,14 +5,14 @@ import java.util.Calendar;
 public class Rent {
 
 	//Attributes
-	Long rentId;
-	String userEmail;
-	Long bikeId;
-	Long creditCard;//puede que necesite otro tipo por la longitud del código de als tarjetas
-	Calendar startRentDate;
-	Calendar finishRentDate;
-	int numberOfBikes;
-	Calendar rentDate;
+	private Long rentId;
+	private String userEmail;
+	private Long bikeId;
+	private Long creditCard;//puede que necesite otro tipo por la longitud del código de als tarjetas
+	private Calendar startRentDate;
+	private Calendar finishRentDate;
+	private int numberOfBikes;
+	private Calendar rentDate;
 
 
 	public Rent(String userEmail, Long bikeId, Long creditCard, Calendar startRentDate, Calendar finishRentDate,

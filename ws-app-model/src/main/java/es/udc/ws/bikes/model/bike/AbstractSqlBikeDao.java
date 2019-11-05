@@ -109,7 +109,6 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			if (searchDate != null) {
 				Timestamp timestamp = new Timestamp(
 						searchDate.getTime().getTime());
-				System.out.println(timestamp);
 				preparedStatement.setTimestamp(++i, timestamp);
 			}
 

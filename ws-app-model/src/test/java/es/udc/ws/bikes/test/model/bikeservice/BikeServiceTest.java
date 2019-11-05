@@ -121,7 +121,7 @@ public class BikeServiceTest {
 
 			assertEquals(addedBike.getBikeId(), foundBike.getBikeId());
 		} finally {
-			// Clear Database
+			// Clear atabase
 			if (addedBike != null) {
 				removeBike(addedBike.getBikeId());
 			}
