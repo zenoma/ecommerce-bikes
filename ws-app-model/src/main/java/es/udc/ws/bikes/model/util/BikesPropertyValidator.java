@@ -103,8 +103,8 @@ public final class BikesPropertyValidator {
 	}
 	
 	public static void validateRentPeriod(Calendar startDate, Calendar finishDate) throws InputValidationException, InvalidDateException, InvalidRentPeriod{
-		if (startDate == null && finishDate == null) {
-    		throw new InputValidationException("Invalid " + startDate + "and "
+		if (startDate == null || finishDate == null) {
+    		throw new InputValidationException("Invalid " + startDate + "or "
                     + finishDate + " values cannot be null");
     	}
 		if (startDate.before(finishDate)) {

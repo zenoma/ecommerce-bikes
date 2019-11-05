@@ -38,18 +38,26 @@ public class BikeServiceImpl implements BikeService {
 		rentDao = SqlRentDaoFactory.getDao();
 	}
 
-	private void validateBike(Bike bike) throws InputValidationException, InvalidDateException {
+	private void validateBike(Bike bike)
+			throws InputValidationException, InvalidDateException {
 
-		PropertyValidator.validateMandatoryString("modelName", bike.getModelName());
-		PropertyValidator.validateMandatoryString("description", bike.getDescription());
+		PropertyValidator.validateMandatoryString("modelName",
+				bike.getModelName());
+		PropertyValidator.validateMandatoryString("description",
+				bike.getDescription());
 		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
-		BikesPropertyValidator.validateLowerInt("availableNumber", bike.getAvailableNumber(), 1);
-		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(), bike.getStartDate());
-		BikesPropertyValidator.validatePreviousDate("adquisitionDate", bike.getStartDate());
-		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(), Calendar.getInstance());
-		BikesPropertyValidator.validateLowerInt("numberOfRents", bike.getNumberOfRents(), 0);
-		BikesPropertyValidator.validateLowerDouble("averageScore", bike.getAverageScore(), 0);
-		
+		BikesPropertyValidator.validateLowerInt("availableNumber",
+				bike.getAvailableNumber(), 1);
+		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
+				bike.getStartDate());
+		BikesPropertyValidator.validatePreviousDate("adquisitionDate",
+				bike.getStartDate());
+		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
+				Calendar.getInstance());
+		BikesPropertyValidator.validateLowerInt("numberOfRents",
+				bike.getNumberOfRents(), 0);
+		BikesPropertyValidator.validateLowerDouble("averageScore",
+				bike.getAverageScore(), 0);
 
 	}
 
@@ -61,7 +69,8 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Bike addBike(Bike bike) throws InputValidationException, InvalidDateException {
+	public Bike addBike(Bike bike)
+			throws InputValidationException, InvalidDateException {
 		validateBike(bike);
 		initBike(bike);
 
@@ -70,7 +79,8 @@ public class BikeServiceImpl implements BikeService {
 			try {
 
 				/* Prepare connection. */
-				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				connection.setTransactionIsolation(
+						Connection.TRANSACTION_SERIALIZABLE);
 				connection.setAutoCommit(false);
 
 				/* Do work. */
@@ -95,7 +105,8 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public void update(Bike bike) throws InputValidationException, InstanceNotFoundException, InvalidDateException {
+	public void update(Bike bike) throws InputValidationException,
+			InstanceNotFoundException, InvalidDateException {
 
 		validateBike(bike);
 
@@ -104,7 +115,8 @@ public class BikeServiceImpl implements BikeService {
 			try {
 
 				/* Prepare connection. */
-				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				connection.setTransactionIsolation(
+						Connection.TRANSACTION_SERIALIZABLE);
 				connection.setAutoCommit(false);
 
 				/* Do work. */
@@ -151,32 +163,49 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes) throws InputValidationException, NumberOfBikesException, InvalidDateException, InvalidRentPeriod {
+	public Long rentBike(String email, Long creditCard, Long bikeId,
+			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
+			throws InputValidationException, NumberOfBikesException,
+			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
 		BikesPropertyValidator.validateCreditCard("creditCard", creditCard);
 		BikesPropertyValidator.validateEmail("email", email);
-		BikesPropertyValidator.validateRentPeriod(startRentDate, finishRentDate);
+		BikesPropertyValidator.validateRentPeriod(startRentDate,
+				finishRentDate);
+		BikesPropertyValidator.validateLowerInt("numberOfBikes", numberOfBikes, 1);
 		try (Connection connection = dataSource.getConnection()) {
 			try {
 				/* Prepare connection. */
-				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				connection.setTransactionIsolation(
+						Connection.TRANSACTION_SERIALIZABLE);
 				connection.setAutoCommit(false);
 
-				/* Do work. */
-				//Bike createdBike = bikeDao.create(connection, bike);
-				Rent rent = new Rent(email, bikeId, creditCard, startRentDate, finishRentDate, numberOfBikes);
-				Rent createdRent = rentDao.create(connection, rent);
+				// Validate Rent
+				Bike bike = bikeDao.find(connection, bikeId);
+				BikesPropertyValidator.validatePairDates(bike.getStartDate(),
+						startRentDate);
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.add(Calendar.DAY_OF_YEAR, 1);
+				BikesPropertyValidator.validatePairDates(calendar,
+						startRentDate);
 				
+				/* Do work. */
+				Rent rent = new Rent(email, bikeId, creditCard, startRentDate,
+						finishRentDate, numberOfBikes);
+				Rent createdRent = rentDao.create(connection, rent);
 
 				/* Commit. */
 				connection.commit();
 
 				return createdRent.getRentID();
-			}catch (SQLException e) {
+			} catch (SQLException e) {
 				connection.rollback();
 				throw new RuntimeException(e);
-			
-			}catch (RuntimeException | Error e) {
+			} catch (RuntimeException | Error e) {
+				connection.rollback();
+				throw e;
+			} catch (InputValidationException | InstanceNotFoundException e) {
 				connection.rollback();
 				throw e;
 			}
@@ -187,6 +216,7 @@ public class BikeServiceImpl implements BikeService {
 
 	@Override
 	public List<Rent> findRents(String email) throws InputValidationException {
+		BikesPropertyValidator.validateEmail("email", email);
 		try (Connection connection = dataSource.getConnection()) {
 			return rentDao.findByUser(connection, email);
 		} catch (SQLException e) {
@@ -196,20 +226,20 @@ public class BikeServiceImpl implements BikeService {
 
 	@Override
 	public void rateRent(Long rentId, int score)
-			throws InputValidationException, InstanceNotFoundException, RateRentDateException, InvalidDateException {
+			throws InputValidationException, InstanceNotFoundException,
+			RateRentDateException, InvalidDateException {
 		BikesPropertyValidator.validateScore("score", score);
 
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
-			//Add 1 to finishRentDate
+			// Add 1 to finishRentDate
 			Calendar date = rent.getFinishRentDate();
 			date.add(Calendar.DAY_OF_YEAR, 1);
 			BikesPropertyValidator.validatePreviousDate("finishRentDate", date);
-			
-			
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		
+
 		}
 	}
 

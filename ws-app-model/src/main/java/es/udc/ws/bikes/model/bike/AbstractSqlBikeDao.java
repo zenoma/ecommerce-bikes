@@ -85,17 +85,30 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 				queryString += " LOWER(description) LIKE LOWER(?)";
 			}
 		} // Si keywords es null o 0, devolvemos todas las tuplas.
+
+		if (searchDate != null) {
+			if (words != null) 
+				queryString += " AND";
+			else 
+				queryString += " WHERE";
+			queryString += " startDate <= (?)";
+		}
 		queryString += " ORDER BY modelName";
 
 		try (PreparedStatement preparedStatement = connection
 				.prepareStatement(queryString)) {
+			int i = 0;
 			if (words != null) {
 				// Fill "preparedStatment".
-				for (int i = 0; i < words.length; i++) {
+				for (i = 0; i < words.length; i++) {
 					// Se sustituyen las ? por cada keyword con la forma
 					// %keyword%
 					preparedStatement.setString(i + 1, "%" + words[i] + "%");
 				}
+			}
+			if (searchDate != null) {
+				Timestamp timestamp = new Timestamp(searchDate.getTime().getTime());
+				preparedStatement.setTimestamp(i++, timestamp);
 			}
 
 			// Execute query.
@@ -105,7 +118,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			List<Bike> bikes = new ArrayList<Bike>();
 
 			while (resultSet.next()) {
-				int i = 1;
+				i = 1;
 				Long bikeId = resultSet.getLong(i++);
 				String modelName = resultSet.getString(i++);
 				String description = resultSet.getString(i++);
