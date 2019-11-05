@@ -153,7 +153,6 @@ public class BikeServiceImpl implements BikeService {
 	@Override
 	public Long rentBike(String email, Long creditCard, Long bikeId, Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes) throws InputValidationException, NumberOfBikesException, InvalidDateException, InvalidRentPeriod {
-		// TODO Auto-generated method stub
 		BikesPropertyValidator.validateCreditCard("creditCard", creditCard);
 		BikesPropertyValidator.validateEmail("email", email);
 		BikesPropertyValidator.validateRentPeriod(startRentDate, finishRentDate);
@@ -198,7 +197,6 @@ public class BikeServiceImpl implements BikeService {
 	@Override
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException, RateRentDateException, InvalidDateException {
-		// TODO Auto-generated method stub
 		BikesPropertyValidator.validateScore("score", score);
 
 		try (Connection connection = dataSource.getConnection()) {

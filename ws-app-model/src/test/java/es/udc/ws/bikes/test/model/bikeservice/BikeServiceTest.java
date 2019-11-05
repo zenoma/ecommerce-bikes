@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BikeServiceTest {
 	private final long NON_EXISTENT_BIKE_ID = -1;
@@ -244,22 +246,22 @@ public class BikeServiceTest {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
+
 			bike = getValidBike();
 
-		// Check adquisitionDate is past today
+			// Check adquisitionDate is past today
 			date = Calendar.getInstance();
 			date.add(Calendar.DAY_OF_YEAR, +1);
 			bike.setAdquisitionDate(date);
 			try {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
-				System.out.println(e);
 			} catch (InvalidDateException e) {
 				exceptionCatched = true;
-				System.out.println(e);
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
+
 			bike = getValidBike();
 
 			// Check numberOfRents greater than 0
@@ -272,6 +274,7 @@ public class BikeServiceTest {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
+
 			bike = getValidBike();
 
 			// Check averageScore greater than 0
@@ -314,4 +317,73 @@ public class BikeServiceTest {
 			removeBike(bike.getBikeId());
 		}
 	}
+
+	@Test(expected = InputValidationException.class)
+	public void testUpdateInvalidMovie() throws InputValidationException,
+			InstanceNotFoundException, InvalidDateException {
+		Bike bike = createBike(getValidBike());
+		try {
+			// Check bike model not null
+			bike = bikeService.findBike(bike.getBikeId());
+			bike.setModelName(null);
+			bikeService.update(bike);
+		} finally {
+			// Clear Database
+			removeBike(bike.getBikeId());
+		}
+	}
+
+	@Test(expected = InstanceNotFoundException.class)
+	public void testUpdateNonExistentBike() throws InputValidationException,
+			InstanceNotFoundException, InvalidDateException {
+		Bike bike = getValidBike();
+		bike.setBikeId(NON_EXISTENT_BIKE_ID);
+		bike.setAdquisitionDate(Calendar.getInstance());
+		bikeService.update(bike);
+	}
+
+	@Test
+	public void testFindBikes() {
+
+		// Add bikes
+		List<Bike> bikes = new LinkedList<Bike>();
+		Bike bike1 = createBike(getValidBike("bike 1"));
+		bikes.add(bike1);
+		Bike bike2 = createBike(getValidBike("bike 2"));
+		bikes.add(bike2);
+		Bike bike3 = createBike(getValidBike("bike 3"));
+		bikes.add(bike3);
+
+		try {
+			List<Bike> foundBikes = bikeService.findBikes("biKe", null);
+			assertEquals(bikes, foundBikes);
+
+		} finally {
+			// Clear Database
+			for (Bike bike : bikes) {
+				removeBike(bike.getBikeId());
+			}
+		}
+	}
+	
+	@Test
+	public void testRentBikeAndFindRent() {
+		
+	}
+	
+	@Test
+	public void testRentBikeWithInvalidEmail() {
+		
+	}
+	
+	@Test
+	public void testRentNonExistentMovie() {
+		
+	}
+	
+	@Test
+	public void testFindNonExistentRent() {
+		
+	}
+	
 }
