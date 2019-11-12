@@ -20,9 +20,11 @@ public class Bike {
 
 		this.modelName = modelName;
 		this.description = description;
+		//FIXME Establecer fecha en la capa servicio
 		this.startDate = startDate;
 		this.price = price;
 		this.availableNumber = availableNumber;
+		//FIXME Cambiar gestión a la capa servicio 
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);
@@ -113,6 +115,7 @@ public class Bike {
 	}
 
 	public void setAdquisitionDate(Calendar adquisitionDate) {
+		//FIXME Eliminar IF
 		if (adquisitionDate != null) {
 			adquisitionDate.set(Calendar.MILLISECOND, 0);
 			adquisitionDate.set(Calendar.SECOND, 0);

@@ -8,12 +8,12 @@ public class Rent {
 	private Long rentId;
 	private String userEmail;
 	private Long bikeId;
-	private Long creditCard;// puede que necesite otro tipo por la longitud del
-							// código de als tarjetas
+	private Long creditCard;
 	private Calendar startRentDate;
 	private Calendar finishRentDate;
 	private int numberOfBikes;
 	private Calendar rentDate;
+	// TODO Añadir rentPrice y validarlo 
 
 	public Rent(String userEmail, Long bikeId, Long creditCard,
 			Calendar startRentDate, Calendar finishRentDate,
@@ -24,6 +24,7 @@ public class Rent {
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
+		//FIXME Cambiar gestión a la capa servicio 
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);

@@ -10,7 +10,6 @@ import es.udc.ws.bikes.model.bike.SqlBikeDao;
 import es.udc.ws.bikes.model.bike.SqlBikeDaoFactory;
 import es.udc.ws.bikes.model.bikeservice.BikeService;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidDateException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.bikes.model.rent.Rent;
@@ -81,8 +80,6 @@ public class BikeServiceTest {
 			addedBike = bikeService.addBike(bike);
 		} catch (InputValidationException e) {
 			throw new RuntimeException(e);
-		} catch (InvalidDateException e) {
-			throw new RuntimeException(e);
 		}
 		return addedBike;
 	}
@@ -152,8 +149,8 @@ public class BikeServiceTest {
 	}
 
 	@Test
-	public void testAddBikeAndFindBike() throws InputValidationException,
-			InvalidDateException, InstanceNotFoundException {
+	public void testAddBikeAndFindBike()
+			throws InputValidationException, InstanceNotFoundException {
 		Bike bike = getValidBike();
 		Bike addedBike = null;
 
@@ -183,8 +180,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
-
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -196,8 +191,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
-
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -209,8 +202,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
-
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -222,8 +213,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
-
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -235,7 +224,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -250,7 +238,6 @@ public class BikeServiceTest {
 			try {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
-			} catch (InvalidDateException e) {
 				exceptionCatched = true;
 			}
 			assertTrue(exceptionCatched);
@@ -264,7 +251,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -276,7 +262,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -288,7 +273,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -302,7 +286,6 @@ public class BikeServiceTest {
 			try {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
-			} catch (InvalidDateException e) {
 				exceptionCatched = true;
 			}
 			assertTrue(exceptionCatched);
@@ -316,7 +299,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -329,7 +311,6 @@ public class BikeServiceTest {
 				addedBike = bikeService.addBike(bike);
 			} catch (InputValidationException e) {
 				exceptionCatched = true;
-			} catch (InvalidDateException e) {
 			}
 			assertTrue(exceptionCatched);
 			exceptionCatched = false;
@@ -349,8 +330,8 @@ public class BikeServiceTest {
 	}
 
 	@Test
-	public void testUpdateBike() throws InputValidationException,
-			InstanceNotFoundException, InvalidDateException {
+	public void testUpdateBike()
+			throws InputValidationException, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		try {
 			bike.setModelName("new Model Name");
@@ -365,8 +346,8 @@ public class BikeServiceTest {
 	}
 
 	@Test(expected = InputValidationException.class)
-	public void testUpdateInvalidMovie() throws InputValidationException,
-			InstanceNotFoundException, InvalidDateException {
+	public void testUpdateInvalidMovie()
+			throws InputValidationException, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		try {
 			// Check bike model not null
@@ -380,8 +361,8 @@ public class BikeServiceTest {
 	}
 
 	@Test(expected = InstanceNotFoundException.class)
-	public void testUpdateNonExistentBike() throws InputValidationException,
-			InstanceNotFoundException, InvalidDateException {
+	public void testUpdateNonExistentBike()
+			throws InputValidationException, InstanceNotFoundException {
 		Bike bike = getValidBike();
 		bike.setBikeId(NON_EXISTENT_BIKE_ID);
 		bike.setAdquisitionDate(Calendar.getInstance());
@@ -447,7 +428,7 @@ public class BikeServiceTest {
 	@Test
 	public void testRentBikeAndFindRent()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
@@ -486,7 +467,7 @@ public class BikeServiceTest {
 	@Test
 	public void testFindRents()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		List<Long> foundIdRents = new LinkedList<Long>();
@@ -531,7 +512,7 @@ public class BikeServiceTest {
 	@Test(expected = InputValidationException.class)
 	public void testRentBikeWithInvalidEmail()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {
@@ -555,7 +536,7 @@ public class BikeServiceTest {
 	@Test(expected = InputValidationException.class)
 	public void testRentBikeWithInvalidCreditCard()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {
@@ -579,7 +560,7 @@ public class BikeServiceTest {
 	@Test(expected = InstanceNotFoundException.class)
 	public void testRentNonExistentBike()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {
@@ -600,10 +581,10 @@ public class BikeServiceTest {
 		}
 	}
 
-	@Test(expected = InvalidDateException.class)
+	@Test(expected = InputValidationException.class)
 	public void testRentWithInvalidDate()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {
@@ -626,7 +607,7 @@ public class BikeServiceTest {
 	@Test(expected = InvalidRentPeriod.class)
 	public void testRentWithInvalidPeriod()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {
@@ -650,7 +631,7 @@ public class BikeServiceTest {
 	@Test(expected = InputValidationException.class)
 	public void testRentWithInvalidNumberOfBikes()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {
@@ -670,11 +651,11 @@ public class BikeServiceTest {
 			removeBike(bike.getBikeId());
 		}
 	}
-	
+
 	@Test(expected = NumberOfBikesException.class)
 	public void testRentWithOverMaxAvailableBikes()
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		Bike bike = createBike(getValidBike());
 		Long rent = null;
 		try {

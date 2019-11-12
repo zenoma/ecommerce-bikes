@@ -10,11 +10,12 @@ import es.udc.ws.util.exceptions.*;
 
 public interface BikeService {
 
+	//TODO Cambiar addBike, updateBike y findBike pasando parámetros en vez de el Objeto
 	public Bike addBike(Bike bike)
-			throws InputValidationException, InvalidDateException;
+			throws InputValidationException;
 
 	public void update(Bike bike) throws InputValidationException,
-			InstanceNotFoundException, InvalidDateException;
+			InstanceNotFoundException;
 
 	public Bike findBike(Long bikeId) throws InstanceNotFoundException;
 
@@ -22,13 +23,12 @@ public interface BikeService {
 
 	public Long rentBike(String email, Long creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
-			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException;
+			throws InputValidationException, NumberOfBikesException, InvalidRentPeriod, InstanceNotFoundException;
 
 	public List<Rent> findRents(String email) throws InputValidationException;
 
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException,
-			RateRentDateException, InvalidDateException;
+			RateRentDateException;
 
 }

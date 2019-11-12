@@ -14,7 +14,6 @@ import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.bikes.model.rent.SqlRentDao;
 import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
 
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidDateException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
@@ -39,7 +38,7 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	private void validateBike(Bike bike)
-			throws InputValidationException, InvalidDateException {
+			throws InputValidationException {
 
 		PropertyValidator.validateMandatoryString("modelName",
 				bike.getModelName());
@@ -69,8 +68,7 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Bike addBike(Bike bike)
-			throws InputValidationException, InvalidDateException {
+	public Bike addBike(Bike bike) throws InputValidationException {
 		validateBike(bike);
 		initBike(bike);
 
@@ -106,7 +104,7 @@ public class BikeServiceImpl implements BikeService {
 
 	@Override
 	public void update(Bike bike) throws InputValidationException,
-			InstanceNotFoundException, InvalidDateException {
+			InstanceNotFoundException {
 
 		validateBike(bike);
 
@@ -120,6 +118,8 @@ public class BikeServiceImpl implements BikeService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
+				// TODO No se puede actualizar una bici que tiene hecha una
+				// reserva
 				bikeDao.update(connection, bike);
 
 				/* Commit. */
@@ -166,7 +166,7 @@ public class BikeServiceImpl implements BikeService {
 	public Long rentBike(String email, Long creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
 			throws InputValidationException, NumberOfBikesException,
-			InvalidDateException, InvalidRentPeriod, InstanceNotFoundException {
+			InvalidRentPeriod, InstanceNotFoundException {
 		BikesPropertyValidator.validateCreditCard("creditCard", creditCard);
 		BikesPropertyValidator.validateEmail("email", email);
 		BikesPropertyValidator.validateRentPeriod(startRentDate,
@@ -198,7 +198,8 @@ public class BikeServiceImpl implements BikeService {
 				Rent rent = new Rent(email, bikeId, creditCard, startRentDate,
 						finishRentDate, numberOfBikes);
 				Rent createdRent = rentDao.create(connection, rent);
-				bike.setAvailableNumber(bike.getAvailableNumber() -  numberOfBikes);
+				bike.setAvailableNumber(
+						bike.getAvailableNumber() - numberOfBikes);
 				bikeDao.update(connection, bike);
 
 				/* Commit. */
@@ -233,9 +234,10 @@ public class BikeServiceImpl implements BikeService {
 	@Override
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException,
-			RateRentDateException, InvalidDateException {
+			RateRentDateException {
 		BikesPropertyValidator.validateScore("score", score);
 
+		//TODO Cuando se actualize el Alquiler se ignoran los campos calculados
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
 			// Add 1 to finishRentDate
