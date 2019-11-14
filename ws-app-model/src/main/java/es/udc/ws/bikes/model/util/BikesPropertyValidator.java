@@ -6,6 +6,8 @@ import java.util.Calendar;
 import es.udc.ws.bikes.model.bike.Bike;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
+import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.util.exceptions.InputValidationException;
 
 public final class BikesPropertyValidator {
@@ -44,8 +46,7 @@ public final class BikesPropertyValidator {
 	}
 
 	public static void validatePreviousDate(String propertyName,
-			Calendar propertyValue)
-			throws InputValidationException {
+			Calendar propertyValue) throws InputValidationException {
 
 		Calendar now = Calendar.getInstance();
 		if (propertyValue == null) {
@@ -75,8 +76,7 @@ public final class BikesPropertyValidator {
 	}
 
 	public static void validateFutureDate(String propertyName,
-			Calendar propertyValue)
-			throws InputValidationException {
+			Calendar propertyValue) throws InputValidationException {
 
 		Calendar now = Calendar.getInstance();
 		if (propertyValue == null) {
@@ -133,9 +133,11 @@ public final class BikesPropertyValidator {
 		long days = ChronoUnit.DAYS.between(startDate.toInstant(),
 				finishDate.toInstant());
 		if (days > 15) {
-			throw new InvalidRentPeriodException("Invalid: Period between Startdate: "
-					+ startDate + " and FinishDate: " + finishDate
-					+ "must be greater than 15, and it actually is:" + days);
+			throw new InvalidRentPeriodException(
+					"Invalid: Period between Startdate: " + startDate
+							+ " and FinishDate: " + finishDate
+							+ "must be greater than 15, and it actually is:"
+							+ days);
 		}
 
 	}
@@ -147,5 +149,13 @@ public final class BikesPropertyValidator {
 					"Invalid number of bikes: There is not available ");
 		}
 
+	}
+
+	public static void validateRateRent(String string, Rent rent)
+			throws RentExpirationException {
+		if (rent.getFinishRentDate().getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+			throw new RentExpirationException(
+					"The rent" + rent.getRentId() + "is not finished.");
+		}
 	}
 }

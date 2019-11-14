@@ -31,6 +31,6 @@ public interface BikeService {
 
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException,
-			RateRentDateException;
+			RateRentDateException, RentExpirationException;
 
 }

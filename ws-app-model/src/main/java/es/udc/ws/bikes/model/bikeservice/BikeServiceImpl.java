@@ -17,6 +17,7 @@ import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
+import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -57,7 +58,6 @@ public class BikeServiceImpl implements BikeService {
 
 	private void validateRent(Rent rent)
 			throws InputValidationException, InvalidRentPeriodException {
-		// TODO Añadir validaciones
 		BikesPropertyValidator.validateCreditCard("creditCard",
 				rent.getCreditCard());
 		BikesPropertyValidator.validateEmail("email", rent.getUserEmail());
@@ -198,13 +198,15 @@ public class BikeServiceImpl implements BikeService {
 
 				// Validate Rent
 				Bike bike = bikeDao.find(connection, bikeId);
-				validateBike(bike);
-				Calendar calendar = Calendar.getInstance();
-				calendar.set(Calendar.MILLISECOND, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.add(Calendar.DAY_OF_YEAR, 1);
-				BikesPropertyValidator.validatePairDates(calendar,
-						startRentDate);
+				// Miro que estoy dentro del rango de la bici
+				BikesPropertyValidator.validatePairDates(bike.getStartDate(), startRentDate);
+				// Miro que reservo con un día de antelación
+				Calendar calendar = startRentDate;
+//				calendar.set(Calendar.MILLISECOND, 0);
+//				calendar.set(Calendar.SECOND, 0);
+//				calendar.add(Calendar.DAY_OF_YEAR, 1);
+//				BikesPropertyValidator.validatePairDates(calendar,
+//						startRentDate);
 
 				/* Do work. */
 				calendar = Calendar.getInstance();
@@ -251,19 +253,18 @@ public class BikeServiceImpl implements BikeService {
 		}
 	}
 
-	// FIXME rateRent
 	@Override
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException,
-			RateRentDateException {
+			RateRentDateException, RentExpirationException {
 		BikesPropertyValidator.validateScore("score", score);
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
-			// Add 1 to finishRentDate
-			Calendar date = rent.getFinishRentDate();
-			date.add(Calendar.DAY_OF_YEAR, 1);
-			BikesPropertyValidator.validatePreviousDate("finishRentDate", date);
-
+			BikesPropertyValidator.validateRateRent("Rate Rent", rent);
+			Bike bike = bikeDao.find(connection, rent.getBikeId());
+			bike.setAverageScore((bike.getAverageScore() + score)/ 2);
+			bikeDao.update(connection, bike);
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 
