@@ -9,13 +9,14 @@ import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.util.exceptions.*;
 
 public interface BikeService {
+	public Bike addBike(String modelName, String description,
+			Calendar startDate, float price, int availableNumber)
+			throws InputValidationException, NumberOfBikesException;
 
-	//TODO Cambiar addBike, updateBike y findBike pasando parámetros en vez de el Objeto
-	public Bike addBike(Bike bike)
-			throws InputValidationException;
-
-	public void update(Bike bike) throws InputValidationException,
-			InstanceNotFoundException;
+	public void updateBike(Long bikeId, String modelName, String description,
+			Calendar startDate, float price, int availableNumber)
+			throws InputValidationException, InstanceNotFoundException,
+			UpdateReservedBikeException, NumberOfBikesException;
 
 	public Bike findBike(Long bikeId) throws InstanceNotFoundException;
 
@@ -23,7 +24,8 @@ public interface BikeService {
 
 	public Long rentBike(String email, Long creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
-			throws InputValidationException, NumberOfBikesException, InvalidRentPeriod, InstanceNotFoundException;
+			throws InputValidationException, NumberOfBikesException,
+			InvalidRentPeriodException, InstanceNotFoundException;
 
 	public List<Rent> findRents(String email) throws InputValidationException;
 

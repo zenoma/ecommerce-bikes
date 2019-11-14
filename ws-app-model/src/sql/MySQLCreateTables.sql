@@ -40,6 +40,7 @@ CREATE TABLE Rent (
 	finishRentDate DATETIME NOT NULL,
 	numberOfBikes INT NOT NULL,
 	rentDate DATETIME NOT NULL,
+	price FLOAT NOT NULL,
 	CONSTRAINT RentPK PRIMARY KEY(rentId),
 	CONSTRAINT validNumberOfBikes CHECK (numberOfBikes >= 0),
 	CONSTRAINT RentBikeId FOREIGN KEY(bikeId)

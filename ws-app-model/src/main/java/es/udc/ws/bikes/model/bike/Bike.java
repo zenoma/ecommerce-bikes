@@ -4,52 +4,37 @@ import java.util.Calendar;
 
 public class Bike {
 
-	private Long bikeId;
+	private Long bikeId; // No actualizable
 	private String modelName;
 	private String description;
-	private Calendar startDate; // Fecha y hora desde que se permite alquilar
+	private Calendar startDate; // Fecha y hora desde que se permite alquilar, Parcialmente actualizable
 	private float price;
 	private int availableNumber;
-	private Calendar adquisitionDate; // Fecha y hora de alta del modelo
-	private int numberOfRents;
-	private double averageScore;
+	private Calendar adquisitionDate; // Fecha y hora de alta del modelo, No actualizable
+	private int numberOfRents; // No actualizable
+	private double averageScore; // No actualizable
 
 	// Constructor
-	public Bike(String modelName, String description, Calendar startDate,
-			float price, int availableNumber) {
 
+	public Bike(String modelName, String description, Calendar startDate,
+			float price, int availableNumber, Calendar adquisitionDate,
+			int numberOfRents, double averageScore) {
 		this.modelName = modelName;
 		this.description = description;
-		//FIXME Establecer fecha en la capa servicio
 		this.startDate = startDate;
 		this.price = price;
 		this.availableNumber = availableNumber;
-		//FIXME Cambiar gestión a la capa servicio 
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendar.set(Calendar.SECOND, 0);
-		this.setAdquisitionDate(calendar);
-
-	}
-
-	public Bike(Long bikeId, String modelName, String description,
-			Calendar startDate, float price, int availableNumber,
-			int numberOfRents) {
-
-		this(modelName, description, startDate, price, availableNumber);
-		this.bikeId = bikeId;
+		this.adquisitionDate = adquisitionDate;
 		this.numberOfRents = numberOfRents;
+		this.averageScore = averageScore;
 	}
 
 	public Bike(Long bikeId, String modelName, String description,
 			Calendar startDate, float price, int availableNumber,
 			Calendar adquisitionDate, int numberOfRents, double averageScore) {
-
-		this(bikeId, modelName, description, startDate, price, availableNumber,
-				numberOfRents);
-
-		this.setAdquisitionDate(adquisitionDate);
-		this.averageScore = averageScore;
+		this(modelName, description, startDate, price, availableNumber,
+				adquisitionDate, numberOfRents, averageScore);
+		this.bikeId = bikeId;
 	}
 
 	// getters
@@ -115,11 +100,6 @@ public class Bike {
 	}
 
 	public void setAdquisitionDate(Calendar adquisitionDate) {
-		//FIXME Eliminar IF
-		if (adquisitionDate != null) {
-			adquisitionDate.set(Calendar.MILLISECOND, 0);
-			adquisitionDate.set(Calendar.SECOND, 0);
-		}
 		this.adquisitionDate = adquisitionDate;
 	}
 

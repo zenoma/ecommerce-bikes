@@ -14,9 +14,10 @@ import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.bikes.model.rent.SqlRentDao;
 import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
 
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
+import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
+import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.sql.DataSourceLocator;
@@ -37,8 +38,7 @@ public class BikeServiceImpl implements BikeService {
 		rentDao = SqlRentDaoFactory.getDao();
 	}
 
-	private void validateBike(Bike bike)
-			throws InputValidationException {
+	private void validateBike(Bike bike) throws InputValidationException, NumberOfBikesException {
 
 		PropertyValidator.validateMandatoryString("modelName",
 				bike.getModelName());
@@ -46,31 +46,37 @@ public class BikeServiceImpl implements BikeService {
 				bike.getDescription());
 		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
 		BikesPropertyValidator.validateLowerInt("availableNumber",
-				bike.getAvailableNumber(), 1);
+				bike.getAvailableNumber(), 0);
 		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
-				bike.getStartDate());
-		BikesPropertyValidator.validatePreviousDate("adquisitionDate",
 				bike.getStartDate());
 		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
 				Calendar.getInstance());
-		BikesPropertyValidator.validateLowerInt("numberOfRents",
-				bike.getNumberOfRents(), 0);
-		BikesPropertyValidator.validateLowerDouble("averageScore",
-				bike.getAverageScore(), 0);
+		BikesPropertyValidator.validateNumberOfBikes("numberOfBikes", bike, bike.getAvailableNumber());
 
 	}
 
-	private void initBike(Bike bike) {
-
-		bike.setAdquisitionDate(Calendar.getInstance());
-		bike.setAverageScore(0);
-		bike.setNumberOfRents(0);
+	private void validateRent(Rent rent)
+			throws InputValidationException, InvalidRentPeriodException {
+		// TODO Añadir validaciones
+		BikesPropertyValidator.validateCreditCard("creditCard",
+				rent.getCreditCard());
+		BikesPropertyValidator.validateEmail("email", rent.getUserEmail());
+		BikesPropertyValidator.validateRentPeriod(rent.getStartRentDate(),
+				rent.getFinishRentDate());
+		BikesPropertyValidator.validateLowerInt("numberOfBikes",
+				rent.getNumberOfBikes(), 1);
 	}
 
 	@Override
-	public Bike addBike(Bike bike) throws InputValidationException {
+	public Bike addBike(String modelName, String description,
+			Calendar startDate, float price, int availableNumber)
+			throws InputValidationException, NumberOfBikesException {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.SECOND, 0);
+		Bike bike = new Bike(modelName, description, startDate, price,
+				availableNumber, calendar, 0, 0);
 		validateBike(bike);
-		initBike(bike);
 
 		try (Connection connection = dataSource.getConnection()) {
 
@@ -103,23 +109,38 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public void update(Bike bike) throws InputValidationException,
-			InstanceNotFoundException {
-
-		validateBike(bike);
-
+	public void updateBike(Long bikeId, String modelName, String description,
+			Calendar startDate, float price, int availableNumber)
+			throws InputValidationException, InstanceNotFoundException,
+			UpdateReservedBikeException, NumberOfBikesException {
 		try (Connection connection = dataSource.getConnection()) {
 
 			try {
-
 				/* Prepare connection. */
 				connection.setTransactionIsolation(
 						Connection.TRANSACTION_SERIALIZABLE);
 				connection.setAutoCommit(false);
 
 				/* Do work. */
-				// TODO No se puede actualizar una bici que tiene hecha una
-				// reserva
+				Bike bike = bikeDao.find(connection, bikeId);
+				bike.setModelName(modelName);
+				bike.setDescription(description);
+				if (bike.getNumberOfRents() > 0) {
+					try {
+						BikesPropertyValidator.validatePairDates(startDate,
+								bike.getStartDate());
+					} catch (InputValidationException e) {
+						throw new UpdateReservedBikeException(
+								"Not be able to delay the start rent day of "
+										+ bike.getModelName());
+					}
+				}
+				BikesPropertyValidator.validatePairDates(
+						bike.getAdquisitionDate(), startDate);
+				bike.setStartDate(startDate);
+				bike.setPrice(price);
+				bike.setAvailableNumber(availableNumber);
+				validateBike(bike);
 				bikeDao.update(connection, bike);
 
 				/* Commit. */
@@ -165,14 +186,9 @@ public class BikeServiceImpl implements BikeService {
 	@Override
 	public Long rentBike(String email, Long creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
-			throws InputValidationException, NumberOfBikesException,
-			InvalidRentPeriod, InstanceNotFoundException {
-		BikesPropertyValidator.validateCreditCard("creditCard", creditCard);
-		BikesPropertyValidator.validateEmail("email", email);
-		BikesPropertyValidator.validateRentPeriod(startRentDate,
-				finishRentDate);
-		BikesPropertyValidator.validateLowerInt("numberOfBikes", numberOfBikes,
-				1);
+			throws InputValidationException, InvalidRentPeriodException,
+			InstanceNotFoundException, NumberOfBikesException {
+
 		try (Connection connection = dataSource.getConnection()) {
 			try {
 				/* Prepare connection. */
@@ -182,11 +198,7 @@ public class BikeServiceImpl implements BikeService {
 
 				// Validate Rent
 				Bike bike = bikeDao.find(connection, bikeId);
-				BikesPropertyValidator.validatePairDates(bike.getStartDate(),
-						startRentDate);
-				// TODO Validar numero de bicis disponibles
-				BikesPropertyValidator.validateNumberOfBikes("numberOfBikes",
-						bike, numberOfBikes);
+				validateBike(bike);
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(Calendar.MILLISECOND, 0);
 				calendar.set(Calendar.SECOND, 0);
@@ -195,11 +207,19 @@ public class BikeServiceImpl implements BikeService {
 						startRentDate);
 
 				/* Do work. */
+				calendar = Calendar.getInstance();
+				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.set(Calendar.SECOND, 0);
+
 				Rent rent = new Rent(email, bikeId, creditCard, startRentDate,
-						finishRentDate, numberOfBikes);
+						finishRentDate, numberOfBikes, calendar,
+						bike.getPrice() * numberOfBikes);
+				validateRent(rent);
 				Rent createdRent = rentDao.create(connection, rent);
 				bike.setAvailableNumber(
 						bike.getAvailableNumber() - numberOfBikes);
+				bike.setNumberOfRents(bike.getNumberOfRents() + 1);
+				validateBike(bike);
 				bikeDao.update(connection, bike);
 
 				/* Commit. */
@@ -231,13 +251,12 @@ public class BikeServiceImpl implements BikeService {
 		}
 	}
 
+	// FIXME rateRent
 	@Override
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException,
 			RateRentDateException {
 		BikesPropertyValidator.validateScore("score", score);
-
-		//TODO Cuando se actualize el Alquiler se ignoran los campos calculados
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
 			// Add 1 to finishRentDate
@@ -250,5 +269,4 @@ public class BikeServiceImpl implements BikeService {
 
 		}
 	}
-
 }

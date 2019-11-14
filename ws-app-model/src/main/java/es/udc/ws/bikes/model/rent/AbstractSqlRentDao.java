@@ -15,11 +15,13 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 public abstract class AbstractSqlRentDao implements SqlRentDao {
 
 	@Override
-	public Rent find(Connection connection, Long rentId) throws InstanceNotFoundException {
+	public Rent find(Connection connection, Long rentId)
+			throws InstanceNotFoundException {
 		// Create queryString
 		String queryString = "SELECT userEmail, bikeId, creditCard, startRentDate, "
-				+ "finishRentDate, numberOfBikes, rentDate FROM Rent WHERE rentID=?";
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+				+ "finishRentDate, numberOfBikes, rentDate, price FROM Rent WHERE rentID=?";
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 			// Fill preparedStatement
 			int i = 1;
 			preparedStatement.setLong(i++, rentId);
@@ -28,7 +30,8 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			if (!resultSet.next()) {
-				throw new InstanceNotFoundException(rentId, Rent.class.getName());
+				throw new InstanceNotFoundException(rentId,
+						Rent.class.getName());
 			}
 
 			// Get results from query
@@ -43,9 +46,11 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			int numberOfBikes = resultSet.getInt(i++);
 			Calendar rentDate = Calendar.getInstance();
 			rentDate.setTime(resultSet.getTimestamp(i++));
+			Float price = resultSet.getFloat(i++);
 
 			// Return Rent
-			return new Rent(userEmail, bikeId, creditCard, startRentDate, finishRentDate, numberOfBikes);
+			return new Rent(userEmail, bikeId, creditCard, startRentDate,
+					finishRentDate, numberOfBikes, rentDate, price);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -56,9 +61,10 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 	public List<Rent> findByUser(Connection connection, String userEmail) {
 		// Create "queryString"
 		String queryString = "SELECT rentID, bikeId, creditCard, startRentDate, "
-				+ "finishRentDate, numberOfBikes, rentDate FROM Rent WHERE userEmail=?";
+				+ "finishRentDate, numberOfBikes, rentDate, price FROM Rent WHERE userEmail=?";
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 			int i = 1;
 			preparedStatement.setString(i++, userEmail);
 
@@ -78,9 +84,11 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 				int numberOfBikes = resultSet.getInt(i++);
 				Calendar rentDate = Calendar.getInstance();
 				rentDate.setTime(resultSet.getTimestamp(i++));
+				Float price = resultSet.getFloat(i++);
 
-				Rent rent = new Rent(rentId, userEmail, bikeId, creditCard, startRentDate, finishRentDate,
-						numberOfBikes);
+				Rent rent = new Rent(rentId, userEmail, bikeId, creditCard,
+						startRentDate, finishRentDate, numberOfBikes, rentDate,
+						price);
 				rents.add(rent);
 			}
 			return rents;
@@ -91,12 +99,16 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 	}
 
 	@Override
-	public void update(Connection connection, Rent rent) throws InstanceNotFoundException {
+	public void update(Connection connection, Rent rent)
+			throws InstanceNotFoundException {
 		// Create "queryString"
-		String queryString = "UPDATE Rent" + "SET userEmail = ?, modelName = ?, creditCard = ?, "
-				+ "startRentDate = ?, finishRentDate = ?, numberOfBikes = ?, rentDate = ? FROM Rent " + "WHERE rentId";
+		String queryString = "UPDATE Rent"
+				+ "SET userEmail = ?, modelName = ?, creditCard = ?, "
+				+ "startRentDate = ?, finishRentDate = ?, numberOfBikes = ?, rentDate = ?, price = ? FROM Rent "
+				+ "WHERE rentId";
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 			// Fill "preparedStatement"
 			int i = 1;
 			preparedStatement.setString(i++, rent.getUserEmail());
@@ -106,18 +118,24 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 					? new Timestamp(rent.getStartRentDate().getTime().getTime())
 					: null;
 			preparedStatement.setTimestamp(i++, timestamp);
-			timestamp = rent.getFinishRentDate() != null ? new Timestamp(rent.getFinishRentDate().getTime().getTime())
+			timestamp = rent.getFinishRentDate() != null
+					? new Timestamp(
+							rent.getFinishRentDate().getTime().getTime())
 					: null;
 			preparedStatement.setTimestamp(i++, timestamp);
 			preparedStatement.setInt(i++, rent.getNumberOfBikes());
-			timestamp = rent.getRentDate() != null ? new Timestamp(rent.getRentDate().getTime().getTime()) : null;
+			timestamp = rent.getRentDate() != null
+					? new Timestamp(rent.getRentDate().getTime().getTime())
+					: null;
 			preparedStatement.setTimestamp(i++, timestamp);
+			preparedStatement.setFloat(i++, rent.getPrice());
 
 			// Execute query.
 			int updatedRows = preparedStatement.executeUpdate();
 
 			if (updatedRows == 0) {
-				throw new InstanceNotFoundException(rent.getRentId(), Bike.class.getName());
+				throw new InstanceNotFoundException(rent.getRentId(),
+						Bike.class.getName());
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -125,10 +143,12 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 	}
 
 	@Override
-	public void remove(Connection connection, Long rentId) throws InstanceNotFoundException {
+	public void remove(Connection connection, Long rentId)
+			throws InstanceNotFoundException {
 		// Create "queryString.
 		String queryString = "DELETE FROM Rent WHERE " + "rentId = ?";
-		try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement(queryString)) {
 			int i = 1;
 			preparedStatement.setLong(i++, rentId);
 
@@ -136,7 +156,8 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			int removedRows = preparedStatement.executeUpdate();
 
 			if (removedRows == 0) {
-				throw new InstanceNotFoundException(rentId, Rent.class.getName());
+				throw new InstanceNotFoundException(rentId,
+						Rent.class.getName());
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

@@ -5,47 +5,36 @@ import java.util.Calendar;
 public class Rent {
 
 	// Attributes
-	private Long rentId;
-	private String userEmail;
-	private Long bikeId;
-	private Long creditCard;
-	private Calendar startRentDate;
-	private Calendar finishRentDate;
-	private int numberOfBikes;
-	private Calendar rentDate;
-	// TODO Añadir rentPrice y validarlo 
+	private Long rentId; // No actualizable
+	private String userEmail; // No actualizable
+	private Long bikeId; // No actualizable
+	private Long creditCard; // No actualizable
+	private Calendar startRentDate; // No actualizable
+	private Calendar finishRentDate; // No actualizable
+	private int numberOfBikes; // No actualizable
+	private Calendar rentDate; // No actualizable
+	private float price; // No actualizable
+	
 
 	public Rent(String userEmail, Long bikeId, Long creditCard,
-			Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes) {
+			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
+			Calendar rentDate, float price) {
 		this.userEmail = userEmail;
 		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
-		//FIXME Cambiar gestión a la capa servicio 
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendar.set(Calendar.SECOND, 0);
-		this.setRentDate(calendar);
+		this.rentDate = rentDate;
+		this.price = price;
 	}
 
 	public Rent(Long rentId, String userEmail, Long bikeId, Long creditCard,
-			Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes) {
-		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
-				numberOfBikes);
-		this.rentId = rentId;
-	}
-	
-	
-	public Rent(Long rentId, String userEmail, Long bikeId, Long creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
-			Calendar rentDate) {
-		this(rentId, userEmail, bikeId, creditCard, startRentDate, finishRentDate,
-				numberOfBikes);
-		this.rentDate = rentDate;
+			Calendar rentDate, float price) {
+		this(userEmail, bikeId, creditCard, startRentDate,
+				finishRentDate, numberOfBikes, rentDate, price);
+		this.rentId = rentId;
 	}
 
 	// Getters & Setters
@@ -113,6 +102,14 @@ public class Rent {
 		this.rentDate = rentDate;
 	}
 
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -123,6 +120,7 @@ public class Rent {
 		result = prime * result
 				+ ((finishRentDate == null) ? 0 : finishRentDate.hashCode());
 		result = prime * result + numberOfBikes;
+		result = prime * result + Float.floatToIntBits(price);
 		result = prime * result
 				+ ((rentDate == null) ? 0 : rentDate.hashCode());
 		result = prime * result + ((rentId == null) ? 0 : rentId.hashCode());
@@ -159,6 +157,8 @@ public class Rent {
 			return false;
 		if (numberOfBikes != other.numberOfBikes)
 			return false;
+		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
+			return false;
 		if (rentDate == null) {
 			if (other.rentDate != null)
 				return false;
@@ -181,4 +181,5 @@ public class Rent {
 			return false;
 		return true;
 	}
+
 }

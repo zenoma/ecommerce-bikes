@@ -4,7 +4,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
 import es.udc.ws.bikes.model.bike.Bike;
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriod;
+import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.util.exceptions.InputValidationException;
 
@@ -120,7 +120,7 @@ public final class BikesPropertyValidator {
 
 	public static void validateRentPeriod(Calendar startDate,
 			Calendar finishDate)
-			throws InputValidationException, InvalidRentPeriod {
+			throws InputValidationException, InvalidRentPeriodException {
 		if (startDate == null || finishDate == null) {
 			throw new InputValidationException("Invalid " + startDate + "or "
 					+ finishDate + " values cannot be null");
@@ -133,7 +133,7 @@ public final class BikesPropertyValidator {
 		long days = ChronoUnit.DAYS.between(startDate.toInstant(),
 				finishDate.toInstant());
 		if (days > 15) {
-			throw new InvalidRentPeriod("Invalid: Period between Startdate: "
+			throw new InvalidRentPeriodException("Invalid: Period between Startdate: "
 					+ startDate + " and FinishDate: " + finishDate
 					+ "must be greater than 15, and it actually is:" + days);
 		}
