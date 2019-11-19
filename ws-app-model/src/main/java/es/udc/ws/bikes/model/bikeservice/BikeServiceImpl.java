@@ -39,7 +39,8 @@ public class BikeServiceImpl implements BikeService {
 		rentDao = SqlRentDaoFactory.getDao();
 	}
 
-	private void validateBike(Bike bike) throws InputValidationException, NumberOfBikesException {
+	private void validateBike(Bike bike)
+			throws InputValidationException, NumberOfBikesException {
 
 		PropertyValidator.validateMandatoryString("modelName",
 				bike.getModelName());
@@ -52,7 +53,8 @@ public class BikeServiceImpl implements BikeService {
 				bike.getStartDate());
 		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
 				Calendar.getInstance());
-		BikesPropertyValidator.validateNumberOfBikes("numberOfBikes", bike, bike.getAvailableNumber());
+		BikesPropertyValidator.validateNumberOfBikes("numberOfBikes", bike,
+				bike.getAvailableNumber());
 
 	}
 
@@ -199,14 +201,10 @@ public class BikeServiceImpl implements BikeService {
 				// Validate Rent
 				Bike bike = bikeDao.find(connection, bikeId);
 				// Miro que estoy dentro del rango de la bici
-				BikesPropertyValidator.validatePairDates(bike.getStartDate(), startRentDate);
+				BikesPropertyValidator.validatePairDates(bike.getStartDate(),
+						startRentDate);
 				// Miro que reservo con un día de antelación
 				Calendar calendar = startRentDate;
-//				calendar.set(Calendar.MILLISECOND, 0);
-//				calendar.set(Calendar.SECOND, 0);
-//				calendar.add(Calendar.DAY_OF_YEAR, 1);
-//				BikesPropertyValidator.validatePairDates(calendar,
-//						startRentDate);
 
 				/* Do work. */
 				calendar = Calendar.getInstance();
@@ -262,9 +260,9 @@ public class BikeServiceImpl implements BikeService {
 			Rent rent = rentDao.find(connection, rentId);
 			BikesPropertyValidator.validateRateRent("Rate Rent", rent);
 			Bike bike = bikeDao.find(connection, rent.getBikeId());
-			bike.setAverageScore((bike.getAverageScore() + score)/ 2);
+			bike.setAverageScore((bike.getAverageScore() + score) / 2);
 			bikeDao.update(connection, bike);
-			
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 

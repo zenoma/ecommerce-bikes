@@ -8,11 +8,14 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 public interface SqlRentDao {
 	public Rent create(Connection connection, Rent rent);
 
-	public Rent find(Connection connection, Long rentId) throws InstanceNotFoundException;
+	public Rent find(Connection connection, Long rentId)
+			throws InstanceNotFoundException;
 
 	public List<Rent> findByUser(Connection connection, String userEmail);
 
-	public void update(Connection connection, Rent rent) throws InstanceNotFoundException;
+	public void update(Connection connection, Rent rent)
+			throws InstanceNotFoundException;
 
-	public void remove(Connection connection, Long rentId) throws InstanceNotFoundException;
+	public void remove(Connection connection, Long rentId)
+			throws InstanceNotFoundException;
 }

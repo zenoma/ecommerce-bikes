@@ -153,7 +153,8 @@ public final class BikesPropertyValidator {
 
 	public static void validateRateRent(String string, Rent rent)
 			throws RentExpirationException {
-		if (rent.getFinishRentDate().getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+		if (rent.getFinishRentDate().getTimeInMillis() > Calendar.getInstance()
+				.getTimeInMillis()) {
 			throw new RentExpirationException(
 					"The rent" + rent.getRentId() + "is not finished.");
 		}

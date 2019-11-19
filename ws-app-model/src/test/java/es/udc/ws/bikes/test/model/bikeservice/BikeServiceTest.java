@@ -71,19 +71,6 @@ public class BikeServiceTest {
 				5, startDate, 0, 0);
 	}
 
-	private Bike createBike(String modelName, String description,
-			Calendar startDate, float price, int availableNumber)
-			throws NumberOfBikesException {
-		Bike addedBike = null;
-		try {
-			addedBike = bikeService.addBike(modelName, description, startDate,
-					price, availableNumber);
-		} catch (InputValidationException e) {
-			throw new RuntimeException(e);
-		}
-		return addedBike;
-	}
-
 	private Bike createBike(String modelName, String description, float price,
 			int availableNumber)
 			throws InputValidationException, NumberOfBikesException {
@@ -666,8 +653,8 @@ public class BikeServiceTest {
 			finishRentDate.set(Calendar.MILLISECOND, 0);
 			finishRentDate.set(Calendar.SECOND, 0);
 			finishRentDate.add(Calendar.DAY_OF_YEAR, 10);
-			bikeService.rentBike("", VALID_CREDIT_CARD_NUMBER,
-					bike.getBikeId(), startRentDate, finishRentDate, 5);
+			bikeService.rentBike("", VALID_CREDIT_CARD_NUMBER, bike.getBikeId(),
+					startRentDate, finishRentDate, 5);
 		} finally {
 			// Clear database
 			removeBike(bike.getBikeId());

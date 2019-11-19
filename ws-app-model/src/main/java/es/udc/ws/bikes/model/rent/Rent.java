@@ -14,7 +14,6 @@ public class Rent {
 	private int numberOfBikes; // No actualizable
 	private Calendar rentDate; // No actualizable
 	private float price; // No actualizable
-	
 
 	public Rent(String userEmail, Long bikeId, Long creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
@@ -32,8 +31,8 @@ public class Rent {
 	public Rent(Long rentId, String userEmail, Long bikeId, Long creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
 			Calendar rentDate, float price) {
-		this(userEmail, bikeId, creditCard, startRentDate,
-				finishRentDate, numberOfBikes, rentDate, price);
+		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
+				numberOfBikes, rentDate, price);
 		this.rentId = rentId;
 	}
 

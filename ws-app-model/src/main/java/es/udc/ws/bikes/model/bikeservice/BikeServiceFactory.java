@@ -13,7 +13,8 @@ public class BikeServiceFactory {
 	@SuppressWarnings("rawtypes")
 	private static BikeService getInstance() {
 		try {
-			String serviceClassName = ConfigurationParametersManager.getParameter(CLASS_NAME_PARAMETER);
+			String serviceClassName = ConfigurationParametersManager
+					.getParameter(CLASS_NAME_PARAMETER);
 			Class serviceClass = Class.forName(serviceClassName);
 			return (BikeService) serviceClass.newInstance();
 		} catch (Exception e) {
