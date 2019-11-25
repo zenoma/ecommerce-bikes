@@ -1,22 +1,29 @@
 package es.udc.ws.bikes.dto;
 
+import java.util.Calendar;
+
 public class ServiceBikeDto {
-	// TODO Repasar campos creacion Dto, comprobar que sean los que corresponden
 	private Long bikeId;
 	private String modelName;
 	private String description;
+	private Calendar startDate;
 	private float price;
 	private int availableNumber;
-	
-	public ServiceBikeDto() {	
+	private double averageScore;
+
+	public ServiceBikeDto() {
 	}
 
-	public ServiceBikeDto(Long bikeId, String modelName, String description, float price, int availableNumber) {
+	public ServiceBikeDto(Long bikeId, String modelName, String description,
+			Calendar startDate, float price, int availableNumber,
+			double averageScore) {
 		this.bikeId = bikeId;
 		this.modelName = modelName;
 		this.description = description;
+		this.startDate = startDate;
 		this.price = price;
 		this.availableNumber = availableNumber;
+		this.averageScore = averageScore;
 	}
 
 	public Long getBikeId() {
@@ -43,6 +50,14 @@ public class ServiceBikeDto {
 		this.description = description;
 	}
 
+	public Calendar getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Calendar startDate) {
+		this.startDate = startDate;
+	}
+
 	public float getPrice() {
 		return price;
 	}
@@ -59,11 +74,70 @@ public class ServiceBikeDto {
 		this.availableNumber = availableNumber;
 	}
 
-	@Override
-	public String toString() {
-		return "ServiceBikeDto [bikeId=" + bikeId + ", modelName=" + modelName + ", description=" + description
-				+ ", price=" + price + ", availableNumber=" + availableNumber + "]";
+	public double getAverageScore() {
+		return averageScore;
 	}
-	
-	
+
+	public void setAverageScore(double averageScore) {
+		this.averageScore = averageScore;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + availableNumber;
+		long temp;
+		temp = Double.doubleToLongBits(averageScore);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+				+ ((modelName == null) ? 0 : modelName.hashCode());
+		result = prime * result + Float.floatToIntBits(price);
+		result = prime * result
+				+ ((startDate == null) ? 0 : startDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ServiceBikeDto other = (ServiceBikeDto) obj;
+		if (availableNumber != other.availableNumber)
+			return false;
+		if (Double.doubleToLongBits(averageScore) != Double
+				.doubleToLongBits(other.averageScore))
+			return false;
+		if (bikeId == null) {
+			if (other.bikeId != null)
+				return false;
+		} else if (!bikeId.equals(other.bikeId))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (modelName == null) {
+			if (other.modelName != null)
+				return false;
+		} else if (!modelName.equals(other.modelName))
+			return false;
+		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
+			return false;
+		if (startDate == null) {
+			if (other.startDate != null)
+				return false;
+		} else if (!startDate.equals(other.startDate))
+			return false;
+		return true;
+	}
+
 }
