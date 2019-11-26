@@ -256,6 +256,7 @@ public class BikeServiceImpl implements BikeService {
 			throws InputValidationException, InstanceNotFoundException,
 			RateRentDateException, RentExpirationException {
 		BikesPropertyValidator.validateScore("score", score);
+		// TODO No se pueden valorar 2 veces el mismo alquiler
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
 			BikesPropertyValidator.validateRateRent("Rate Rent", rent);

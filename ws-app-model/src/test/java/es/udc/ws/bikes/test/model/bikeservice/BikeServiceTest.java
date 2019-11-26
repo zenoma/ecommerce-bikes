@@ -890,4 +890,9 @@ public class BikeServiceTest {
 			removeBike(createdBike.getBikeId());
 		}
 	}
+	
+	@Test
+	public void testRateRatedRent() {
+		// TODO Valorar 2 veces el mismo alquiler
+	}
 }

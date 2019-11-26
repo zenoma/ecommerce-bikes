@@ -25,6 +25,7 @@ public class Bike {
 		this.availableNumber = availableNumber;
 		this.adquisitionDate = adquisitionDate;
 		this.numberOfRents = numberOfRents;
+		this.averageScore = averageScore;
 	}
 
 	public Bike(Long bikeId, String modelName, String description, Calendar startDate, float price, int availableNumber,
