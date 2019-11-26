@@ -16,9 +16,8 @@ public class Bike {
 
 	// Constructor
 
-	public Bike(String modelName, String description, Calendar startDate,
-			float price, int availableNumber, Calendar adquisitionDate,
-			int numberOfRents, double averageScore) {
+	public Bike(String modelName, String description, Calendar startDate, float price, int availableNumber,
+			Calendar adquisitionDate, int numberOfRents, double averageScore) {
 		this.modelName = modelName;
 		this.description = description;
 		this.startDate = startDate;
@@ -26,15 +25,24 @@ public class Bike {
 		this.availableNumber = availableNumber;
 		this.adquisitionDate = adquisitionDate;
 		this.numberOfRents = numberOfRents;
-		this.averageScore = averageScore;
 	}
 
-	public Bike(Long bikeId, String modelName, String description,
-			Calendar startDate, float price, int availableNumber,
+	public Bike(Long bikeId, String modelName, String description, Calendar startDate, float price, int availableNumber,
 			Calendar adquisitionDate, int numberOfRents, double averageScore) {
-		this(modelName, description, startDate, price, availableNumber,
-				adquisitionDate, numberOfRents, averageScore);
+		this(modelName, description, startDate, price, availableNumber, adquisitionDate, numberOfRents, averageScore);
 		this.bikeId = bikeId;
+	}
+
+	public Bike(Long bikeId, String modelName, String description, Calendar startDate, float price, int availableNumber,
+			int numberOfRents, double averageScore) {
+		this.bikeId = bikeId;
+		this.modelName = modelName;
+		this.description = description;
+		this.startDate = startDate;
+		this.price = price;
+		this.availableNumber = availableNumber;
+		this.numberOfRents = numberOfRents;
+		this.averageScore = averageScore;
 	}
 
 	// getters
@@ -115,21 +123,17 @@ public class Bike {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((adquisitionDate == null) ? 0 : adquisitionDate.hashCode());
+		result = prime * result + ((adquisitionDate == null) ? 0 : adquisitionDate.hashCode());
 		result = prime * result + availableNumber;
 		long temp;
 		temp = Double.doubleToLongBits(averageScore);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result
-				+ ((modelName == null) ? 0 : modelName.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfRents;
 		result = prime * result + Float.floatToIntBits(price);
-		result = prime * result
-				+ ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		return result;
 	}
 
@@ -149,8 +153,7 @@ public class Bike {
 			return false;
 		if (availableNumber != other.availableNumber)
 			return false;
-		if (Double.doubleToLongBits(averageScore) != Double
-				.doubleToLongBits(other.averageScore))
+		if (Double.doubleToLongBits(averageScore) != Double.doubleToLongBits(other.averageScore))
 			return false;
 		if (bikeId == null) {
 			if (other.bikeId != null)
