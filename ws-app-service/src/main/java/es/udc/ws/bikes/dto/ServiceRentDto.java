@@ -3,7 +3,9 @@ package es.udc.ws.bikes.dto;
 import java.util.Calendar;
 
 public class ServiceRentDto {
+
 	private Long rentId;
+	private String userEmail;
 	private Long bikeId;
 	private Long creditCard;
 	private Calendar startRentDate;
@@ -13,12 +15,14 @@ public class ServiceRentDto {
 	private float price;
 
 	public ServiceRentDto() {
+
 	}
 
-	public ServiceRentDto(Long rentId, Long bikeId, Long creditCard,
-			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
-			Calendar rentDate, float price) {
+	public ServiceRentDto(Long rentId, String userEmail, Long bikeId,
+			Long creditCard, Calendar startRentDate, Calendar finishRentDate,
+			int numberOfBikes, Calendar rentDate, float price) {
 		this.rentId = rentId;
+		this.userEmail = userEmail;
 		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
@@ -34,6 +38,14 @@ public class ServiceRentDto {
 
 	public void setRentId(Long rentId) {
 		this.rentId = rentId;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	public Long getBikeId() {
@@ -108,6 +120,8 @@ public class ServiceRentDto {
 		result = prime * result + ((rentId == null) ? 0 : rentId.hashCode());
 		result = prime * result
 				+ ((startRentDate == null) ? 0 : startRentDate.hashCode());
+		result = prime * result
+				+ ((userEmail == null) ? 0 : userEmail.hashCode());
 		return result;
 	}
 
@@ -153,6 +167,11 @@ public class ServiceRentDto {
 			if (other.startRentDate != null)
 				return false;
 		} else if (!startRentDate.equals(other.startRentDate))
+			return false;
+		if (userEmail == null) {
+			if (other.userEmail != null)
+				return false;
+		} else if (!userEmail.equals(other.userEmail))
 			return false;
 		return true;
 	}
