@@ -30,21 +30,32 @@
     </servlet-mapping>
 
     <!-- REST service -->
-    <!-- Fill XXX and uncomment the following lines --> 
-    <!--
+    
     <servlet>
-        <display-name>XXXServlet</display-name>
-        <servlet-name>XXXServlet</servlet-name>
+        <display-name>BikesServlet</display-name>
+        <servlet-name>BikesServlet</servlet-name>
         <servlet-class>
-            es.udc.ws.app.restservice.servlets.XXXServlet
+            es.udc.ws.app.restservice.servlets.BikesServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet>
+        <display-name>RentsServlet</display-name>
+        <servlet-name>RentsServlet</servlet-name>
+        <servlet-class>
+            es.udc.ws.app.restservice.servlets.RentsServlet
         </servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>XXXServlet</servlet-name>
-        <url-pattern>/xxx/*</url-pattern>
+        <servlet-name>BikesServlet</servlet-name>
+        <url-pattern>/bikes/*</url-pattern>
     </servlet-mapping>
-    -->
+
+    <servlet-mapping>
+        <servlet-name>RentsServlet</servlet-name>
+        <url-pattern>/rents/*</url-pattern>
+    </servlet-mapping>
 
     <!-- General configuration -->
 

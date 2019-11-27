@@ -1,20 +1,20 @@
-package es.udc.ws.bikes.serviceutil;
+package es.udc.ws.app.serviceutil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import es.udc.ws.bikes.dto.ServiceBikeDto;
+import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.bikes.model.bike.Bike;
 
 public class BikeToBikeDtoConversor {
 
-	public static List<ServiceBikeDto> toBikeDtos(List<Bike> movies) {
-		List<ServiceBikeDto> movieDtos = new ArrayList<>(movies.size());
-		for (int i = 0; i < movies.size(); i++) {
-			Bike bike = movies.get(i);
-			movieDtos.add(toBikeDto(bike));
+	public static List<ServiceBikeDto> toBikeDtos(List<Bike> bikes) {
+		List<ServiceBikeDto> bikesDto = new ArrayList<>(bikes.size());
+		for (int i = 0; i < bikes.size(); i++) {
+			Bike bike = bikes.get(i);
+			bikesDto.add(toBikeDto(bike));
 		}
-		return movieDtos;
+		return bikesDto;
 	}
 
 	public static ServiceBikeDto toBikeDto(Bike bike) {

@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.restservice.servlets;
+package es.udc.ws.app.restservice.servlets;
 
 import java.io.IOException;
 
@@ -8,36 +8,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-public class BikesServlet extends HttpServlet{
+public class RentsServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Bike Post
-		super.doPost(req, resp);
+		// TODO Rent Post
+		//super.doPost(req, resp);
 	}
 	
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Bike Put
-		super.doPut(req, resp);
+		// TODO Rent Put
+		//super.doPut(req, resp);
 	}
 	
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Bike Delete
-		super.doDelete(req, resp);
+		// TODO Rent Delete
+		//super.doDelete(req, resp);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Bike Get
-		
-		
-		super.doGet(req, resp);
+		// TODO Rent Get
+		//super.doGet(req, resp);
 	}
-	
 }

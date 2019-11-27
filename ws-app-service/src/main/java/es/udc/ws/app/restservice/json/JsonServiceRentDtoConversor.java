@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.restservice.json;
+package es.udc.ws.app.restservice.json;
 
 import java.util.Calendar;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import es.udc.ws.bikes.dto.ServiceRentDto;
+import es.udc.ws.app.dto.ServiceRentDto;
 
 public class JsonServiceRentDtoConversor {
 

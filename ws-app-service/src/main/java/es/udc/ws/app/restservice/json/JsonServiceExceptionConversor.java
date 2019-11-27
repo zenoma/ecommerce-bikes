@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.restservice.json;
+package es.udc.ws.app.restservice.json;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

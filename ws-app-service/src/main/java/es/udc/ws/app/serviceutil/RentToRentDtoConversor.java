@@ -1,6 +1,6 @@
-package es.udc.ws.bikes.serviceutil;
+package es.udc.ws.app.serviceutil;
 
-import es.udc.ws.bikes.dto.ServiceRentDto;
+import es.udc.ws.app.dto.ServiceRentDto;
 import es.udc.ws.bikes.model.rent.Rent;
 
 public class RentToRentDtoConversor {
