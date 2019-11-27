@@ -133,11 +133,7 @@ public final class BikesPropertyValidator {
 		long days = ChronoUnit.DAYS.between(startDate.toInstant(),
 				finishDate.toInstant());
 		if (days > 15) {
-			throw new InvalidRentPeriodException(
-					"Invalid: Period between Startdate: " + startDate
-							+ " and FinishDate: " + finishDate
-							+ "must be greater than 15, and it actually is:"
-							+ days);
+			throw new InvalidRentPeriodException(startDate, finishDate);
 		}
 
 	}
@@ -145,8 +141,7 @@ public final class BikesPropertyValidator {
 	public static void validateNumberOfBikes(String string, Bike bike,
 			int numberOfBikes) throws NumberOfBikesException {
 		if (bike.getAvailableNumber() - numberOfBikes < 0) {
-			throw new NumberOfBikesException(
-					"Invalid number of bikes: There is not available ");
+			throw new NumberOfBikesException(bike.getBikeId(), numberOfBikes);
 		}
 
 	}
@@ -155,8 +150,7 @@ public final class BikesPropertyValidator {
 			throws RentExpirationException {
 		if (rent.getFinishRentDate().getTimeInMillis() > Calendar.getInstance()
 				.getTimeInMillis()) {
-			throw new RentExpirationException(
-					"The rent" + rent.getRentId() + "is not finished.");
+			throw new RentExpirationException(rent.getRentId());
 		}
 	}
 }

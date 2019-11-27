@@ -16,7 +16,6 @@ import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
 
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -77,7 +76,7 @@ public class BikeServiceImpl implements BikeService {
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);
 		Bike bike = new Bike(modelName, description, startDate, price,
-				availableNumber, calendar, 0, 0);
+				availableNumber, calendar, 0, -1);
 		validateBike(bike);
 
 		try (Connection connection = dataSource.getConnection()) {
@@ -132,9 +131,8 @@ public class BikeServiceImpl implements BikeService {
 						BikesPropertyValidator.validatePairDates(startDate,
 								bike.getStartDate());
 					} catch (InputValidationException e) {
-						throw new UpdateReservedBikeException(
-								"Not be able to delay the start rent day of "
-										+ bike.getModelName());
+						throw new UpdateReservedBikeException(bike.getBikeId(),
+								startDate, bike.getStartDate());
 					}
 				}
 				BikesPropertyValidator.validatePairDates(
@@ -254,14 +252,18 @@ public class BikeServiceImpl implements BikeService {
 	@Override
 	public void rateRent(Long rentId, int score)
 			throws InputValidationException, InstanceNotFoundException,
-			RateRentDateException, RentExpirationException {
+			RentExpirationException {
 		BikesPropertyValidator.validateScore("score", score);
-		// TODO No se pueden valorar 2 veces el mismo alquiler
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
 			BikesPropertyValidator.validateRateRent("Rate Rent", rent);
 			Bike bike = bikeDao.find(connection, rent.getBikeId());
-			bike.setAverageScore((bike.getAverageScore() + score) / 2);
+			if (bike.getAverageScore() == -1)
+				bike.setAverageScore(score);
+			else {
+				double aux = (bike.getAverageScore() + score) / 2;
+				bike.setAverageScore(aux);
+			}
 			bikeDao.update(connection, bike);
 
 		} catch (SQLException e) {

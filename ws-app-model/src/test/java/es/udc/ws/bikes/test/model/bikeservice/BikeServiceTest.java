@@ -12,7 +12,6 @@ import es.udc.ws.bikes.model.bikeservice.BikeService;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.RateRentDateException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.bikes.model.rent.Rent;
@@ -810,10 +809,9 @@ public class BikeServiceTest {
 	}
 
 	@Test
-	public void testRatedRent()
-			throws InputValidationException, NumberOfBikesException,
-			InvalidRentPeriodException, InstanceNotFoundException,
-			RateRentDateException, RentExpirationException {
+	public void testRatedRent() throws InputValidationException,
+			NumberOfBikesException, InvalidRentPeriodException,
+			InstanceNotFoundException, RentExpirationException {
 
 		Bike bike = null;
 		Long rent = null;
@@ -823,6 +821,7 @@ public class BikeServiceTest {
 			// Create a bike on DB
 			bike = getValidBike();
 			bike.setModelName("Previous Bike");
+			bike.setAverageScore(-1);
 			createdBike = addBike(bike);
 
 			// Rent bike
@@ -833,7 +832,7 @@ public class BikeServiceTest {
 			startRentDate.add(Calendar.DAY_OF_YEAR, -2);
 			finishRentDate.set(Calendar.MILLISECOND, 0);
 			finishRentDate.set(Calendar.SECOND, 1);
-			finishRentDate.add(Calendar.DAY_OF_YEAR, 0);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, -1);
 
 			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
 					createdBike.getBikeId(), startRentDate, finishRentDate, 3);
@@ -842,7 +841,7 @@ public class BikeServiceTest {
 
 			// Find bike
 			Bike ratedBike = bikeService.findBike(createdBike.getBikeId());
-			assertEquals(1.5, ratedBike.getAverageScore(), 0.01);
+			assertEquals(3, ratedBike.getAverageScore(), 0.01);
 		} finally {
 			// Clear Database
 			if (rent != null) {
@@ -853,10 +852,9 @@ public class BikeServiceTest {
 	}
 
 	@Test(expected = RentExpirationException.class)
-	public void testRateNotFinishedRent()
-			throws InputValidationException, NumberOfBikesException,
-			InvalidRentPeriodException, InstanceNotFoundException,
-			RateRentDateException, RentExpirationException {
+	public void testRateNotFinishedRent() throws InputValidationException,
+			NumberOfBikesException, InvalidRentPeriodException,
+			InstanceNotFoundException, RentExpirationException {
 
 		Bike bike = null;
 		Long rent = null;
@@ -890,9 +888,48 @@ public class BikeServiceTest {
 			removeBike(createdBike.getBikeId());
 		}
 	}
-	
+
 	@Test
-	public void testRateRatedRent() {
-		// TODO Valorar 2 veces el mismo alquiler
+	public void testRateRatedRent() throws InputValidationException,
+			NumberOfBikesException, InvalidRentPeriodException,
+			InstanceNotFoundException, RentExpirationException {
+
+		Bike bike = null;
+		Long rent = null;
+		Bike createdBike = null;
+
+		try {
+			// Create a bike on DB
+			bike = getValidBike();
+			bike.setModelName("Previous Bike");
+			bike.setAverageScore(-1);
+			createdBike = addBike(bike);
+
+			// Rent bike
+			Calendar startRentDate = Calendar.getInstance();
+			Calendar finishRentDate = Calendar.getInstance();
+			startRentDate.set(Calendar.MILLISECOND, 0);
+			startRentDate.set(Calendar.SECOND, 0);
+			startRentDate.add(Calendar.DAY_OF_YEAR, -2);
+			finishRentDate.set(Calendar.MILLISECOND, 0);
+			finishRentDate.set(Calendar.SECOND, 1);
+			finishRentDate.add(Calendar.DAY_OF_YEAR, 0);
+
+			rent = bikeService.rentBike(USER_EMAIL, VALID_CREDIT_CARD_NUMBER,
+					createdBike.getBikeId(), startRentDate, finishRentDate, 3);
+			// Rate rent
+			bikeService.rateRent(rent, 3);
+			bikeService.rateRent(rent, 5);
+
+			// Find bike
+			Bike ratedBike = bikeService.findBike(createdBike.getBikeId());
+			assertEquals(4, ratedBike.getAverageScore(), 0.01);
+		} finally {
+			// Clear Database
+			if (rent != null) {
+				removeRent(rent);
+			}
+			removeBike(createdBike.getBikeId());
+		}
 	}
 }
