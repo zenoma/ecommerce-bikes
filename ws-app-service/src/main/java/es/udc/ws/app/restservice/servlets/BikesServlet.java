@@ -2,7 +2,9 @@ package es.udc.ws.app.restservice.servlets;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +17,10 @@ import es.udc.ws.app.restservice.json.JsonServiceExceptionConversor;
 import es.udc.ws.app.serviceutil.BikeToBikeDtoConversor;
 import es.udc.ws.bikes.model.bike.Bike;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
+import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
+import es.udc.ws.util.json.exceptions.ParsingException;
 import es.udc.ws.util.servlet.ServletUtils;
 
 @SuppressWarnings("serial")
@@ -26,6 +30,49 @@ public class BikesServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Bike Post
+		String path = ServletUtils.normalizePath(req.getPathInfo());
+		if (path != null && path.length() > 0) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException("Invalid Request: " + 
+								"invalid path " +path)),
+					null);
+		}
+		
+		ServiceBikeDto bikeDto;
+		try {
+			bikeDto = JsonServiceBikeDtoConversor.toServiceBikeDto(req.getInputStream());
+		}catch (ParsingException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException(ex.getMessage())), null);
+			return;
+		}
+		Bike  bike = BikeToBikeDtoConversor.toBike(bikeDto);
+		try {
+			bike = BikeServiceFactory.getService().addBike(bikeDto.getModelName(), 
+					bikeDto.getDescription(), bikeDto.getStartDate(), 
+					bikeDto.getPrice(), bikeDto.getAvailableNumber());
+		}catch (InputValidationException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInputValidationException(ex), null);
+			return;
+		}catch (NumberOfBikesException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toNumberOfBikesException(ex), null);
+			return;
+		}
+		bikeDto = BikeToBikeDtoConversor.toBikeDto(bike);
+		
+		String bikeURL = ServletUtils.normalizePath(req.getRequestURI().toString()) + "/" 
+				+ bike.getBikeId();
+		Map<String, String> headers = new HashMap<>(1);
+		headers.put("Location", bikeURL);
+		
+		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED, 
+				JsonServiceBikeDtoConversor.toObjectNode(bikeDto), headers);
+		
 		//super.doPost(req, resp);
 	}
 
