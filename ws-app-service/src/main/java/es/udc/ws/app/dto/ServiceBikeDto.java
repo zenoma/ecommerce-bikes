@@ -28,7 +28,7 @@ public class ServiceBikeDto {
 	}
 
 	public ServiceBikeDto(Long bikeId, String modelName, String description, Calendar startDate, float price,
-			int availableNumber, int numberOfRents, double averageScore) {
+			int availableNumber, int numberOfRents/*, double averageScore*/) {
 		super();
 		this.bikeId = bikeId;
 		this.modelName = modelName;
@@ -37,7 +37,6 @@ public class ServiceBikeDto {
 		this.price = price;
 		this.availableNumber = availableNumber;
 		this.numberOfRents = numberOfRents;
-		this.averageScore = averageScore;
 	}
 
 	public Long getBikeId() {

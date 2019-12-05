@@ -19,7 +19,6 @@ import es.udc.ws.bikes.model.bike.Bike;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.util.exceptions.InputValidationException;
-import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.json.exceptions.ParsingException;
 import es.udc.ws.util.servlet.ServletUtils;
 
@@ -89,7 +88,7 @@ public class BikesServlet extends HttpServlet {
 		// TODO Bike Delete
 		//super.doDelete(req, resp);
 	}
-
+	/*
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -138,8 +137,31 @@ public class BikesServlet extends HttpServlet {
 					null);
 		}
 		super.doGet(req, resp);
-	}
+	}*/
 	
+	 protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// TODO Bike Get
+		String path = ServletUtils.normalizePath(req.getPathInfo());
+		if (path == null || path.length() == 0) {
+			// FIXME Añadir fechas OBLIGATORIAS
+			String keywords = req.getParameter("keywords");
+			List<Bike> bikes = BikeServiceFactory.getService()
+					.findBikes(keywords, null);
+			List<ServiceBikeDto> bikesDto = BikeToBikeDtoConversor
+					.toBikeDtos(bikes);
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
+					JsonServiceBikeDtoConversor.toArrayNode(bikesDto), null);
+		} else {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException("Invalid Request: " +path)),
+					null);
+		}
+		super.doGet(req, resp);
+	 }
+		
 	private static Calendar getDate(String date) {
 		String[] dateSplit = date.split("-");
 		

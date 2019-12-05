@@ -19,7 +19,7 @@ public class BikeToBikeDtoConversor {
 
 	public static ServiceBikeDto toBikeDto(Bike bike) {
 		return new ServiceBikeDto(bike.getBikeId(), bike.getModelName(), bike.getDescription(), bike.getStartDate(),
-				bike.getPrice(), bike.getAvailableNumber(), bike.getNumberOfRents(), bike.getAverageScore());
+				bike.getPrice(), bike.getAvailableNumber(), bike.getNumberOfRents()/*, bike.getAverageScore()*/);
 	}
 
 	public static Bike toBike(ServiceBikeDto bike) {
