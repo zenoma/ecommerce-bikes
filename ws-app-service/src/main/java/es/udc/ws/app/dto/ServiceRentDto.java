@@ -15,21 +15,52 @@ public class ServiceRentDto {
 	private float price;
 
 	public ServiceRentDto() {
-
 	}
+
+	/**
+	 * Constructor para enviar al cliente y recibir del modelo.
+	 * 
+	 * @param rentId
+	 * @param userEmail
+	 * @param bikeId
+	 * @param creditCard
+	 * @param startRentDate
+	 * @param finishRentDate
+	 * @param numberOfBikes
+	 * @param rentDate
+	 * @param price
+	 */
 
 	public ServiceRentDto(Long rentId, String userEmail, Long bikeId,
 			Long creditCard, Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes, Calendar rentDate, float price) {
+		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
+				numberOfBikes);
 		this.rentId = rentId;
+		this.rentDate = rentDate;
+		this.price = price;
+	}
+
+	/**
+	 * Constructor para recibir del cliente y para mandar al modelo.
+	 * 
+	 * @param userEmail
+	 * @param bikeId
+	 * @param creditCard
+	 * @param startRentDate
+	 * @param finishRentDate
+	 * @param numberOfBikes
+	 */
+
+	public ServiceRentDto(String userEmail, Long bikeId, Long creditCard,
+			Calendar startRentDate, Calendar finishRentDate,
+			int numberOfBikes) {
 		this.userEmail = userEmail;
 		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
-		this.rentDate = rentDate;
-		this.price = price;
 	}
 
 	public Long getRentId() {

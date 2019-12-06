@@ -3,6 +3,7 @@ package es.udc.ws.app.dto;
 import java.util.Calendar;
 
 public class ServiceBikeDto {
+
 	private Long bikeId;
 	private String modelName;
 	private String description;
@@ -15,28 +16,46 @@ public class ServiceBikeDto {
 	public ServiceBikeDto() {
 	}
 
+	/**
+	 * Constructor para enviar al cliente y recibir del modelo.
+	 * 
+	 * @param bikeId
+	 * @param modelName
+	 * @param description
+	 * @param startDate
+	 * @param price
+	 * @param availableNumber
+	 * @param numberOfRents
+	 * @param averageScore
+	 */
 	public ServiceBikeDto(Long bikeId, String modelName, String description,
 			Calendar startDate, float price, int availableNumber,
-			double averageScore) {
-		this.bikeId = bikeId;
-		this.modelName = modelName;
-		this.description = description;
-		this.startDate = startDate;
-		this.price = price;
-		this.availableNumber = availableNumber;
+			int numberOfRents, double averageScore) {
+
+		this(bikeId, modelName, description, startDate, price, availableNumber);
+		this.numberOfRents = numberOfRents;
 		this.averageScore = averageScore;
+
 	}
 
-	public ServiceBikeDto(Long bikeId, String modelName, String description, Calendar startDate, float price,
-			int availableNumber, int numberOfRents/*, double averageScore*/) {
-		super();
+	/**
+	 * Constructor para recibir del cliente y para mandar al modelo
+	 * 
+	 * @param bikeId
+	 * @param modelName
+	 * @param description
+	 * @param startDate
+	 * @param price
+	 * @param availableNumber
+	 */
+	public ServiceBikeDto(Long bikeId, String modelName, String description,
+			Calendar startDate, float price, int availableNumber) {
 		this.bikeId = bikeId;
 		this.modelName = modelName;
 		this.description = description;
 		this.startDate = startDate;
 		this.price = price;
 		this.availableNumber = availableNumber;
-		this.numberOfRents = numberOfRents;
 	}
 
 	public Long getBikeId() {
@@ -112,11 +131,14 @@ public class ServiceBikeDto {
 		temp = Double.doubleToLongBits(averageScore);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+				+ ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfRents;
 		result = prime * result + Float.floatToIntBits(price);
-		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result
+				+ ((startDate == null) ? 0 : startDate.hashCode());
 		return result;
 	}
 
@@ -131,7 +153,8 @@ public class ServiceBikeDto {
 		ServiceBikeDto other = (ServiceBikeDto) obj;
 		if (availableNumber != other.availableNumber)
 			return false;
-		if (Double.doubleToLongBits(averageScore) != Double.doubleToLongBits(other.averageScore))
+		if (Double.doubleToLongBits(averageScore) != Double
+				.doubleToLongBits(other.averageScore))
 			return false;
 		if (bikeId == null) {
 			if (other.bikeId != null)
@@ -159,5 +182,5 @@ public class ServiceBikeDto {
 			return false;
 		return true;
 	}
-	
+
 }

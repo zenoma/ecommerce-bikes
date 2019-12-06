@@ -64,15 +64,13 @@ public class JsonServiceBikeDtoConversor {
 				String description = bikeObject.get("description").textValue().trim();
 				float price = bikeObject.get("price").floatValue();
 				int availableNumber = bikeObject.get("availableNumber").intValue();
-				int numberOfRents = bikeObject.get("numberOfRents").intValue();
-				//double averageScore = bikeObject.get("averageScore").doubleValue();
 				JsonNode calendarObject = bikeObject.get("startDate");
 				Calendar date = Calendar.getInstance();
 				date.set(calendarObject.get("year").intValue(), calendarObject.get("month").intValue(),
 						calendarObject.get("day").intValue());
 
 				return new ServiceBikeDto(bikeId, modelName, description, date, 
-						price, availableNumber, numberOfRents);
+						price, availableNumber);
 			}
 		} catch (ParsingException ex) {
 			throw ex;

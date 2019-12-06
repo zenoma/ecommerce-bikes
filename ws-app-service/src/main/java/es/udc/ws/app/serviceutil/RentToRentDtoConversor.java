@@ -12,4 +12,6 @@ public class RentToRentDtoConversor {
 				rent.getFinishRentDate(), rent.getNumberOfBikes(),
 				rent.getRentDate(), rent.getPrice());
 	}
+	
+	// TODO Crear el metodo opuesto
 }

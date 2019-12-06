@@ -50,9 +50,9 @@ public class BikesServlet extends HttpServlet {
 		}
 		Bike  bike = BikeToBikeDtoConversor.toBike(bikeDto);
 		try {
-			bike = BikeServiceFactory.getService().addBike(bikeDto.getModelName(), 
-					bikeDto.getDescription(), bikeDto.getStartDate(), 
-					bikeDto.getPrice(), bikeDto.getAvailableNumber());
+			bike = BikeServiceFactory.getService().addBike(bike.getModelName(), 
+					bike.getDescription(), bike.getStartDate(), 
+					bike.getPrice(), bike.getAvailableNumber());
 		}catch (InputValidationException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
 					JsonServiceExceptionConversor.toInputValidationException(ex), null);
