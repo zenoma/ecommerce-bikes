@@ -13,5 +13,13 @@ public class RentToRentDtoConversor {
 				rent.getRentDate(), rent.getPrice());
 	}
 	
+	public static ServiceRentDto toRent(ServiceRentDto rent) {
+
+		return new ServiceRentDto(rent.getRentId(), rent.getUserEmail(),
+				rent.getBikeId(), rent.getCreditCard(), rent.getStartRentDate(),
+				rent.getFinishRentDate(), rent.getNumberOfBikes(),
+				rent.getRentDate(), rent.getPrice());
+	}
+	
 	// TODO Crear el metodo opuesto
 }
