@@ -11,8 +11,7 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 
 	@Override
 	public Bike create(Connection connection, Bike bike) {
-		// Create queryString
-
+		// Create queryStrin
 		String queryString = "INSERT INTO Bike"
 				+ "(modelName, description, startDate, price, availableNumber, "
 				+ "adquisitionDate, numberOfRents, averageScore)"
@@ -25,6 +24,7 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 			int i = 1;
 			preparedStatement.setString(i++, bike.getModelName());
 			preparedStatement.setString(i++, bike.getDescription());
+			System.out.println(bike.getStartDate().getTime().getTime());
 			Timestamp timeStamp = bike.getStartDate() != null
 					? new Timestamp(bike.getStartDate().getTime().getTime())
 					: null;

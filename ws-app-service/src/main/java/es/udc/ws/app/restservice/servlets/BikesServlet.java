@@ -51,17 +51,6 @@ public class BikesServlet extends HttpServlet {
 			return;
 		}
 		Bike  bike = BikeToBikeDtoConversor.toBike(bikeDto);
-		Calendar date = bike.getStartDate();
-		///Integer yearBike = date.get(Calendar.YEAR);
-		date.set(Calendar.MILLISECOND, 0);
-		date.set(Calendar.SECOND, 0);
-		bike.setStartDate(date);
-		//System.out.println(yearBike);
-		//System.out.println(yearBike);
-		//String aux = req.getParameter("startDate");
-		//System.out.println(aux);
-		//Calendar auxDate = getDate(aux);
-		//System.out.println(auxDate.toString());
 		try {
 			bike = BikeServiceFactory.getService().addBike(bike.getModelName(), 
 					bike.getDescription(), bike.getStartDate(), 

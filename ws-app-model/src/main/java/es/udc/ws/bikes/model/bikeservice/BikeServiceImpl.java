@@ -75,6 +75,8 @@ public class BikeServiceImpl implements BikeService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);
+		startDate.set(Calendar.MILLISECOND, 0);
+		startDate.set(Calendar.SECOND, 0);
 		Bike bike = new Bike(modelName, description, startDate, price,
 				availableNumber, calendar, 0, -1);
 		validateBike(bike);
