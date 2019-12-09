@@ -62,6 +62,12 @@ public class ServiceRentDto {
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
 	}
+	
+	
+
+	public ServiceRentDto(Long rentId) {
+		this.rentId = rentId;
+	}
 
 	public Long getRentId() {
 		return rentId;

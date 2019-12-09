@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import es.udc.ws.app.dto.ServiceRentDto;
 import es.udc.ws.app.restservice.json.JsonServiceExceptionConversor;
+import es.udc.ws.app.restservice.json.JsonServiceRentDtoConversor;
 import es.udc.ws.app.serviceutil.RentToRentDtoConversor;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
@@ -159,6 +160,11 @@ public class RentsServlet extends HttpServlet{
         }
 		//FIXME Hay que poder devolver el alquiler que se ha creado de alguna manera
 		//actualmente no se puede
+		
+		ServiceRentDto rentDto = RentToRentDtoConversor.toRentDto(rentLong);
+		
+		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
+				JsonServiceRentDtoConversor.toJsonObject(rentDto), null);
 	}
 	/*
 	 * Los alquileres no se deberian de poder modificar
