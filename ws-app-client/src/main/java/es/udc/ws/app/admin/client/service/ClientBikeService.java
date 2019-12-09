@@ -13,4 +13,5 @@ public interface ClientBikeService {
 			Calendar startDate, float price, int availableNumber);
 	
 	public ClientBikeDto findBike(Long bikeId);
+
 }
