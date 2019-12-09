@@ -2,6 +2,8 @@ package es.udc.ws.app.restservice.servlets;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +17,10 @@ import es.udc.ws.app.serviceutil.RentToRentDtoConversor;
 import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.bikes.model.rent.Rent;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
+import es.udc.ws.util.json.exceptions.ParsingException;
 import es.udc.ws.util.servlet.ServletUtils;
 
 @SuppressWarnings("serial")
@@ -34,7 +38,7 @@ public class RentsServlet extends HttpServlet{
 									+ "invalid path " + path)),
 					null);
 			return;
-		}
+		}/*
 		String bikeIdParameter = req.getParameter("bikeId");
 		if (bikeIdParameter == null) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
@@ -157,11 +161,49 @@ public class RentsServlet extends HttpServlet{
             ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
             		JsonServiceExceptionConversor.toInputValidationException(ex), null);
             return;
-        }
+        }*/
 		//FIXME Hay que poder devolver el alquiler que se ha creado de alguna manera
 		//actualmente no se puede
 		
-		ServiceRentDto rentDto = RentToRentDtoConversor.toRentDto(rentLong);
+		ServiceRentDto rentDto;
+		try {
+			rentDto = JsonServiceRentDtoConversor.toServiceRentDto(req.getInputStream());
+		}catch(ParsingException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException(ex.getMessage())), null);
+			return;
+		}
+		Rent rent = RentToRentDtoConversor.toRent(rentDto);
+		Long rentLong;
+		try {
+			rentLong = BikeServiceFactory.getService().rentBike(rent.getUserEmail(), 
+					rent.getCreditCard(), rent.getBikeId(), rent.getStartRentDate(), 
+					rent.getFinishRentDate(), rent.getNumberOfBikes());
+		}catch(InputValidationException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInputValidationException(ex), null);
+			return;
+		}catch (NumberOfBikesException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toNumberOfBikesException(ex), null);
+			return;
+		}catch(InstanceNotFoundException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
+			return;
+		}
+		catch(InvalidRentPeriodException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInvalidRentPeriodException(ex), null);
+			return;
+		}
+		rentDto = RentToRentDtoConversor.toRentDto(rentLong);
+		String rentURL = ServletUtils.normalizePath(req.getRequestURI().toString()) + "/" 
+				+ rent.getRentId();
+		
+		Map<String, String> headers = new HashMap<>(1);
+		headers.put("Location", rentURL);
 		
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
 				JsonServiceRentDtoConversor.toJsonObject(rentDto), null);
