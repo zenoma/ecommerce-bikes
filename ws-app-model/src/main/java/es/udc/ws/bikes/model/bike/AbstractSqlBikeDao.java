@@ -91,10 +91,10 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 				queryString += " AND";
 			else
 				queryString += " WHERE";
-			queryString += " startDate <= (?)";
+			queryString += " startDate >= (?)";
 		}
 		queryString += " ORDER BY modelName";
-
+		
 		try (PreparedStatement preparedStatement = connection
 				.prepareStatement(queryString)) {
 			int i = 0;
@@ -108,10 +108,10 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			}
 			if (searchDate != null) {
 				Timestamp timestamp = new Timestamp(
-						searchDate.getTime().getTime());
+						searchDate.getTimeInMillis());
 				preparedStatement.setTimestamp(++i, timestamp);
 			}
-
+			System.out.println(preparedStatement);
 			// Execute query.
 			ResultSet resultSet = preparedStatement.executeQuery();
 

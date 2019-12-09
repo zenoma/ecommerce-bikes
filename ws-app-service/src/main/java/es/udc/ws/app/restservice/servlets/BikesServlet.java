@@ -30,7 +30,6 @@ public class BikesServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// FIXME startDate se establece siempre a enero del año siguiente al que pongas
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path != null && path.length() > 0) {
 			ServletUtils.writeServiceResponse(resp,
@@ -40,7 +39,7 @@ public class BikesServlet extends HttpServlet {
 								"invalid path " +path)),
 					null);
 		}
-		
+
 		ServiceBikeDto bikeDto;
 		try {
 			bikeDto = JsonServiceBikeDtoConversor.toServiceBikeDto(req.getInputStream());
@@ -74,7 +73,6 @@ public class BikesServlet extends HttpServlet {
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED, 
 				JsonServiceBikeDtoConversor.toObjectNode(bikeDto), headers);
 		
-		//super.doPost(req, resp);
 	}
 
 	@Override
@@ -89,7 +87,6 @@ public class BikesServlet extends HttpServlet {
 					null);
 		}
 		String bikeIdAsString = path.substring(1);
-		//System.out.println(bikeIdAsString);
 		Long bikeId;
 		try {
 			bikeId = Long.valueOf(bikeIdAsString);
@@ -105,6 +102,7 @@ public class BikesServlet extends HttpServlet {
 		ServiceBikeDto bikeDto;
 		try {
 			bikeDto = JsonServiceBikeDtoConversor.toServiceBikeDto(req.getInputStream());
+			bikeDto.setBikeId(bikeId);
 		} catch (ParsingException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
 					JsonServiceExceptionConversor.toInputValidationException(
@@ -118,8 +116,6 @@ public class BikesServlet extends HttpServlet {
 							new InputValidationException("PUT Invalid Request: " + 
 									"invalid bikeId from url or dto")),
 					null);
-			System.out.println(bikeId);
-			System.out.println(bikeDto.getBikeId());
 			return;
 		}
 		Bike bike = BikeToBikeDtoConversor.toBike(bikeDto);
@@ -135,14 +131,12 @@ public class BikesServlet extends HttpServlet {
 		
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NO_CONTENT, null, null);
 	}
-	/*
-	 * En caso de necesitar esta funcionalidad crear la funcionalidad removeBike
-	 * */
+	
+
 	/*
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Bike Delete
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
@@ -176,16 +170,16 @@ public class BikesServlet extends HttpServlet {
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NO_CONTENT, null, null);
 	}*/
 	
+	
 	 protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// FIXME Añadir fechas OBLIGATORIAS
-		// Modificar funcionalidad finbikes con fecha para que devuelva las bicis 
-		// disponibles a partir de la fecha indicada
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 			String keywords = req.getParameter("keywords");
+			Calendar calendar = getDate(req.getParameter("date"));
 			List<Bike> bikes = BikeServiceFactory.getService()
-					.findBikes(keywords, null);
+					.findBikes(keywords, calendar);
 			List<ServiceBikeDto> bikesDto = BikeToBikeDtoConversor
 					.toBikeDtos(bikes);
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
@@ -208,7 +202,7 @@ public class BikesServlet extends HttpServlet {
 		
 		Calendar dateAvailableAux = Calendar.getInstance();
 		dateAvailableAux.set(Calendar.DAY_OF_MONTH,day);
-		dateAvailableAux.set(Calendar.MONTH,month);
+		dateAvailableAux.set(Calendar.MONTH,month - 1);
 		dateAvailableAux.set(Calendar.YEAR,year);
 		
 		return dateAvailableAux;

@@ -126,8 +126,12 @@ public class BikeServiceImpl implements BikeService {
 
 				/* Do work. */
 				Bike bike = bikeDao.find(connection, bikeId);
-				bike.setModelName(modelName);
-				bike.setDescription(description);
+				if (modelName != null) {
+					bike.setModelName(modelName);
+				}
+				if (description != null) {
+					bike.setDescription(description);
+				}
 				if (bike.getNumberOfRents() > 0) {
 					try {
 						BikesPropertyValidator.validatePairDates(startDate,
@@ -137,11 +141,18 @@ public class BikeServiceImpl implements BikeService {
 								startDate, bike.getStartDate());
 					}
 				}
-				BikesPropertyValidator.validatePairDates(
-						bike.getAdquisitionDate(), startDate);
-				bike.setStartDate(startDate);
-				bike.setPrice(price);
-				bike.setAvailableNumber(availableNumber);
+				if (startDate != null) {
+					BikesPropertyValidator.validatePairDates(
+							bike.getAdquisitionDate(), startDate);
+					bike.setStartDate(startDate);
+				}
+				if (price > -1) {
+					bike.setPrice(price);
+				}
+				if (availableNumber > -1) {
+					bike.setAvailableNumber(availableNumber);
+				}
+				
 				validateBike(bike);
 				bikeDao.update(connection, bike);
 

@@ -59,22 +59,28 @@ public class JsonServiceBikeDtoConversor {
 			} else {
 				ObjectNode bikeObject = (ObjectNode) rootNode;
 				JsonNode bikeIdNode = bikeObject.get("bikeId");
-				Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue()
-						: null;
+				Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue(): null;
 
-				String modelName = bikeObject.get("modelName").textValue()
-						.trim();
-				String description = bikeObject.get("description").textValue()
-						.trim();
-				float price = bikeObject.get("price").floatValue();
-				int availableNumber = bikeObject.get("availableNumber")
-						.intValue();
-				JsonNode calendarObject = bikeObject.get("startDate");
-				Calendar date = Calendar.getInstance();
-				date.set(calendarObject.get("year").intValue(),
-						calendarObject.get("month").intValue() - 1,
-						calendarObject.get("day").intValue());
+				JsonNode modelNameNode = bikeObject.get("modelName");
+				String modelName = (modelNameNode != null) ? modelNameNode.textValue().trim() : null;
 
+				JsonNode descriptionNode = bikeObject.get("description");
+				String description = (descriptionNode != null) ? descriptionNode.textValue().trim() : null;
+
+				JsonNode priceNode = bikeObject.get("price");
+				float price = (priceNode != null) ? priceNode.floatValue() : -1;
+				
+				JsonNode availableNumberNode = bikeObject.get("availableNumber");
+				int availableNumber = (availableNumberNode != null) ? availableNumberNode.intValue(): -1;
+
+				JsonNode calendarObjectNode = bikeObject.get("startDate");
+				Calendar date = null;
+				if (calendarObjectNode != null) {
+					 date = Calendar.getInstance();
+					date.set(calendarObjectNode.get("year").intValue(),
+							calendarObjectNode.get("month").intValue() - 1,
+							calendarObjectNode.get("day").intValue());}
+				
 				return new ServiceBikeDto(bikeId, modelName, description, date,
 						price, availableNumber);
 			}
