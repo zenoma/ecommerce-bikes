@@ -176,14 +176,30 @@ public class BikesServlet extends HttpServlet {
 		// FIXME Añadir fechas OBLIGATORIAS
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
-			String keywords = req.getParameter("keywords");
-			Calendar calendar = getDate(req.getParameter("date"));
-			List<Bike> bikes = BikeServiceFactory.getService()
-					.findBikes(keywords, calendar);
-			List<ServiceBikeDto> bikesDto = BikeToBikeDtoConversor
-					.toBikeDtos(bikes);
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
-					JsonServiceBikeDtoConversor.toArrayNode(bikesDto), null);
+			String bikeIdString = req.getParameter("bikeId");
+			Long bikeId;
+			if (bikeIdString != null) {
+				bikeId = Long.valueOf(bikeIdString);
+				try {
+					Bike bike = BikeServiceFactory.getService().findBike(bikeId);
+					ServiceBikeDto bikeDto = BikeToBikeDtoConversor.toBikeDto(bike);
+					ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
+							JsonServiceBikeDtoConversor.toObjectNode(bikeDto), null);
+				} catch (InstanceNotFoundException ex) {
+					ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
+							JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
+					return;
+				}
+			}else {
+				String keywords = req.getParameter("keywords");
+				Calendar calendar = getDate(req.getParameter("date"));
+				List<Bike> bikes = BikeServiceFactory.getService()
+						.findBikes(keywords, calendar);
+				List<ServiceBikeDto> bikesDto = BikeToBikeDtoConversor
+						.toBikeDtos(bikes);
+				ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
+						JsonServiceBikeDtoConversor.toArrayNode(bikesDto), null);
+			}
 		} else {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
