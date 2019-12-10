@@ -2,9 +2,11 @@ package es.udc.ws.app.restservice.json;
 
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -21,17 +23,32 @@ public class JsonServiceRentDtoConversor {
 		if (rent.getRentId() != null) {
 			rentNode.put("rentId", rent.getRentId());
 		}
-		// First call to .set transforms an ObjectNode into a JsonNode;
-		/*rentNode.put("userEmail", rent.getUserEmail())
-			.put("bikeId", rent.getBikeId())
-			.put("creditCard", rent.getCreditCard())
-			.set("startRentDate", getRentDate(rent.getStartRentDate()));
-		rentNode.set("finishRentDate", getRentDate(rent.getFinishRentDate()));
-		rentNode.put("numberOfBikes", rent.getNumberOfBikes())
-			.set("rentDate", getRentDate(rent.getRentDate()));
-		rentNode.put("price", rent.getPrice());*/
-		
-
+		return rentNode;
+	}
+	
+	public static ObjectNode toObjectNode(ServiceRentDto rent) {
+		ObjectNode rentObject = JsonNodeFactory.instance.objectNode();
+		if (rent.getRentId() != null) {
+			rentObject.put("rentId", rent.getRentId());
+		}
+		rentObject.put("userEmail",rent.getUserEmail())
+				.put("bikeId",rent.getBikeId())
+				.put("creditCard", rent.getCreditCard())
+				.set("startRentDate", getRentDate(rent.getStartRentDate()));
+		rentObject.set("finishRent",getRentDate(rent.getFinishRentDate()));
+		rentObject.put("numberOfBikes", rent.getNumberOfBikes())
+				.set("rentDate", getRentDate(rent.getRentDate()));
+		rentObject.put("price", rent.getPrice());
+		return rentObject;
+	}
+	
+	public static ArrayNode toArrayNode(List<ServiceRentDto> rents) {
+		ArrayNode rentNode = JsonNodeFactory.instance.arrayNode();
+		for (int i = 0; i < rents.size(); i++) {
+			ServiceRentDto rentDto = rents.get(i);
+			ObjectNode rentObject = toObjectNode(rentDto);
+			rentNode.add(rentObject);
+		}
 		return rentNode;
 	}
 	

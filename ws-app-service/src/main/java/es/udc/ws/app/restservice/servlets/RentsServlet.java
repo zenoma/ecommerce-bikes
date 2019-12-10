@@ -3,6 +3,7 @@ package es.udc.ws.app.restservice.servlets;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -38,132 +39,7 @@ public class RentsServlet extends HttpServlet{
 									+ "invalid path " + path)),
 					null);
 			return;
-		}/*
-		String bikeIdParameter = req.getParameter("bikeId");
-		if (bikeIdParameter == null) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-                            new InputValidationException("POST Invalid Request: " 
-                            		+ "parameter 'bikeId' is mandatory")),
-                    null);
-            return;
 		}
-		Long bikeId;
-		try {
-			bikeId = Long.valueOf(bikeIdParameter);
-		}catch(NumberFormatException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-            				new InputValidationException("POST Invalid Request: " 
-            						+ "parameter 'bikeId' is invalid '" + bikeIdParameter 
-            						+ "'")),
-                    null);
-			return;
-		}
-		String userEmail = req.getParameter("userEmail");
-		if (userEmail == null) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-                            new InputValidationException("POST Invalid Request: " 
-                            		+ "parameter 'userEmail' is mandatory")),
-                    null);
-            return;
-		}
-		String creditCardNumberParameter = req.getParameter("creditCardNumber");
-		if (creditCardNumberParameter == null) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-                            new InputValidationException("POST Invalid Request: " 
-                            		+ "parameter 'creditCardNumber' is mandatory")),
-                    null);
-            return;
-		}
-		Long creditCardNumber;
-		try {
-			creditCardNumber = Long.valueOf(creditCardNumberParameter);
-		}catch(NumberFormatException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-            				new InputValidationException("POST Invalid Request: " 
-            						+ "parameter 'creditCardNumber' is invalid '" 
-            						+ creditCardNumberParameter + "'")),
-                    null);
-			return;
-		}
-		String startRentDateString = req.getParameter("startRentDate");
-		Calendar startRentDate;
-		try {
-			startRentDate = getDate(startRentDateString);
-		}catch(InputValidationException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-            				new InputValidationException("Invalid Request: " 
-            						+ "parameter 'startRentDate' is invalid '" + 
-            						startRentDateString + "'")),
-                    null);
-			return;
-		}
-		
-		String finishRentDateString = req.getParameter("finishRentDate");
-		Calendar finishRentDate;
-		try {
-			finishRentDate = getDate(finishRentDateString);
-		}catch(InputValidationException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-            				new InputValidationException("Invalid Request: " 
-            						+ "parameter 'finishRentDate' is invalid '" + 
-            						finishRentDateString + "'")),
-                    null);
-			return;
-		}
-		
-		String numberOfBikesParameter = req.getParameter("numberOfBikes");
-		if (numberOfBikesParameter == null) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-                            new InputValidationException("POST Invalid Request: " 
-                            		+ "parameter 'numberOfBikes' is mandatory")),
-                    null);
-            return;
-		}
-		int numberOfBikes;
-		try {
-			numberOfBikes = Integer.valueOf(numberOfBikesParameter);
-		}catch(NumberFormatException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(
-            				new InputValidationException("POST Invalid Request: " 
-            						+ "parameter 'numberOfBikes' is invalid '" 
-            						+ numberOfBikesParameter + "'")),
-                    null);
-			return;
-		}
-		
-		Long rentLong;
-		try {
-			rentLong = BikeServiceFactory.getService().rentBike(userEmail, 
-					creditCardNumber, bikeId, 
-					startRentDate, finishRentDate, numberOfBikes);
-		}catch(InstanceNotFoundException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
-            return;
-		}catch(InvalidRentPeriodException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInvalidRentPeriodException(ex), null);
-            return;
-		}catch (NumberOfBikesException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toNumberOfBikesException(ex), null);
-            return;
-		}catch (InputValidationException ex) {
-            ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-            		JsonServiceExceptionConversor.toInputValidationException(ex), null);
-            return;
-        }*/
-		//FIXME Hay que poder devolver el alquiler que se ha creado de alguna manera
-		//actualmente no se puede
 		
 		ServiceRentDto rentDto;
 		try {
@@ -231,7 +107,28 @@ public class RentsServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Rent Get
-		//super.doGet(req, resp);
+		String path = ServletUtils.normalizePath(req.getPathInfo());
+		if (path == null || path.length() == 0) {
+			String rentEmail = req.getParameter("userEmail");
+			if (rentEmail != null) {
+				List<Rent> rents = null;
+				try {
+					rents = BikeServiceFactory.getService().findRents(rentEmail);
+				} catch (InputValidationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				List<ServiceRentDto> rentsDto = RentToRentDtoConversor.toRentDtos(rents);
+				ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
+						JsonServiceRentDtoConversor.toArrayNode(rentsDto), null);
+			}
+		}else {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
+            		JsonServiceExceptionConversor.toInputValidationException(
+                            new InputValidationException("Invalid Request: " + "invalid user email")),
+                    null);
+            return;
+		}
 	}
 	
 	private static Calendar getDate(String date) throws InputValidationException {
