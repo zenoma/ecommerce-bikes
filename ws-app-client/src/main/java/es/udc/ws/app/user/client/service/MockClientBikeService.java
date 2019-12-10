@@ -11,7 +11,6 @@ public class MockClientBikeService implements ClientBikeService{
 
 	@Override
 	public List<ClientBikeDto> findBikes(String keywords, Calendar calendar) {
-		// FIXME Devolver lista 
 		return null;
 	}
 
@@ -25,7 +24,6 @@ public class MockClientBikeService implements ClientBikeService{
 	@Override
 	public List<ClientRentDto> findRents(String email)
 			throws InputValidationException {
-		// FIXME Devolver lista
 		return null;
 	}
 

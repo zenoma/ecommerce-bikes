@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.model.rent;
+package es.udc.ws.app.model.rent;
 
 import java.util.Calendar;
 

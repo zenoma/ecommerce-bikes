@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import es.udc.ws.app.dto.ServiceBikeDto;
+import es.udc.ws.app.model.bike.Bike;
+import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
+import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.app.restservice.json.JsonServiceBikeDtoConversor;
 import es.udc.ws.app.restservice.json.JsonServiceExceptionConversor;
 import es.udc.ws.app.serviceutil.BikeToBikeDtoConversor;
-import es.udc.ws.bikes.model.bike.Bike;
-import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
-import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.json.exceptions.ParsingException;

@@ -1,13 +1,13 @@
-package es.udc.ws.bikes.model.util;
+package es.udc.ws.app.model.util;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
-import es.udc.ws.bikes.model.bike.Bike;
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
-import es.udc.ws.bikes.model.rent.Rent;
+import es.udc.ws.app.model.bike.Bike;
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
+import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
+import es.udc.ws.app.model.rent.Rent;
 import es.udc.ws.util.exceptions.InputValidationException;
 
 public final class BikesPropertyValidator {
@@ -151,6 +151,14 @@ public final class BikesPropertyValidator {
 		if (rent.getFinishRentDate().getTimeInMillis() > Calendar.getInstance()
 				.getTimeInMillis()) {
 			throw new RentExpirationException(rent.getRentId());
+		}
+	}
+
+	public static void validateNotNull(String string, Calendar startDate)
+			throws InputValidationException {
+		if (startDate == null) {
+			throw new InputValidationException(
+					"Invalid: startDate" + startDate + "is null.");
 		}
 	}
 }

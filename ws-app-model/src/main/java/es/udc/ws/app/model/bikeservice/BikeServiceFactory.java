@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.model.bikeservice;
+package es.udc.ws.app.model.bikeservice;
 
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 

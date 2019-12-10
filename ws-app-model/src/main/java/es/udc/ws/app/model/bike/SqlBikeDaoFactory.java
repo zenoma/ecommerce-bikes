@@ -1,28 +1,29 @@
-package es.udc.ws.bikes.model.rent;
+package es.udc.ws.app.model.bike;
 
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 
-public class SqlRentDaoFactory {
+public class SqlBikeDaoFactory {
 
-	private final static String CLASS_NAME_PARAMETER = "SqlRentDaoFactory.className";
-	private static SqlRentDao dao = null;
+	private final static String CLASS_NAME_PARAMETER = "SqlBikeDaoFactory.className";
+	private static SqlBikeDao dao = null;
 
-	private SqlRentDaoFactory() {
+	private SqlBikeDaoFactory() {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static SqlRentDao getInstance() {
+	private static SqlBikeDao getInstance() {
+
 		try {
 			String daoClassName = ConfigurationParametersManager
 					.getParameter(CLASS_NAME_PARAMETER);
 			Class daoClass = Class.forName(daoClassName);
-			return (SqlRentDao) daoClass.newInstance();
+			return (SqlBikeDao) daoClass.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public synchronized static SqlRentDao getDao() {
+	public synchronized static SqlBikeDao getDao() {
 
 		if (dao == null) {
 			dao = getInstance();

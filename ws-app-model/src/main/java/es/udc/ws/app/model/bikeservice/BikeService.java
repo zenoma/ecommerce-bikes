@@ -1,11 +1,11 @@
-package es.udc.ws.bikes.model.bikeservice;
+package es.udc.ws.app.model.bikeservice;
 
 import java.util.Calendar;
 import java.util.List;
 
-import es.udc.ws.bikes.model.bike.Bike;
-import es.udc.ws.bikes.model.bikeservice.exceptions.*;
-import es.udc.ws.bikes.model.rent.Rent;
+import es.udc.ws.app.model.bike.Bike;
+import es.udc.ws.app.model.bikeservice.exceptions.*;
+import es.udc.ws.app.model.rent.Rent;
 import es.udc.ws.util.exceptions.*;
 
 public interface BikeService {

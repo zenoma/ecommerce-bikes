@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.udc.ws.app.dto.ServiceBikeDto;
-import es.udc.ws.bikes.model.bike.Bike;
+import es.udc.ws.app.model.bike.Bike;
 
 public class BikeToBikeDtoConversor {
 

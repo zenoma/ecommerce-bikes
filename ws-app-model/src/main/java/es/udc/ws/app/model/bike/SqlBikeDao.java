@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.model.bike;
+package es.udc.ws.app.model.bike;
 
 import java.sql.Connection;
 import java.util.Calendar;

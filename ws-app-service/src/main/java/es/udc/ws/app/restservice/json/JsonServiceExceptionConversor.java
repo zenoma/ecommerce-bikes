@@ -7,12 +7,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
+import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
+import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
 
 public class JsonServiceExceptionConversor {
 	public final static String CONVERSION_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";

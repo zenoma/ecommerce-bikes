@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.model.rent;
+package es.udc.ws.app.model.rent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import es.udc.ws.bikes.model.bike.Bike;
+import es.udc.ws.app.model.bike.Bike;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public abstract class AbstractSqlRentDao implements SqlRentDao {

@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.model.util;
+package es.udc.ws.app.model.util;
 
 public final class ModelConstants {
 

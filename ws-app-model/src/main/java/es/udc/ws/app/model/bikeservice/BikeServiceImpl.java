@@ -1,30 +1,30 @@
-package es.udc.ws.bikes.model.bikeservice;
+package es.udc.ws.app.model.bikeservice;
 
 import java.util.Calendar;
 import java.util.List;
+
+import static es.udc.ws.app.model.util.ModelConstants.BIKE_DATA_SOURCE;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import es.udc.ws.bikes.model.bike.Bike;
-import es.udc.ws.bikes.model.bike.SqlBikeDao;
-import es.udc.ws.bikes.model.bike.SqlBikeDaoFactory;
-import es.udc.ws.bikes.model.rent.Rent;
-import es.udc.ws.bikes.model.rent.SqlRentDao;
-import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
-
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.model.bike.Bike;
+import es.udc.ws.app.model.bike.SqlBikeDao;
+import es.udc.ws.app.model.bike.SqlBikeDaoFactory;
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
+import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
+import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.model.rent.Rent;
+import es.udc.ws.app.model.rent.SqlRentDao;
+import es.udc.ws.app.model.rent.SqlRentDaoFactory;
+import es.udc.ws.app.model.util.BikesPropertyValidator;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.sql.DataSourceLocator;
 import es.udc.ws.util.validation.PropertyValidator;
-import es.udc.ws.bikes.model.util.BikesPropertyValidator;
-
-import static es.udc.ws.bikes.model.util.ModelConstants.BIKE_DATA_SOURCE;
 
 public class BikeServiceImpl implements BikeService {
 
@@ -54,6 +54,8 @@ public class BikeServiceImpl implements BikeService {
 				Calendar.getInstance());
 		BikesPropertyValidator.validateNumberOfBikes("numberOfBikes", bike,
 				bike.getAvailableNumber());
+		BikesPropertyValidator.validateNotNull("startDate",
+				bike.getStartDate());
 
 	}
 
@@ -75,8 +77,10 @@ public class BikeServiceImpl implements BikeService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);
-		startDate.set(Calendar.MILLISECOND, 0);
-		startDate.set(Calendar.SECOND, 0);
+		if (startDate != null) {
+			startDate.set(Calendar.MILLISECOND, 0);
+			startDate.set(Calendar.SECOND, 0);
+		}
 		Bike bike = new Bike(modelName, description, startDate, price,
 				availableNumber, calendar, 0, -1);
 		validateBike(bike);
@@ -128,9 +132,13 @@ public class BikeServiceImpl implements BikeService {
 				Bike bike = bikeDao.find(connection, bikeId);
 				if (modelName != null) {
 					bike.setModelName(modelName);
+				}else {
+					throw new InputValidationException("modelName is null.");
 				}
 				if (description != null) {
 					bike.setDescription(description);
+				}else {
+					throw new InputValidationException("description is null.");
 				}
 				if (bike.getNumberOfRents() > 0) {
 					try {
@@ -152,7 +160,7 @@ public class BikeServiceImpl implements BikeService {
 				if (availableNumber > -1) {
 					bike.setAvailableNumber(availableNumber);
 				}
-				
+
 				validateBike(bike);
 				bikeDao.update(connection, bike);
 

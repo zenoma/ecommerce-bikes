@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.udc.ws.app.dto.ServiceRentDto;
-import es.udc.ws.bikes.model.rent.Rent;
+import es.udc.ws.app.model.rent.Rent;
 
 public class RentToRentDtoConversor {
 

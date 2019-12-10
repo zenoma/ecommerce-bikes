@@ -1,4 +1,4 @@
-package es.udc.ws.bikes.model.bike;
+package es.udc.ws.app.model.bike;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -111,7 +111,6 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 						searchDate.getTimeInMillis());
 				preparedStatement.setTimestamp(++i, timestamp);
 			}
-			System.out.println(preparedStatement);
 			// Execute query.
 			ResultSet resultSet = preparedStatement.executeQuery();
 

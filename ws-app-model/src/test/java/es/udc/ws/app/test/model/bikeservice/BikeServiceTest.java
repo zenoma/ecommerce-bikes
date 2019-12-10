@@ -1,27 +1,28 @@
-package es.udc.ws.bikes.test.model.bikeservice;
+package es.udc.ws.app.test.model.bikeservice;
 
 import javax.sql.DataSource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import es.udc.ws.bikes.model.bike.Bike;
-import es.udc.ws.bikes.model.bike.SqlBikeDao;
-import es.udc.ws.bikes.model.bike.SqlBikeDaoFactory;
-import es.udc.ws.bikes.model.bikeservice.BikeService;
-import es.udc.ws.bikes.model.bikeservice.BikeServiceFactory;
-import es.udc.ws.bikes.model.bikeservice.exceptions.InvalidRentPeriodException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.NumberOfBikesException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.RentExpirationException;
-import es.udc.ws.bikes.model.bikeservice.exceptions.UpdateReservedBikeException;
-import es.udc.ws.bikes.model.rent.Rent;
-import es.udc.ws.bikes.model.rent.SqlRentDao;
-import es.udc.ws.bikes.model.rent.SqlRentDaoFactory;
+import es.udc.ws.app.model.bike.Bike;
+import es.udc.ws.app.model.bike.SqlBikeDao;
+import es.udc.ws.app.model.bike.SqlBikeDaoFactory;
+import es.udc.ws.app.model.bikeservice.BikeService;
+import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
+import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
+import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.model.rent.Rent;
+import es.udc.ws.app.model.rent.SqlRentDao;
+import es.udc.ws.app.model.rent.SqlRentDaoFactory;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.sql.DataSourceLocator;
 import es.udc.ws.util.sql.SimpleDataSource;
-import static es.udc.ws.bikes.model.util.ModelConstants.BIKE_DATA_SOURCE;
+
+import static es.udc.ws.app.model.util.ModelConstants.BIKE_DATA_SOURCE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -529,7 +530,7 @@ public class BikeServiceTest {
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(Calendar.SECOND, 0);
-			calendar.add(Calendar.DAY_OF_YEAR, +10);
+			calendar.add(Calendar.DAY_OF_YEAR, +2);
 			bike3 = createBike("bike 3", "Bike Description", calendar);
 
 			calendar = Calendar.getInstance();
