@@ -138,15 +138,13 @@ public class BikesServlet extends HttpServlet {
 		}catch (UpdateReservedBikeException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
 					 JsonServiceExceptionConversor.toUpdateReservedBikeException(
-						 new UpdateReservedBikeException(bike.getBikeId(),
-								 bikeDto.getStartDate(),bike.getStartDate())),
+						 ex),
 				null);
 			return;
 		}catch (NumberOfBikesException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
 					 JsonServiceExceptionConversor.toNumberOfBikesException(
-						 new NumberOfBikesException(bike.getBikeId(),
-								 bike.getNumberOfRents())),
+						 ex),
 				null);
 			return;
 		}
