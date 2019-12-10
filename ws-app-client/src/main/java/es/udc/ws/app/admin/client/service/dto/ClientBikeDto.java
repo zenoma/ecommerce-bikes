@@ -13,9 +13,17 @@ public class ClientBikeDto {
 	private int numberOfRents;
 	private double averageScore;
 
+	public ClientBikeDto(String modelName, String description, Calendar startDate, float price,
+			int availableNumber) {
+		this.modelName = modelName;
+		this.description = description;
+		this.startDate = startDate;
+		this.price = price;
+		this.availableNumber = availableNumber;
+	}
+	
 	public ClientBikeDto(Long bikeId, String modelName, String description, Calendar startDate, float price,
 			int availableNumber) {
-		this.bikeId = bikeId;
 		this.modelName = modelName;
 		this.description = description;
 		this.startDate = startDate;

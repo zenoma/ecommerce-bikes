@@ -1,6 +1,9 @@
 package es.udc.ws.app.admin.client.service.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
@@ -9,6 +12,9 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import es.udc.ws.app.admin.client.service.ClientBikeService;
 import es.udc.ws.app.admin.client.service.dto.ClientBikeDto;
 import es.udc.ws.app.admin.client.service.rest.json.JsonClientBikeDtoConversor;
@@ -16,6 +22,7 @@ import es.udc.ws.app.admin.client.service.rest.json.JsonClientExceptionConversor
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
+import es.udc.ws.util.json.ObjectMapperFactory;
 import es.udc.ws.util.json.exceptions.ParsingException;
 
 public class RestClientBikeService implements ClientBikeService {
@@ -25,17 +32,18 @@ public class RestClientBikeService implements ClientBikeService {
 
 	@Override
 	public ClientBikeDto addBike(String modelName, String description, Calendar startDate, float price,
-			int availableNumber) {
-		/*
+			int availableNumber) throws InputValidationException {
+		
 		 try {
-
+			 	
+			 	ClientBikeDto bike = new ClientBikeDto(modelName, description, startDate, price, availableNumber);
 	            HttpResponse response = Request.Post(getEndpointAddress() + "bikes").
 	                    bodyStream(toInputStream(bike), ContentType.create("application/json")).
 	                    execute().returnResponse();
 
 	            validateStatusCode(HttpStatus.SC_CREATED, response);
 
-	            return JsonClientMovieDtoConversor.toClientMovieDto(response.getEntity().getContent()).getMovieId();
+	            return JsonClientBikeDtoConversor.toClientBikeDto(response.getEntity().getContent());
 
 	        } catch (InputValidationException e) {
 	            throw e;
@@ -44,14 +52,25 @@ public class RestClientBikeService implements ClientBikeService {
 	        }
 
 	    }
-		*/
-		return null;
-	}
 
 	@Override
 	public void updateBike(Long bikeId, String modelName, String description, Calendar startDate, float price,
-			int availableNumber) {
-		// TODO Auto-generated method stub
+			int availableNumber) throws InstanceNotFoundException {
+		
+		try {
+
+			ClientBikeDto bike = new ClientBikeDto(bikeId, modelName, description, startDate, price, availableNumber);
+            HttpResponse response = Request.Put(getEndpointAddress() + "bikes/" + bike.getBikeId()).
+                    bodyStream(toInputStream(bike), ContentType.create("application/json")).
+                    execute().returnResponse();
+
+            validateStatusCode(HttpStatus.SC_NO_CONTENT, response);
+
+        } catch (InstanceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 		
 	}
 
@@ -111,6 +130,22 @@ public class RestClientBikeService implements ClientBikeService {
                     throw new RuntimeException("HTTP error; status code = "
                             + statusCode);
             }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+	
+	private InputStream toInputStream(ClientBikeDto bike) {
+
+        try {
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectMapper objectMapper = ObjectMapperFactory.instance();
+            objectMapper.writer(new DefaultPrettyPrinter()).writeValue(outputStream, JsonClientBikeDtoConversor.toJsonObject(bike));
+
+            return new ByteArrayInputStream(outputStream.toByteArray());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
