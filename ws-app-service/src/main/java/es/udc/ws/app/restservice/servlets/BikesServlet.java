@@ -59,7 +59,7 @@ public class BikesServlet extends HttpServlet {
 					JsonServiceExceptionConversor.toInputValidationException(ex), null);
 			return;
 		}catch (NumberOfBikesException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
 					JsonServiceExceptionConversor.toNumberOfBikesException(ex), null);
 			return;
 		}
@@ -109,13 +109,12 @@ public class BikesServlet extends HttpServlet {
 							new InputValidationException(ex.getMessage())), null);
 			return;
 		}
-		//FIXME bikeDto no devuelve bien el dato
 		if (!bikeId.equals(bikeDto.getBikeId())) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
-					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("PUT Invalid Request: " + 
-									"invalid bikeId from url or dto")),
-					null);
+				JsonServiceExceptionConversor.toInputValidationException(
+						new InputValidationException("PUT Invalid Request: " + 
+								"invalid bikeId from url or dto")),
+				null);
 			return;
 		}
 		Bike bike = BikeToBikeDtoConversor.toBike(bikeDto);
@@ -124,9 +123,32 @@ public class BikesServlet extends HttpServlet {
 			BikeServiceFactory.getService().updateBike(bike.getBikeId(), 
 					bike.getModelName() , bike.getDescription(), bike.getStartDate(), 
 					bike.getPrice(), bike.getAvailableNumber());
-		} catch (InstanceNotFoundException | InputValidationException | 
-					UpdateReservedBikeException | NumberOfBikesException e) {
-			e.printStackTrace();
+		} catch ( InputValidationException  ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+				JsonServiceExceptionConversor.toInputValidationException(
+						new InputValidationException("PUT Invalid Request: " + 
+								"invalid data to update")),
+				null);
+			return;
+		} 
+		catch (InstanceNotFoundException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
+				JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
+			return;
+		}catch (UpdateReservedBikeException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
+					 JsonServiceExceptionConversor.toUpdateReservedBikeException(
+						 new UpdateReservedBikeException(bike.getBikeId(),
+								 bikeDto.getStartDate(),bike.getStartDate())),
+				null);
+			return;
+		}catch (NumberOfBikesException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
+					 JsonServiceExceptionConversor.toNumberOfBikesException(
+						 new NumberOfBikesException(bike.getBikeId(),
+								 bike.getNumberOfRents())),
+				null);
+			return;
 		}
 		
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NO_CONTENT, null, null);
@@ -204,7 +226,7 @@ public class BikesServlet extends HttpServlet {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("GET Invalid Request: " +path)),
+							new InputValidationException("GET Invalid Request: " +" invalid path : " + path)),
 					null);
 		}
 	 }

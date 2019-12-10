@@ -1,7 +1,6 @@
 package es.udc.ws.app.restservice.servlets;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,16 +60,16 @@ public class RentsServlet extends HttpServlet{
 					JsonServiceExceptionConversor.toInputValidationException(ex), null);
 			return;
 		}catch (NumberOfBikesException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
 					JsonServiceExceptionConversor.toNumberOfBikesException(ex), null);
 			return;
 		}catch(InstanceNotFoundException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND, 
 					JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
 			return;
 		}
 		catch(InvalidRentPeriodException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
 					JsonServiceExceptionConversor.toInvalidRentPeriodException(ex), null);
 			return;
 		}
@@ -83,24 +82,6 @@ public class RentsServlet extends HttpServlet{
 		
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
 				JsonServiceRentDtoConversor.toJsonObject(rentDto), null);
-	}
-	/*
-	 * Los alquileres no se deberian de poder modificar
-	 * */
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Rent Put
-		//super.doPut(req, resp);
-	}
-	/*
-	 * Los alquileres no se deberian de poder eliminar
-	 * */
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Rent Delete
-		//super.doDelete(req, resp);
 	}
 	
 	@Override
@@ -115,8 +96,11 @@ public class RentsServlet extends HttpServlet{
 				try {
 					rents = BikeServiceFactory.getService().findRents(rentEmail);
 				} catch (InputValidationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
+		            		JsonServiceExceptionConversor.toInputValidationException(
+		                            new InputValidationException("GET Invalid Request: " + "invalid user email")),
+		                    null);
+		            return;
 				}
 				List<ServiceRentDto> rentsDto = RentToRentDtoConversor.toRentDtos(rents);
 				ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
@@ -125,24 +109,10 @@ public class RentsServlet extends HttpServlet{
 		}else {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
             		JsonServiceExceptionConversor.toInputValidationException(
-                            new InputValidationException("Invalid Request: " + "invalid user email")),
+                            new InputValidationException("GET Invalid Request: " + "invalid path : " + path)),
                     null);
             return;
 		}
 	}
 	
-	private static Calendar getDate(String date) throws InputValidationException {
-		String[] dateSplit = date.split("-");
-		
-		int day = Integer.valueOf(dateSplit[0]);
-		int month = Integer.valueOf(dateSplit[1]);
-		int year = Integer.valueOf(dateSplit[2]);
-		
-		Calendar dateAvailableAux = Calendar.getInstance();
-		dateAvailableAux.set(Calendar.DAY_OF_MONTH,day);
-		dateAvailableAux.set(Calendar.MONTH,month);
-		dateAvailableAux.set(Calendar.YEAR,year);
-		
-		return dateAvailableAux;
-	}
 }
