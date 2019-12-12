@@ -48,6 +48,8 @@ public class BikeServiceImpl implements BikeService {
 		BikesPropertyValidator.validateLowerFloat("price", bike.getPrice(), 0);
 		BikesPropertyValidator.validateLowerInt("availableNumber",
 				bike.getAvailableNumber(), 0);
+		BikesPropertyValidator.validateLowerInt("numberOfScores",
+				bike.getNumberOfScores(), 0);
 		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
 				bike.getStartDate());
 		BikesPropertyValidator.validatePairDates(bike.getAdquisitionDate(),
@@ -56,7 +58,6 @@ public class BikeServiceImpl implements BikeService {
 				bike.getAvailableNumber());
 		BikesPropertyValidator.validateNotNull("startDate",
 				bike.getStartDate());
-
 	}
 
 	private void validateRent(Rent rent)
@@ -82,7 +83,7 @@ public class BikeServiceImpl implements BikeService {
 			startDate.set(Calendar.SECOND, 0);
 		}
 		Bike bike = new Bike(modelName, description, startDate, price,
-				availableNumber, calendar, 0, -1);
+				availableNumber, calendar, 0, -1, 0);
 		validateBike(bike);
 
 		try (Connection connection = dataSource.getConnection()) {
@@ -132,12 +133,12 @@ public class BikeServiceImpl implements BikeService {
 				Bike bike = bikeDao.find(connection, bikeId);
 				if (modelName != null) {
 					bike.setModelName(modelName);
-				}else {
+				} else {
 					throw new InputValidationException("modelName is null.");
 				}
 				if (description != null) {
 					bike.setDescription(description);
-				}else {
+				} else {
 					throw new InputValidationException("description is null.");
 				}
 				if (bike.getNumberOfRents() > 0) {
@@ -154,11 +155,18 @@ public class BikeServiceImpl implements BikeService {
 							bike.getAdquisitionDate(), startDate);
 					bike.setStartDate(startDate);
 				}
-				if (price > -1) {
+
+				if (price > 0) {
 					bike.setPrice(price);
+				} else {
+					throw new InputValidationException(
+							"Price must be greater than 0");
 				}
-				if (availableNumber > -1) {
+				if (availableNumber > 0) {
 					bike.setAvailableNumber(availableNumber);
+				} else {
+					throw new InputValidationException(
+							"Available Number must be greater than 0");
 				}
 
 				validateBike(bike);
@@ -279,12 +287,16 @@ public class BikeServiceImpl implements BikeService {
 			Rent rent = rentDao.find(connection, rentId);
 			BikesPropertyValidator.validateRateRent("Rate Rent", rent);
 			Bike bike = bikeDao.find(connection, rent.getBikeId());
-			if (bike.getAverageScore() == -1)
-				bike.setAverageScore(score);
-			else {
-				double aux = (bike.getAverageScore() + score) / 2;
-				bike.setAverageScore(aux);
+
+			double aux;
+			if (bike.getNumberOfScores() !=0) {
+				bike.setNumberOfScores(bike.getNumberOfScores() + 1);
+				aux = (bike.getTotalScore() + score) ;
+			}else {
+				aux = score;
+				bike.setNumberOfScores(bike.getNumberOfScores() + 1);
 			}
+			bike.setTotalScore(aux);
 			bikeDao.update(connection, bike);
 
 		} catch (SQLException e) {

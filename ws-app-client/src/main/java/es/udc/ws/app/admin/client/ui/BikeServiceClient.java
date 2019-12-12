@@ -70,7 +70,7 @@ public class BikeServiceClient {
                             ", Price: " + bike.getPrice() +
                             ", Available Number: " + bike.getAvailableNumber() +
                             ", Number Of Rents: " + bike.getNumberOfRents() +
-                            ", Average Score: " + bike.getAverageScore());
+                            ", Average Score: " + bike.getTotalScore());
                 
             } catch (Exception ex) {
                 ex.printStackTrace(System.err);

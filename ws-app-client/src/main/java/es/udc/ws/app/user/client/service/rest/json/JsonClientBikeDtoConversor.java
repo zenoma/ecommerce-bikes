@@ -29,7 +29,7 @@ public class JsonClientBikeDtoConversor {
 		bikeObject.put("price", bike.getPrice())
 				.put("availableNumber", bike.getAvailableNumber())
 				.put("numberOfRents", bike.getNumberOfRents())
-				.put("averageScore", bike.getAverageScore());
+				.put("totalScore", bike.getTotalScore());
 		return bikeObject;
 
 	}
@@ -90,10 +90,10 @@ public class JsonClientBikeDtoConversor {
 
 			int numberOfRents = bikeObject.get("numberOfRents").intValue();
 
-			double averageScore = bikeObject.get("averageScore").doubleValue();
+			double totalScore = bikeObject.get("totalScore").doubleValue();
 
 			return new ClientBikeDto(bikeId, modelName, description, date,
-					price, availableNumber, numberOfRents, averageScore);
+					price, availableNumber, numberOfRents, totalScore);
 		}
 	}
 

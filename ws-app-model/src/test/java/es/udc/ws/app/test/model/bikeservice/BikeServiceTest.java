@@ -822,7 +822,7 @@ public class BikeServiceTest {
 			// Create a bike on DB
 			bike = getValidBike();
 			bike.setModelName("Previous Bike");
-			bike.setAverageScore(-1);
+			bike.setTotalScore(-1);
 			createdBike = addBike(bike);
 
 			// Rent bike
@@ -842,7 +842,7 @@ public class BikeServiceTest {
 
 			// Find bike
 			Bike ratedBike = bikeService.findBike(createdBike.getBikeId());
-			assertEquals(3, ratedBike.getAverageScore(), 0.01);
+			assertEquals(3, ratedBike.getTotalScore(), 0.01);
 		} finally {
 			// Clear Database
 			if (rent != null) {
@@ -903,7 +903,7 @@ public class BikeServiceTest {
 			// Create a bike on DB
 			bike = getValidBike();
 			bike.setModelName("Previous Bike");
-			bike.setAverageScore(-1);
+			bike.setTotalScore(-1);
 			createdBike = addBike(bike);
 
 			// Rent bike
@@ -921,10 +921,11 @@ public class BikeServiceTest {
 			// Rate rent
 			bikeService.rateRent(rent, 3);
 			bikeService.rateRent(rent, 5);
+			bikeService.rateRent(rent, 7);
 
 			// Find bike
 			Bike ratedBike = bikeService.findBike(createdBike.getBikeId());
-			assertEquals(4, ratedBike.getAverageScore(), 0.01);
+			assertEquals(15, ratedBike.getTotalScore(), 0.01);
 		} finally {
 			// Clear Database
 			if (rent != null) {

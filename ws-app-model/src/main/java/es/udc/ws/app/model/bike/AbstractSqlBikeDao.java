@@ -22,7 +22,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 
 		// Create queryString
 		String queryString = "SELECT modelName, description, startDate, price, "
-				+ "availableNumber, adquisitionDate, numberOfRents, averageScore "
+				+ "availableNumber, adquisitionDate, numberOfRents, totalScore, numberOfScores "
 				+ "FROM Bike WHERE bikeId = ?";
 
 		try (PreparedStatement preparedStatement = connection
@@ -53,12 +53,13 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			Calendar adquisitionDate = Calendar.getInstance();
 			adquisitionDate.setTime(resultSet.getTimestamp(i++));
 			int numberOfRents = resultSet.getInt(i++);
-			double averageScore = resultSet.getDouble(i++);
+			double totalScore = resultSet.getDouble(i++);
+			int numberOfScores = resultSet.getInt(i++);
 
 			// Return bike
 			return new Bike(bikeId, modelName, description, startDate, price,
 					availableNumber, adquisitionDate, numberOfRents,
-					averageScore);
+					totalScore, numberOfScores);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -74,7 +75,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 		// Tokeniza las keywords en un array
 		String[] words = keywords != null ? keywords.split(" ") : null;
 		String queryString = " SELECT bikeId, modelName, description, startDate, "
-				+ "price, availableNumber, adquisitionDate, numberOfRents, averageScore "
+				+ "price, availableNumber, adquisitionDate, numberOfRents, totalScore, numberOfScores "
 				+ "FROM Bike";
 		if (words != null && words.length > 0) {
 			queryString += " WHERE";
@@ -94,7 +95,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			queryString += " startDate >= (?)";
 		}
 		queryString += " ORDER BY modelName";
-		
+
 		try (PreparedStatement preparedStatement = connection
 				.prepareStatement(queryString)) {
 			int i = 0;
@@ -129,11 +130,12 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 				Calendar adquisitionDate = Calendar.getInstance();
 				adquisitionDate.setTime(resultSet.getTimestamp(i++));
 				int numberOfRents = resultSet.getInt(i++);
-				double averageScore = resultSet.getDouble(i++);
+				double totalScore = resultSet.getDouble(i++);
+				int numberOfScores = resultSet.getInt(i++);
 
 				Bike bike = new Bike(bikeId, modelName, description, startDate,
 						price, availableNumber, adquisitionDate, numberOfRents,
-						averageScore);
+						totalScore, numberOfScores);
 
 				bikes.add(bike);
 			}
@@ -154,7 +156,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 		String queryString = "UPDATE Bike"
 				+ " SET modelName = ?, description = ?, startDate = ?, price = ?, "
 				+ "availableNumber = ?, numberOfRents = ?, "
-				+ "averageScore = ? WHERE bikeId = ?";
+				+ "totalScore = ?, numberOfScores = ? WHERE bikeId = ?";
 
 		try (PreparedStatement preparedStatement = connection
 				.prepareStatement(queryString)) {
@@ -170,7 +172,8 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 			preparedStatement.setFloat(i++, bike.getPrice());
 			preparedStatement.setInt(i++, bike.getAvailableNumber());
 			preparedStatement.setInt(i++, bike.getNumberOfRents());
-			preparedStatement.setDouble(i++, bike.getAverageScore());
+			preparedStatement.setDouble(i++, bike.getTotalScore());
+			preparedStatement.setInt(i++, bike.getNumberOfScores());
 			preparedStatement.setLong(i++, bike.getBikeId());
 
 			// Execute query.

@@ -37,7 +37,7 @@ public class BikeServiceClient {
 							+ bikesDto.getAvailableNumber()
 							+ ", Number Of Rents: "
 							+ bikesDto.getNumberOfRents() + ", Average Score: "
-							+ bikesDto.getAverageScore());
+							+ bikesDto.getTotalScore());
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
@@ -112,8 +112,7 @@ public class BikeServiceClient {
 	}
 
 	public static Calendar stringToCalendar(String s) {
-
-		String delims = "[-]";
+		String delims = "[-,']";
 		String[] tokens = s.split(delims);
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Integer.parseInt(tokens[2]),

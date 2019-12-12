@@ -18,8 +18,12 @@ public class BikeToBikeDtoConversor {
 	}
 
 	public static ServiceBikeDto toBikeDto(Bike bike) {
+		double averageScore = 0;
+		if (bike.getNumberOfScores() != 0) {
+			averageScore = bike.getTotalScore() / bike.getNumberOfScores();
+		}
 		return new ServiceBikeDto(bike.getBikeId(), bike.getModelName(), bike.getDescription(), bike.getStartDate(),
-				bike.getPrice(), bike.getAvailableNumber(),bike.getNumberOfRents(),bike.getAverageScore());
+				bike.getPrice(), bike.getAvailableNumber(),bike.getNumberOfRents(),averageScore);
 	}
 
 	public static Bike toBike(ServiceBikeDto bike) {

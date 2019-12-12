@@ -11,13 +11,15 @@ public class ServiceBikeDto {
 	private float price;
 	private int availableNumber;
 	private int numberOfRents;
+	private double totalScore;
+	private int numberOfScores;
 	private double averageScore;
 
 	public ServiceBikeDto() {
 	}
 
 	/**
-	 * Constructor para enviar al cliente y recibir del modelo.
+	 * Constructor para recibir del modelo.
 	 * 
 	 * @param bikeId
 	 * @param modelName
@@ -26,7 +28,30 @@ public class ServiceBikeDto {
 	 * @param price
 	 * @param availableNumber
 	 * @param numberOfRents
-	 * @param averageScore
+	 * @param totalScore
+	 */
+	public ServiceBikeDto(Long bikeId, String modelName, String description,
+			Calendar startDate, float price, int availableNumber,
+			int numberOfRents, double totalScore, int numberOfScores) {
+
+		this(bikeId, modelName, description, startDate, price, availableNumber);
+		this.numberOfRents = numberOfRents;
+		this.totalScore = totalScore;
+		this.numberOfScores = numberOfScores;
+
+	}
+
+	/**
+	 * Constructor para enviar al cliente.
+	 * 
+	 * @param bikeId
+	 * @param modelName
+	 * @param description
+	 * @param startDate
+	 * @param price
+	 * @param availableNumber
+	 * @param numberOfRents
+	 * @param totalScore
 	 */
 	public ServiceBikeDto(Long bikeId, String modelName, String description,
 			Calendar startDate, float price, int availableNumber,
@@ -35,7 +60,6 @@ public class ServiceBikeDto {
 		this(bikeId, modelName, description, startDate, price, availableNumber);
 		this.numberOfRents = numberOfRents;
 		this.averageScore = averageScore;
-
 	}
 
 	/**
@@ -56,6 +80,22 @@ public class ServiceBikeDto {
 		this.startDate = startDate;
 		this.price = price;
 		this.availableNumber = availableNumber;
+	}
+
+	public double getAverageScore() {
+		return averageScore;
+	}
+
+	public void setAverageScore(int averageScore) {
+		this.averageScore = averageScore;
+	}
+
+	public int getNumberOfScores() {
+		return numberOfScores;
+	}
+
+	public void setNumberOfScores(int numberOfScores) {
+		this.numberOfScores = numberOfScores;
 	}
 
 	public Long getBikeId() {
@@ -114,12 +154,12 @@ public class ServiceBikeDto {
 		this.numberOfRents = numberOfRents;
 	}
 
-	public double getAverageScore() {
-		return averageScore;
+	public double getTotalScore() {
+		return totalScore;
 	}
 
-	public void setAverageScore(double averageScore) {
-		this.averageScore = averageScore;
+	public void setTotalScore(double totalScore) {
+		this.totalScore = totalScore;
 	}
 
 	@Override
@@ -127,18 +167,19 @@ public class ServiceBikeDto {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + availableNumber;
-		long temp;
-		temp = Double.doubleToLongBits(averageScore);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result
 				+ ((modelName == null) ? 0 : modelName.hashCode());
 		result = prime * result + numberOfRents;
+		result = prime * result + numberOfScores;
 		result = prime * result + Float.floatToIntBits(price);
 		result = prime * result
 				+ ((startDate == null) ? 0 : startDate.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(totalScore);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -153,8 +194,7 @@ public class ServiceBikeDto {
 		ServiceBikeDto other = (ServiceBikeDto) obj;
 		if (availableNumber != other.availableNumber)
 			return false;
-		if (Double.doubleToLongBits(averageScore) != Double
-				.doubleToLongBits(other.averageScore))
+		if (averageScore != other.averageScore)
 			return false;
 		if (bikeId == null) {
 			if (other.bikeId != null)
@@ -173,12 +213,17 @@ public class ServiceBikeDto {
 			return false;
 		if (numberOfRents != other.numberOfRents)
 			return false;
+		if (numberOfScores != other.numberOfScores)
+			return false;
 		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
 			return false;
 		if (startDate == null) {
 			if (other.startDate != null)
 				return false;
 		} else if (!startDate.equals(other.startDate))
+			return false;
+		if (Double.doubleToLongBits(totalScore) != Double
+				.doubleToLongBits(other.totalScore))
 			return false;
 		return true;
 	}

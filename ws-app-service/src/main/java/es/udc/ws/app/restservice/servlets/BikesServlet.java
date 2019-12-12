@@ -36,44 +36,59 @@ public class BikesServlet extends HttpServlet {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("POST Invalid Request: " + 
-								"invalid path " +path)),
+							new InputValidationException(
+									"POST Invalid Request: " + "invalid path "
+											+ path)),
 					null);
 		}
 
 		ServiceBikeDto bikeDto;
 		try {
-			bikeDto = JsonServiceBikeDtoConversor.toServiceBikeDtoPost(req.getInputStream());
-		}catch (ParsingBikeException ex) {
+			bikeDto = JsonServiceBikeDtoConversor
+					.toServiceBikeDtoPost(req.getInputStream());
+		} catch (ParsingException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException(ex.getMessage())),
+					null);
+			return;
+		} catch (ParsingBikeException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
 					JsonServiceExceptionConversor.toParsingBikeException(
 							ex), null);
 			return;
 		}
-		Bike  bike = BikeToBikeDtoConversor.toBike(bikeDto);
+
+		Bike bike = BikeToBikeDtoConversor.toBike(bikeDto);
 		try {
-			bike = BikeServiceFactory.getService().addBike(bike.getModelName(), 
-					bike.getDescription(), bike.getStartDate(), 
-					bike.getPrice(), bike.getAvailableNumber());
-		}catch (InputValidationException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
-					JsonServiceExceptionConversor.toInputValidationException(ex), null);
+			bike = BikeServiceFactory.getService().addBike(bike.getModelName(),
+					bike.getDescription(), bike.getStartDate(), bike.getPrice(),
+					bike.getAvailableNumber());
+		} catch (InputValidationException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor
+							.toInputValidationException(ex),
+					null);
 			return;
-		}catch (NumberOfBikesException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
-					JsonServiceExceptionConversor.toNumberOfBikesException(ex), null);
+		} catch (NumberOfBikesException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_FORBIDDEN,
+					JsonServiceExceptionConversor.toNumberOfBikesException(ex),
+					null);
 			return;
 		}
 		bikeDto = BikeToBikeDtoConversor.toBikeDto(bike);
-		
-		String bikeURL = ServletUtils.normalizePath(req.getRequestURI().toString()) + "/" 
-				+ bike.getBikeId();
+
+		String bikeURL = ServletUtils.normalizePath(
+				req.getRequestURI().toString()) + "/" + bike.getBikeId();
 		Map<String, String> headers = new HashMap<>(1);
 		headers.put("Location", bikeURL);
-		
-		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED, 
+
+		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED,
 				JsonServiceBikeDtoConversor.toObjectNode(bikeDto), headers);
-		
+
 	}
 
 	@Override
@@ -81,10 +96,11 @@ public class BikesServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("PUT Invalid Request: " 
-									+ "no id on url")),
+							new InputValidationException(
+									"PUT Invalid Request: " + "no id on url")),
 					null);
 		}
 		String bikeIdAsString = path.substring(1);
@@ -92,17 +108,19 @@ public class BikesServlet extends HttpServlet {
 		try {
 			bikeId = Long.valueOf(bikeIdAsString);
 		} catch (NumberFormatException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("PUT Invalid Request: " 
-									+ "invalid bike id, not a number '" 
+							new InputValidationException("PUT Invalid Request: "
+									+ "invalid bike id, not a number '"
 									+ bikeIdAsString + "'")),
 					null);
 			return;
 		}
 		ServiceBikeDto bikeDto;
 		try {
-			bikeDto = JsonServiceBikeDtoConversor.toServiceBikeDtoPut(req.getInputStream());
+			bikeDto = JsonServiceBikeDtoConversor
+					.toServiceBikeDtoPut(req.getInputStream());
 			bikeDto.setBikeId(bikeId);
 		} catch (ParsingException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
@@ -111,93 +129,85 @@ public class BikesServlet extends HttpServlet {
 									"Json not well formed")), null);
 			return;
 		}
+
 		if (!bikeId.equals(bikeDto.getBikeId())) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND, 
-				JsonServiceExceptionConversor.toInputValidationException(
-						new InputValidationException("PUT Invalid Request: " + 
-								"invalid bikeId from url or dto")),
-				null);
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException("PUT Invalid Request: "
+									+ "invalid bikeId from url or dto")),
+					null);
 			return;
 		}
 		Bike bike = BikeToBikeDtoConversor.toBike(bikeDto);
-	
-		try {
-			BikeServiceFactory.getService().updateBike(bike.getBikeId(), 
-					bike.getModelName() , bike.getDescription(), bike.getStartDate(), 
-					bike.getPrice(), bike.getAvailableNumber());
-		} catch ( InputValidationException  ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
-				JsonServiceExceptionConversor.toInputValidationException(
-						new InputValidationException("PUT Invalid Request: " + 
-								"invalid data to update")),
-				null);
-			return;
-		} 
-		catch (InstanceNotFoundException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
-				JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
-			return;
-		}catch (UpdateReservedBikeException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
-					 JsonServiceExceptionConversor.toUpdateReservedBikeException(
-						 ex),
-				null);
-			return;
-		}catch (NumberOfBikesException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_FORBIDDEN, 
-					 JsonServiceExceptionConversor.toNumberOfBikesException(
-						 ex),
-				null);
-			return;
-		}
-		
-		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NO_CONTENT, null, null);
-	}
-	
 
-	
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		/*String path = ServletUtils.normalizePath(req.getPathInfo());
-		if (path == null || path.length() == 0) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+		try {
+			BikeServiceFactory.getService().updateBike(bike.getBikeId(),
+					bike.getModelName(), bike.getDescription(),
+					bike.getStartDate(), bike.getPrice(),
+					bike.getAvailableNumber());
+		} catch (InputValidationException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("DELETE Invalid Request: " + 
-									"invalid bike id")),
+							new InputValidationException(
+									"PUT Invalid Request:" + ex)),
+					null);
+			return;
+		} catch (InstanceNotFoundException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_NOT_FOUND,
+					JsonServiceExceptionConversor
+							.toInstanceNotFoundException(ex),
+					null);
+			return;
+		} catch (UpdateReservedBikeException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_FORBIDDEN,
+					JsonServiceExceptionConversor
+							.toUpdateReservedBikeException(ex),
+					null);
+			return;
+		} catch (NumberOfBikesException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_FORBIDDEN,
+					JsonServiceExceptionConversor.toNumberOfBikesException(ex),
 					null);
 			return;
 		}
-		String bikeIdAsString = path.substring(1);
-		//System.out.println(bikeIdAsString);
-		Long bikeId;
-		try {
-			bikeId = Long.valueOf(bikeIdAsString);
-		} catch (NumberFormatException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
-					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("DELETE Invalid Request: " 
-									+ "invalid bike id, not a number '" 
-									+ bikeIdAsString + "'")),
-					null);
-			return;
-		}
-		try {
-			BikeServiceFactory.getService().removeBike(bikeId);
-		}catch (InstanceNotFoundException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
-					JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
-			return;
-		}
-		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NO_CONTENT, null, null);*/
+
+		ServletUtils.writeServiceResponse(resp,
+				HttpServletResponse.SC_NO_CONTENT, null, null);
 	}
-	
-	
-	 protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+
+	/*
+	 * @Override protected void doDelete(HttpServletRequest req,
+	 * HttpServletResponse resp) throws ServletException, IOException { String
+	 * path = ServletUtils.normalizePath(req.getPathInfo()); if (path == null ||
+	 * path.length() == 0) { ServletUtils.writeServiceResponse(resp,
+	 * HttpServletResponse.SC_BAD_REQUEST,
+	 * JsonServiceExceptionConversor.toInputValidationException( new
+	 * InputValidationException("DELETE Invalid Request: " +
+	 * "invalid bike id")), null); return; } String bikeIdAsString =
+	 * path.substring(1); //System.out.println(bikeIdAsString); Long bikeId; try
+	 * { bikeId = Long.valueOf(bikeIdAsString); } catch (NumberFormatException
+	 * ex) { ServletUtils.writeServiceResponse(resp,
+	 * HttpServletResponse.SC_BAD_REQUEST,
+	 * JsonServiceExceptionConversor.toInputValidationException( new
+	 * InputValidationException("DELETE Invalid Request: " +
+	 * "invalid bike id, not a number '" + bikeIdAsString + "'")), null);
+	 * return; } try { BikeServiceFactory.getService().removeBike(bikeId);
+	 * }catch (InstanceNotFoundException ex) {
+	 * ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
+	 * JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
+	 * return; } ServletUtils.writeServiceResponse(resp,
+	 * HttpServletResponse.SC_NO_CONTENT, null, null); }
+	 */
+
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// FIXME Añadir fechas OBLIGATORIAS
 		String path = ServletUtils.normalizePath(req.getPathInfo());
-		System.out.println(path.length());
 		if (path == null || path.length() == 0) {
 				String keywords = req.getParameter("keywords");
 				Calendar calendar = getDate(req.getParameter("date"));
@@ -232,19 +242,20 @@ public class BikesServlet extends HttpServlet {
 			}
 	 	}
 	 }
-		
+
+
 	private static Calendar getDate(String date) {
 		String[] dateSplit = date.split("-");
-		
+
 		int day = Integer.valueOf(dateSplit[0]);
 		int month = Integer.valueOf(dateSplit[1]);
 		int year = Integer.valueOf(dateSplit[2]);
-		
+
 		Calendar dateAvailableAux = Calendar.getInstance();
-		dateAvailableAux.set(Calendar.DAY_OF_MONTH,day);
-		dateAvailableAux.set(Calendar.MONTH,month - 1);
-		dateAvailableAux.set(Calendar.YEAR,year);
-		
+		dateAvailableAux.set(Calendar.DAY_OF_MONTH, day);
+		dateAvailableAux.set(Calendar.MONTH, month - 1);
+		dateAvailableAux.set(Calendar.YEAR, year);
+
 		return dateAvailableAux;
 	}
 

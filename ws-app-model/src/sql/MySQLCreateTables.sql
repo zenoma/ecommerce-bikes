@@ -21,12 +21,14 @@ CREATE TABLE Bike (
 	availableNumber INT NOT NULL,
 	adquisitionDate DATETIME NOT NULL,
 	numberOfRents INT NOT NULL,
-	averageScore FLOAT NOT NULL,
+	totalScore FLOAT NOT NULL,
+	numberOfScores INT NOT NULL,
 	CONSTRAINT BikePK PRIMARY KEY(bikeId),
 	CONSTRAINT validPrice CHECK (price >= 0),
 	CONSTRAINT validAvailableNumber CHECK (availableNumber >= 0),
 	CONSTRAINT validNumberOfRents CHECK (numberOfRents >= 0),
-	CONSTRAINT validAverageScore CHECK (averageScore >= 0) ) ENGINE = InnoDB;
+	CONSTRAINT validNumberOfScores CHECK (numberOfScores >= 0),
+	CONSTRAINT validTotalScore CHECK (totalScore >= 0) ) ENGINE = InnoDB;
 
 
 ------------------------------------ Sale ------------------------------------

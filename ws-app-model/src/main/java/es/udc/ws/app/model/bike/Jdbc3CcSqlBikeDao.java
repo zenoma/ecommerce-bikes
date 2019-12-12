@@ -14,8 +14,8 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 		// Create queryStrin
 		String queryString = "INSERT INTO Bike"
 				+ "(modelName, description, startDate, price, availableNumber, "
-				+ "adquisitionDate, numberOfRents, averageScore)"
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "adquisitionDate, numberOfRents, totalScore, numberOfScores)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				queryString, Statement.RETURN_GENERATED_KEYS)) {
@@ -36,7 +36,8 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 					: null;
 			preparedStatement.setTimestamp(i++, timeStamp);
 			preparedStatement.setInt(i++, bike.getNumberOfRents());
-			preparedStatement.setDouble(i++, bike.getAverageScore());
+			preparedStatement.setDouble(i++, bike.getTotalScore());
+			preparedStatement.setInt(i++, bike.getNumberOfScores());
 
 			// Execute query
 			preparedStatement.executeUpdate();
@@ -54,7 +55,8 @@ public class Jdbc3CcSqlBikeDao extends AbstractSqlBikeDao {
 			return new Bike(bikeId, bike.getModelName(), bike.getDescription(),
 					bike.getStartDate(), bike.getPrice(),
 					bike.getAvailableNumber(), bike.getAdquisitionDate(),
-					bike.getNumberOfRents(), bike.getAverageScore());
+					bike.getNumberOfRents(), bike.getTotalScore(),
+					bike.getNumberOfScores());
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

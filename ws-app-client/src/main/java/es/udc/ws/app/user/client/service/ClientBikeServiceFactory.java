@@ -4,7 +4,7 @@ import es.udc.ws.util.configuration.ConfigurationParametersManager;
 
 public class ClientBikeServiceFactory {
 
-	private final static String CLASS_NAME_PARAMETER = "ClientBikeServiceFactory.className";
+	private final static String CLASS_NAME_PARAMETER = "UserClientBikeServiceFactory.className";
 	private static Class<ClientBikeService> serviceClass = null;
 
 	private ClientBikeServiceFactory() {
