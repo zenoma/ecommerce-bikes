@@ -1,6 +1,7 @@
 package es.udc.ws.app.user.client.service.rest.json;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,40 +49,72 @@ public class JsonClientBikeDtoConversor {
 	public static ClientBikeDto toClientBikeDto(InputStream jsonBike)
 			throws ParsingException {
 		try {
-			ObjectMapper objectMapper = ObjectMapperFactory.instance();
 
+			ObjectMapper objectMapper = ObjectMapperFactory.instance();
 			JsonNode rootNode = objectMapper.readTree(jsonBike);
 			if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
 				throw new ParsingException(
 						"Unrecognized JSON (object expected)");
 			} else {
-				ObjectNode bikeObject = (ObjectNode) rootNode;
-				Long bikeId = bikeObject.get("bikeId").longValue();
+				return toClientBikeDto(rootNode);
+			}
+		} catch (ParsingException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
+	}
 
-				String modelName = bikeObject.get("modelName").textValue()
-						.trim();
+	public static ClientBikeDto toClientBikeDto(JsonNode bikeNode)
+			throws ParsingException {
+		if (bikeNode.getNodeType() != JsonNodeType.OBJECT) {
+			throw new ParsingException("Unrecognized JSON (object expected)");
+		} else {
+			ObjectNode bikeObject = (ObjectNode) bikeNode;
+			Long bikeId = bikeObject.get("bikeId").longValue();
 
-				String description = bikeObject.get("description").textValue()
-						.trim();
+			String modelName = bikeObject.get("modelName").textValue().trim();
 
-				float price = bikeObject.get("price").floatValue();
+			String description = bikeObject.get("description").textValue()
+					.trim();
 
-				int availableNumber = bikeObject.get("availableNumber")
-						.intValue();
+			float price = bikeObject.get("price").floatValue();
 
-				JsonNode calendarObjectNode = bikeObject.get("startDate");
-				Calendar date = Calendar.getInstance();
-				date.set(calendarObjectNode.get("year").intValue(),
-						calendarObjectNode.get("month").intValue() - 1,
-						calendarObjectNode.get("day").intValue());
+			int availableNumber = bikeObject.get("availableNumber").intValue();
 
-				int numberOfRents = bikeObject.get("numberOfRents").intValue();
+			JsonNode calendarObjectNode = bikeObject.get("startDate");
+			Calendar date = Calendar.getInstance();
+			date.set(calendarObjectNode.get("year").intValue(),
+					calendarObjectNode.get("month").intValue() - 1,
+					calendarObjectNode.get("day").intValue());
 
-				double averageScore = bikeObject.get("averageScore")
-						.doubleValue();
+			int numberOfRents = bikeObject.get("numberOfRents").intValue();
 
-				return new ClientBikeDto(bikeId, modelName, description, date,
-						price, availableNumber, numberOfRents, averageScore);
+			double averageScore = bikeObject.get("averageScore").doubleValue();
+
+			return new ClientBikeDto(bikeId, modelName, description, date,
+					price, availableNumber, numberOfRents, averageScore);
+		}
+	}
+
+	public static List<ClientBikeDto> toClientBikeDtos(InputStream jsonBikes)
+			throws ParsingException {
+		try {
+
+			ObjectMapper objectMapper = ObjectMapperFactory.instance();
+			JsonNode rootNode = objectMapper.readTree(jsonBikes);
+			if (rootNode.getNodeType() != JsonNodeType.ARRAY) {
+				throw new ParsingException(
+						"Unrecognized JSON (array expected)");
+			} else {
+				ArrayNode bikesArray = (ArrayNode) rootNode;
+				List<ClientBikeDto> bikeDtos = new ArrayList<>(
+						bikesArray.size());
+				for (JsonNode bikeNode : bikesArray) {
+					bikeDtos.add(toClientBikeDto(bikeNode));
+				}
+
+				return bikeDtos;
 			}
 		} catch (ParsingException ex) {
 			throw ex;
