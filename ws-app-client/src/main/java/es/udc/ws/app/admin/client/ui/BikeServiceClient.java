@@ -1,11 +1,15 @@
 package es.udc.ws.app.admin.client.ui;
 
 import es.udc.ws.app.admin.client.service.ClientBikeServiceFactory;
+import es.udc.ws.app.admin.client.service.dto.ClientBikeDto;
+import es.udc.ws.app.admin.client.service.ClientBikeService;
+
+import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.exceptions.InputValidationException;
 
 import java.util.Calendar;
 
-import es.udc.ws.app.admin.client.service.ClientBikeService;
+
 
 public class BikeServiceClient {
 
@@ -18,6 +22,7 @@ public class BikeServiceClient {
 		
 		if("-addBike".equalsIgnoreCase(args[0])) {
 			validateArgs(args, 6, new int[] {4, 5});
+			System.out.println("Despues validate");
 			
 			//addBike <name> <description> <availabilityDate> <price> <units>
 			
@@ -28,11 +33,48 @@ public class BikeServiceClient {
                 System.out.println("Bike " + bikeId + " created sucessfully");
 
             } catch (NumberFormatException | InputValidationException ex) {
+            	System.out.println("Error 1");
                 ex.printStackTrace(System.err);
             } catch (Exception ex) {
+            	System.out.println("Error 2");
                 ex.printStackTrace(System.err);
             }
 			
+		}  else if("-updateBike".equalsIgnoreCase(args[0])) {
+	           validateArgs(args, 7, new int[] {1, 5, 6});
+
+	           // -updateBike <id> <name> <description> <availabilityDate> <price> <units>
+
+	           try {
+	                clientBikeService.updateBike(Long.valueOf(args[1]),
+	                        args[2], args[3], stringToCalendar(args[4]),
+	                        Float.valueOf(args[5]), Short.valueOf(args[6]));
+
+	                System.out.println("Bike " + args[1] + " updated sucessfully");
+
+	            } catch (NumberFormatException | InstanceNotFoundException ex) {
+	                ex.printStackTrace(System.err);
+	            } catch (Exception ex) {
+	                ex.printStackTrace(System.err);
+	            }
+		} else if("-findBike".equalsIgnoreCase(args[0])) {
+            validateArgs(args, 2, new int[] {1});
+
+            // -findBike <bikeId>
+            try {
+                ClientBikeDto bike = clientBikeService.findBike(Long.valueOf(args[1]));
+                    System.out.println("Id: " + bike.getBikeId() +
+                            ", ModelName: " + bike.getModelName() +
+                            ", Description: " + bike.getDescription() +
+                            ", Start Date: " + bike.getStartDate() +
+                            ", Price: " + bike.getPrice() +
+                            ", Available Number: " + bike.getAvailableNumber() +
+                            ", Number Of Rents: " + bike.getNumberOfRents() +
+                            ", Average Score: " + bike.getAverageScore());
+                
+            } catch (Exception ex) {
+                ex.printStackTrace(System.err);
+            }
 		}
 		
 	}
@@ -45,14 +87,17 @@ public class BikeServiceClient {
     public static void printUsage() {
         System.err.println("Usage:\n" +
                 "    -addBike <name> <description> <availabilityDate> <price> <units>\n" +
-                "    -updateBike Bike <id> <name> <description> <availabilityDate> <price> <units>\n" +
-                "    -findBike <bikeId> >\n");
+                "    -updateBike <id> <name> <description> <availabilityDate> <price> <units>\n" +
+                "    -findBike <bikeId>\n");
     }
     
 	public static void validateArgs(String[] args, int expectedArgs, int[] numericArguments) {
+		System.out.println("Primero validate");
 		if (expectedArgs != args.length) {
+			System.out.println("Segundo validate");
 			printUsageAndExit();
 		}
+		System.out.println("Cuarto validate");
 		for (int i = 0; i < numericArguments.length; i++) {
 			int position = numericArguments[i];
 			try {
