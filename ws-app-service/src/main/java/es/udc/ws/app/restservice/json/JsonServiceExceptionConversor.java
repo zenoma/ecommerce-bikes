@@ -11,6 +11,8 @@ import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
+import es.udc.ws.app.restservice.exceptions.ParsingRentException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -106,6 +108,28 @@ public class JsonServiceExceptionConversor {
 			dataObject.set("Date", null);
 			dataObject.set("startDate", null);
 		}
+
+		return exceptionObject;
+	}
+	
+	public static JsonNode toParsingBikeException (ParsingBikeException ex) {
+		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
+		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
+		
+		dataObject.put("message ", ex.getMessage());
+
+		exceptionObject.set("ParsingBikeException", dataObject);
+
+		return exceptionObject;
+	}
+	
+	public static JsonNode toParsingRentException (ParsingRentException ex) {
+		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
+		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
+		
+		dataObject.put("message ", ex.getMessage());
+
+		exceptionObject.set("ParsingBikeException", dataObject);
 
 		return exceptionObject;
 	}

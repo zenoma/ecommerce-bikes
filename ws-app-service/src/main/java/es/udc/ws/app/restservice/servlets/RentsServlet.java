@@ -10,7 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.dto.ServiceRentDto;
+import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
+import es.udc.ws.app.restservice.exceptions.ParsingRentException;
+import es.udc.ws.app.restservice.json.JsonServiceBikeDtoConversor;
 import es.udc.ws.app.restservice.json.JsonServiceExceptionConversor;
 import es.udc.ws.app.restservice.json.JsonServiceRentDtoConversor;
 import es.udc.ws.app.serviceutil.RentToRentDtoConversor;
@@ -42,11 +46,11 @@ public class RentsServlet extends HttpServlet{
 		
 		ServiceRentDto rentDto;
 		try {
-			rentDto = JsonServiceRentDtoConversor.toServiceRentDto(req.getInputStream());
-		}catch(ParsingException ex) {
+			rentDto = JsonServiceRentDtoConversor.toServiceRentDtoPost(req.getInputStream());
+		}catch(ParsingRentException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
-					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException(ex.getMessage())), null);
+					JsonServiceExceptionConversor.toParsingRentException(
+							ex), null);
 			return;
 		}
 		Rent rent = RentToRentDtoConversor.toRent(rentDto);
@@ -82,6 +86,47 @@ public class RentsServlet extends HttpServlet{
 		
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
 				JsonServiceRentDtoConversor.toJsonObject(rentDto), null);
+	}
+	/*
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) 
+			throws ServletException, IOException{
+		//FIXME Continuar
+		String path = ServletUtils.normalizePath(req.getPathInfo());
+		if (path == null || path.length() == 0) {
+			//ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException("PUT Invalid Request: " 
+									+ "no id on url")),
+					null);
+			int score = Integer.valueOf(req.getParameter("score"));
+		}
+		String rentIdAsString =path.substring(1);
+		
+		
+		Long rentId;
+		try {
+			rentId = Long.valueOf(rentIdAsString);
+		}catch (NumberFormatException ex){
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException("PUT Invalid Request: " 
+									+ "invalid bike id, not a number '" 
+									+ rentIdAsString + "'")),
+					null);
+			return;
+		}
+		
+		try {
+			BikeServiceFactory.getService().rateRent(rentId, score);
+		}catch (ParsingException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
+	}*/
+	
+	protected void doDelete() {
+		
 	}
 	
 	@Override
