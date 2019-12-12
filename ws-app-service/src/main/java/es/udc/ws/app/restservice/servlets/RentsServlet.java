@@ -87,21 +87,23 @@ public class RentsServlet extends HttpServlet{
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
 				JsonServiceRentDtoConversor.toJsonObject(rentDto), null);
 	}
-	/*
+	
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException{
-		//FIXME Continuar
 		String path = ServletUtils.normalizePath(req.getPathInfo());
-		if (path == null || path.length() == 0) {
-			//ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
-					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("PUT Invalid Request: " 
-									+ "no id on url")),
-					null);
-			int score = Integer.valueOf(req.getParameter("score"));
-		}
 		String rentIdAsString =path.substring(1);
+		String scoreString = (req.getParameter("score"));
 		
+		int score = 0;
+		if (scoreString != null) {
+			score = Integer.valueOf(scoreString);
+		}else {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+			JsonServiceExceptionConversor.toInputValidationException(
+					new InputValidationException("PUT Invalid Request: " 
+							+ "invalid score")),
+			null);
+		}
 		
 		Long rentId;
 		try {
@@ -123,7 +125,7 @@ public class RentsServlet extends HttpServlet{
 		} catch (Exception e) {
 			throw new ParsingException(e);
 		}
-	}*/
+	}
 	
 	protected void doDelete() {
 		
