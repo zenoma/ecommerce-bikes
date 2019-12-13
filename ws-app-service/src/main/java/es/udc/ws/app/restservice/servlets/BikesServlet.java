@@ -69,7 +69,7 @@ public class BikesServlet extends HttpServlet {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor
-							.toInputValidationException( new InputValidationException("Imposible to add Bike, caused by: " + ex.getLocalizedMessage())),
+							.toInputValidationException( new InputValidationException("POST Imposible to add Bike, caused by: " + ex.getLocalizedMessage())),
 					null);
 			return;
 		} catch (NumberOfBikesException ex) {
@@ -155,7 +155,7 @@ public class BikesServlet extends HttpServlet {
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
 							new InputValidationException(
-									"PUT Invalid Request:" + ex)),
+									"PUT Imposible to modify Bike, caused by:" + ex)),
 					null);
 			return;
 		} catch (InstanceNotFoundException ex) {
