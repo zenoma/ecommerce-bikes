@@ -21,7 +21,7 @@ public class BikeServiceClient {
 		ClientBikeService clientBikeService = ClientBikeServiceFactory.getService();
 		
 		if("-addBike".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 6, new int[] {4, 5});
+			validateArgsAddBike(args);
 			
 			//addBike <name> <description> <availabilityDate> <price> <units>
 			
@@ -39,7 +39,7 @@ public class BikeServiceClient {
             }
 			
 		}  else if("-updateBike".equalsIgnoreCase(args[0])) {
-	           validateArgs(args, 7, new int[] {1, 5, 6});
+	           validateArgsUpdateBike(args);
 
 	           // -updateBike <id> <name> <description> <availabilityDate> <price> <units>
 
@@ -57,7 +57,7 @@ public class BikeServiceClient {
 	                ex.printStackTrace(System.err);
 	            }
 		} else if("-findBike".equalsIgnoreCase(args[0])) {
-            validateArgs(args, 2, new int[] {1});
+            validateArgsFindBike(args);
 
             // -findBike <bikeId>
             try {
@@ -90,10 +90,74 @@ public class BikeServiceClient {
                 "    -findBike <bikeId>\n");
     }
     
-	public static void validateArgs(String[] args, int expectedArgs, int[] numericArguments) {
-		if (expectedArgs != args.length) {
-			printUsageAndExit();
+	public static void validateArgsAddBike(String[] args) {
+		int expectedArgs = 6;
+		int[] numericArguments = {4, 5};
+		
+		if (expectedArgs > args.length) {
+			System.out.println("Inserted number of arguments less than necessary");
+			System.out.println("Usage: -addBike <name> <description> <availabilityDate> <price> <units>");
+			System.exit(-1);
+		} 
+		
+		if (expectedArgs < args.length) {
+			System.out.println("Inserted number of arguments greater than necessary");
+			System.out.println("Usage: -addBike <name> <description> <availabilityDate> <price> <units>");
+			System.exit(-1);
+		} 
+		
+		for (int i = 0; i < numericArguments.length; i++) {
+			int position = numericArguments[i];
+			try {
+				Double.parseDouble(args[position]);
+			} catch (NumberFormatException n) {
+				printUsageAndExit();
+			}
 		}
+	}
+	
+	public static void validateArgsUpdateBike(String[] args) {
+		int expectedArgs = 7;
+		int[] numericArguments = {1, 5, 6};
+		
+		if (expectedArgs > args.length) {
+			System.out.println("Inserted number of arguments less than necessary");
+			System.out.println("Usage: -updateBike <id> <name> <description> <availabilityDate> <price> <units>");
+			System.exit(-1);
+		} 
+		
+		if (expectedArgs < args.length) {
+			System.out.println("Inserted number of arguments greater than necessary");
+			System.out.println("Usage: -updateBike <id> <name> <description> <availabilityDate> <price> <units>");
+			System.exit(-1);
+		} 
+		
+		for (int i = 0; i < numericArguments.length; i++) {
+			int position = numericArguments[i];
+			try {
+				Double.parseDouble(args[position]);
+			} catch (NumberFormatException n) {
+				printUsageAndExit();
+			}
+		}
+	}
+	
+	public static void validateArgsFindBike(String[] args) {
+		int expectedArgs = 2;
+		int[] numericArguments = {1};
+		
+		if (expectedArgs > args.length) {
+			System.out.println("Inserted number of arguments less than necessary");
+			System.out.println("Usage: -findBike <bikeId>");
+			System.exit(-1);
+		} 
+		
+		if (expectedArgs < args.length) {
+			System.out.println("Inserted number of arguments greater than necessary");
+			System.out.println("Usage: -findBike <bikeId>");
+			System.exit(-1);
+		} 
+		
 		for (int i = 0; i < numericArguments.length; i++) {
 			int position = numericArguments[i];
 			try {
@@ -108,8 +172,10 @@ public class BikeServiceClient {
 		
 		String delims = "[-,']";
 		String[] tokens = s.split(delims);
+		Short month = Short.valueOf(tokens[1]);
+		Short day = Short.valueOf(tokens[0]);
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[1])-1, Integer.parseInt(tokens[0]));
+		calendar.set(Integer.parseInt(tokens[2]), month-1, day);
 		
 		return calendar;
 	}
