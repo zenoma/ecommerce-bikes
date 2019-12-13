@@ -68,8 +68,8 @@ public final class BikesPropertyValidator {
 					+ "and " + calendarPost + " values cannot be null");
 		} else {
 			if (calendarPrev.after(calendarPost)) {
-				throw new InputValidationException("Invalid: calendarPrev"
-						+ calendarPrev.getTime() + "must be previous than calendarPost)"
+				throw new InputValidationException("Invalid: calendarPrev "
+						+ calendarPrev.getTime() + "must be previous than calendarPost) "
 						+ calendarPost.getTime());
 			}
 		}
@@ -126,7 +126,7 @@ public final class BikesPropertyValidator {
 					+ finishDate.getTime() + " values cannot be null");
 		}
 		if (startDate.after(finishDate)) {
-			throw new InputValidationException("Invalid: calendarPrev"
+			throw new InputValidationException("Invalid: calendarPrev "
 					+ startDate.getTime() + "must be previous than calendarPost)"
 					+ finishDate.getTime());
 		}
@@ -158,7 +158,7 @@ public final class BikesPropertyValidator {
 			throws InputValidationException {
 		if (startDate == null) {
 			throw new InputValidationException(
-					"Invalid: startDate" + startDate.getTime() + "is null.");
+					"Invalid: startDate " + startDate.getTime() + " is null.");
 		}
 	}
 }
