@@ -158,8 +158,8 @@ public class BikeServiceImpl implements BikeService {
 							bike.getAdquisitionDate(), startDate);
 					bike.setStartDate(startDate);
 				}
-
-				if (price >= 0) {
+				
+				if (price > 0) {
 					bike.setPrice(price);
 				} else {
 					throw new InputValidationException(
