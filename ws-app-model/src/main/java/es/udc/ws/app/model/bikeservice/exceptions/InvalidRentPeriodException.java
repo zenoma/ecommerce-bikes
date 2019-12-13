@@ -10,8 +10,8 @@ public class InvalidRentPeriodException extends Exception {
 
 	public InvalidRentPeriodException(Calendar startDate, Calendar finishDate) {
 
-		super("Invalid reservation period: Period between " + startDate
-				+ " and " + finishDate + " is greater than 15 days.");
+		super("Invalid reservation period: Period between " + startDate.getTime()
+				+ " and " + finishDate.getTime() + " is greater than 15 days.");
 		this.startDate = startDate;
 		this.finishDate = finishDate;
 	}

@@ -83,7 +83,10 @@ public class BikeServiceImpl implements BikeService {
 			startDate.set(Calendar.SECOND, 0);
 		}
 		Bike bike = new Bike(modelName, description, startDate, price,
-				availableNumber, calendar, 0, -1, 0);
+				availableNumber, calendar, 0, 0, 0);
+		if (bike.getAvailableNumber() <= 0) {
+			throw new InputValidationException("Invalid Number of Units: Must be greater than 0");
+		}
 		validateBike(bike);
 
 		try (Connection connection = dataSource.getConnection()) {
@@ -156,7 +159,7 @@ public class BikeServiceImpl implements BikeService {
 					bike.setStartDate(startDate);
 				}
 
-				if (price > 0) {
+				if (price >= 0) {
 					bike.setPrice(price);
 				} else {
 					throw new InputValidationException(

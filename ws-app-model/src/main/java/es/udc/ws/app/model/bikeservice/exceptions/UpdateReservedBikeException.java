@@ -12,7 +12,7 @@ public class UpdateReservedBikeException extends Exception {
 	public UpdateReservedBikeException(Long bikeId, Calendar date,
 			Calendar startDate) {
 		super("Bike with id=\"" + bikeId + "\" can't delay the rent day to \""
-				+ date + "\".(Actual bike rent day = \"" + startDate + ")");
+				+ date + "\".(Actual bike rent day = \"" + startDate.getTime() + ")");
 		this.bikeId = bikeId;
 		this.date = date;
 		this.startDate = startDate;

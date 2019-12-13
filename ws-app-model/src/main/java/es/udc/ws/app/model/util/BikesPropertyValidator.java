@@ -55,7 +55,7 @@ public final class BikesPropertyValidator {
 		} else {
 			if (propertyValue.before(now)) {
 				throw new InputValidationException("Invalid " + propertyName
-						+ " value (it must be a past date): " + propertyValue);
+						+ " value (it must be a past date): " + propertyValue.getTime());
 			}
 		}
 	}
@@ -69,8 +69,8 @@ public final class BikesPropertyValidator {
 		} else {
 			if (calendarPrev.after(calendarPost)) {
 				throw new InputValidationException("Invalid: calendarPrev"
-						+ calendarPrev + "must be previous than calendarPost)"
-						+ calendarPost);
+						+ calendarPrev.getTime() + "must be previous than calendarPost)"
+						+ calendarPost.getTime());
 			}
 		}
 	}
@@ -86,7 +86,7 @@ public final class BikesPropertyValidator {
 			if (propertyValue.before(now)) {
 				throw new InputValidationException("Invalid " + propertyName
 						+ " value (it must be a future date): "
-						+ propertyValue);
+						+ propertyValue.getTime());
 			}
 		}
 	}
@@ -122,13 +122,13 @@ public final class BikesPropertyValidator {
 			Calendar finishDate)
 			throws InputValidationException, InvalidRentPeriodException {
 		if (startDate == null || finishDate == null) {
-			throw new InputValidationException("Invalid " + startDate + "or "
-					+ finishDate + " values cannot be null");
+			throw new InputValidationException("Invalid " + startDate.getTime() + "or "
+					+ finishDate.getTime() + " values cannot be null");
 		}
 		if (startDate.after(finishDate)) {
 			throw new InputValidationException("Invalid: calendarPrev"
-					+ startDate + "must be previous than calendarPost)"
-					+ finishDate);
+					+ startDate.getTime() + "must be previous than calendarPost)"
+					+ finishDate.getTime());
 		}
 		long days = ChronoUnit.DAYS.between(startDate.toInstant(),
 				finishDate.toInstant());
@@ -158,7 +158,7 @@ public final class BikesPropertyValidator {
 			throws InputValidationException {
 		if (startDate == null) {
 			throw new InputValidationException(
-					"Invalid: startDate" + startDate + "is null.");
+					"Invalid: startDate" + startDate.getTime() + "is null.");
 		}
 	}
 }
