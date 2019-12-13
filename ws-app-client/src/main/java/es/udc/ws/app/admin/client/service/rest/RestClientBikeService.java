@@ -35,14 +35,12 @@ public class RestClientBikeService implements ClientBikeService {
 			int availableNumber) throws InputValidationException {
 		
 		 try {
-			 	
 			 	ClientBikeDto bike = new ClientBikeDto(modelName, description, startDate, price, availableNumber);
-	            HttpResponse response = Request.Post(getEndpointAddress() + "bikes").
+			 	HttpResponse response = Request.Post(getEndpointAddress() + "bikes").
 	                    bodyStream(toInputStream(bike), ContentType.create("application/json")).
 	                    execute().returnResponse();
-
 	            validateStatusCode(HttpStatus.SC_CREATED, response);
-
+	            
 	            return JsonClientBikeDtoConversor.toClientBikeDto(response.getEntity().getContent());
 
 	        } catch (InputValidationException e) {
@@ -78,11 +76,10 @@ public class RestClientBikeService implements ClientBikeService {
 	public ClientBikeDto findBike(Long bikeId) {
 		
 		try {
-
-            HttpResponse response = Request.Get(getEndpointAddress() + "bikes?bikeId="
+            HttpResponse response = Request.Get(getEndpointAddress() + "bikes/"
                             + URLEncoder.encode(bikeId.toString(), "UTF-8")).
                     execute().returnResponse();
-
+            
             validateStatusCode(HttpStatus.SC_OK, response);
 
             return JsonClientBikeDtoConversor.toClientBikeDto(response.getEntity()

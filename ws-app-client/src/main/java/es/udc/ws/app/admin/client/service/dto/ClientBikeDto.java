@@ -11,7 +11,7 @@ public class ClientBikeDto {
 	private float price;
 	private int availableNumber;
 	private int numberOfRents;
-	private double totalScore;
+	private double averageScore;
 
 	public ClientBikeDto(String modelName, String description, Calendar startDate, float price,
 			int availableNumber) {
@@ -24,23 +24,15 @@ public class ClientBikeDto {
 	
 	public ClientBikeDto(Long bikeId, String modelName, String description, Calendar startDate, float price,
 			int availableNumber) {
-		this.modelName = modelName;
-		this.description = description;
-		this.startDate = startDate;
-		this.price = price;
-		this.availableNumber = availableNumber;
+		this(modelName, description, startDate, price, availableNumber);
+		this.bikeId = bikeId;
 	}
 
 	public ClientBikeDto(Long bikeId, String modelName, String description, Calendar startDate, float price,
-			int availableNumber, int numberOfRents, double totalScore) {
-		this.bikeId = bikeId;
-		this.modelName = modelName;
-		this.description = description;
-		this.startDate = startDate;
-		this.price = price;
-		this.availableNumber = availableNumber;
+			int availableNumber, int numberOfRents, double averageScore) {
+		this(bikeId, modelName, description, startDate, price, availableNumber);
 		this.numberOfRents = numberOfRents;
-		this.totalScore = totalScore;
+		this.averageScore = averageScore;
 	}
 
 	public Long getBikeId() {
@@ -99,12 +91,12 @@ public class ClientBikeDto {
 		this.numberOfRents = numberOfRents;
 	}
 
-	public double getTotalScore() {
-		return totalScore;
+	public double getAverageScore() {
+		return averageScore;
 	}
 
-	public void setTotalScore(double totalScore) {
-		this.totalScore = totalScore;
+	public void setAverageScore(double averageScore) {
+		this.averageScore = averageScore;
 	}
 
 	@Override
@@ -113,7 +105,7 @@ public class ClientBikeDto {
 		int result = 1;
 		result = prime * result + availableNumber;
 		long temp;
-		temp = Double.doubleToLongBits(totalScore);
+		temp = Double.doubleToLongBits(averageScore);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((bikeId == null) ? 0 : bikeId.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -135,7 +127,7 @@ public class ClientBikeDto {
 		ClientBikeDto other = (ClientBikeDto) obj;
 		if (availableNumber != other.availableNumber)
 			return false;
-		if (Double.doubleToLongBits(totalScore) != Double.doubleToLongBits(other.totalScore))
+		if (Double.doubleToLongBits(averageScore) != Double.doubleToLongBits(other.averageScore))
 			return false;
 		if (bikeId == null) {
 			if (other.bikeId != null)

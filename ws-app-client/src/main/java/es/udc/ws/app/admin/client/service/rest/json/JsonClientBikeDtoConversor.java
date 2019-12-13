@@ -32,7 +32,7 @@ public class JsonClientBikeDtoConversor {
 		bikeObject.put("price", bike.getPrice())
 				.put("availableNumber", bike.getAvailableNumber())
 				.put("numberOfRents", bike.getNumberOfRents())
-				.put("totalScore", bike.getTotalScore());
+				.put("averageScore", bike.getAverageScore());
 		
 		return bikeObject;
 	}
@@ -85,7 +85,7 @@ public class JsonClientBikeDtoConversor {
 
 			JsonNode bikeIdNode = bikeObject.get("bikeId");
 			Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue() : null;
-
+			
 			String modelName = bikeObject.get("modelName").textValue().trim();
 			String description = bikeObject.get("description").textValue().trim();
 			JsonNode calendarObject = bikeObject.get("startDate");
@@ -94,11 +94,14 @@ public class JsonClientBikeDtoConversor {
 					calendarObject.get("day").intValue());
 			float price = bikeObject.get("price").floatValue();
 			int availableNumber = bikeObject.get("availableNumber").intValue();
-			int numberOfRents = bikeObject.get("nomberOfRents").intValue();
-			double totalScore = bikeObject.get("totalScore").doubleValue();
+			//int numberOfRents = bikeObject.get("nomberOfRents").intValue();
+			//double averageScore = bikeObject.get("averageScore").doubleValue();
+			 
+//			return new ClientBikeDto(bikeId, modelName, description, date, 
+//					price, availableNumber, numberOfRents, averageScore);
 			
 			return new ClientBikeDto(bikeId, modelName, description, date, 
-					price, availableNumber, numberOfRents, totalScore);
+					price, availableNumber);
 		}
 	}
 	
