@@ -18,6 +18,7 @@ import es.udc.ws.app.model.bike.Bike;
 import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.restservice.exceptions.NotAllowedException;
 import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
 import es.udc.ws.app.restservice.json.JsonServiceBikeDtoConversor;
 import es.udc.ws.app.restservice.json.JsonServiceExceptionConversor;
@@ -125,7 +126,7 @@ public class BikesServlet extends HttpServlet {
 		} catch (ParsingBikeException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
 					JsonServiceExceptionConversor.toParsingBikeException(
-							ex), null);
+							new ParsingBikeException(ex.getMessage())), null);
 			return;
 		}catch(ParsingException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
@@ -155,7 +156,7 @@ public class BikesServlet extends HttpServlet {
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
 							new InputValidationException(
-									"PUT Imposible to modify Bike, caused by:" + ex)),
+									"PUT Imposible to modify Bike, caused by: " + ex.getMessage())),
 					null);
 			return;
 		} catch (InstanceNotFoundException ex) {
@@ -184,29 +185,19 @@ public class BikesServlet extends HttpServlet {
 				HttpServletResponse.SC_NO_CONTENT, null, null);
 	}
 
-	/*
-	 * @Override protected void doDelete(HttpServletRequest req,
-	 * HttpServletResponse resp) throws ServletException, IOException { String
-	 * path = ServletUtils.normalizePath(req.getPathInfo()); if (path == null ||
-	 * path.length() == 0) { ServletUtils.writeServiceResponse(resp,
-	 * HttpServletResponse.SC_BAD_REQUEST,
-	 * JsonServiceExceptionConversor.toInputValidationException( new
-	 * InputValidationException("DELETE Invalid Request: " +
-	 * "invalid bike id")), null); return; } String bikeIdAsString =
-	 * path.substring(1); //System.out.println(bikeIdAsString); Long bikeId; try
-	 * { bikeId = Long.valueOf(bikeIdAsString); } catch (NumberFormatException
-	 * ex) { ServletUtils.writeServiceResponse(resp,
-	 * HttpServletResponse.SC_BAD_REQUEST,
-	 * JsonServiceExceptionConversor.toInputValidationException( new
-	 * InputValidationException("DELETE Invalid Request: " +
-	 * "invalid bike id, not a number '" + bikeIdAsString + "'")), null);
-	 * return; } try { BikeServiceFactory.getService().removeBike(bikeId);
-	 * }catch (InstanceNotFoundException ex) {
-	 * ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NOT_FOUND,
-	 * JsonServiceExceptionConversor.toInstanceNotFoundException(ex), null);
-	 * return; } ServletUtils.writeServiceResponse(resp,
-	 * HttpServletResponse.SC_NO_CONTENT, null, null); }
-	 */
+	
+	  @Override 
+	  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) 
+			  throws ServletException, IOException {  
+		  ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+					JsonServiceExceptionConversor.toNotAllowedException(
+							new NotAllowedException("This method is not supported")),
+					null);
+		  
+		  return;
+	  }
+	 
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

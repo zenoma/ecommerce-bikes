@@ -1,0 +1,112 @@
+@startuml
+
+Class Exception
+Class HttpServlet
+
+
+
+package es.udc.ws.app.dto <<Node>>{
+
+	+Class ServiceBikeDto {
+		-Long bikeId
+		-String modelName
+		-String description
+		-Calendar startDate
+		-float price
+		-int availableNumber
+		-int numberOfRents
+		-double totalScore
+		-int numberOfScores
+		-double averageScore
+	}
+
+	+Class ServiceRentDto {
+		-Long rentId
+		-String userEmail
+		-Long bikeId
+		-Long creditCard
+		-Calendar startRentDate
+		-Calendar finishRentDate
+		-int numberOfBikes
+		-Calendar rentDate
+		-float price
+	}
+}
+
+package es.udc.ws.app.restservice.exceptions <<Node>>{
+    +Class NotAllowedException {
+        -String texto
+    }
+    
+    +Class ParsingBikeException {
+        -String texto
+    }
+    
+    +Class ParsingRentException {
+        -String texto
+    }
+}
+
+package es.udc.ws.app.restservice.json <<Node>>{
+    +Class JsonServiceBikeDtoConversor {
+        {static} +ObjectNode toObjectNode (ServiceBikeDto bike)
+        {static} +ArrayNode toArrayNode (List<ServiceBikeDto> bikes)
+        {static} +ServiceBikeDto toServiceBikeDtoPut (InputStream jsonBike)
+        {static} +ServiceBikeDto toServiceBikeDtoPost (InputStream jsonBike)
+        {static} -ObjectNode getBikeDate (Calendar Date)
+    }
+    
+    +Class JsonServiceExceptionConversor {
+        {static} +final String CONVERSION_PATTERN
+        {static} +JsonNode toInputValidationException (InputValidationException ex)
+        {static} +JsonNode toInstanceNotFoundException (InstanceNotFoundException ex)
+        {static} +JsonNode toInvalidRentPeriodException (InvalidRentPeriodException ex)
+        {static} +JsonNode toNumberOfBikesException(NumberOfBikesException ex)
+        {static} +JsonNode toRentExpirationException (RentExpirationException ex)
+        {static} +JsonNode toUpdateReservedBikeException (UpdateReservedBikeException ex)
+        {static} +JsonNode toParsingBikeException (ParsingBikeException ex)
+        {static} +JsonNode toParsingRentException (ParsingRentException ex)
+        {static} +JsonNode toNotAllowedException (NotAllowedException ex)
+    }
+    
+    +Class JsonServiceBikeDtoConversor{
+        {static} +ObjectNode toObjectNode(ServiceBikeDto bike)
+        {static} +ArrayNode toArrayNode(List<ServiceBikeDto> bikes)
+        {static} +ServiceBikeDto toServiceBikeDtoPut(InputStream jsonBike) throws ParsingBikeException, IOException
+        {static} +ServiceBikeDto toServiceBikeDtoPost(InputStream jsonBike) throws ParsingBikeException, IOException
+        {static} -ObjectNode getBikeDate(Calendar Date)
+    
+    }
+}
+
+package es.udc.ws.app.restservice.servlet <<Node>>{
+    +Class BikesServlet{
+        #void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        #void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        #void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        #void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        {static} -Calendar getDate(String date)
+    }
+    +Class RentsServlet{
+        #void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        #void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        #void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+        #void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    }
+}
+
+package es.udc.ws.app.restservice.serviceutils <<Node>>{
+    +Class BikeToBikeDtoConversor{
+        {static} +List<ServiceBikeDto> toBikeDtos(List<Bike> bikes)
+        {static} +ServiceBikeDto toBikeDto(Bike bike)
+        {static} +Bike toBike(ServiceBikeDto bike)
+    }
+    +Class RentToRentDtoConversor{
+        {static} +ServiceRentDto toRentDto(Rent rent)
+        {static} +Rent toRent(ServiceRentDto rent)
+        {static} +ServiceRentDto toRentDto(Long rent)
+        {static} List<ServiceRentDto> toRentDtos(List<Rent> rents)
+    }
+}
+
+@enduml

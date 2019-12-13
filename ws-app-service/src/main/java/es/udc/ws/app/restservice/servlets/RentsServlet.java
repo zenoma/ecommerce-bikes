@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.dto.ServiceRentDto;
+import es.udc.ws.app.restservice.exceptions.NotAllowedException;
 import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
 import es.udc.ws.app.restservice.exceptions.ParsingRentException;
 import es.udc.ws.app.restservice.json.JsonServiceBikeDtoConversor;
@@ -127,9 +128,17 @@ public class RentsServlet extends HttpServlet{
 		}
 	}
 	
-	protected void doDelete() {
-		
-	}
+	@Override 
+	  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) 
+			  throws ServletException, IOException {  
+		  ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+					JsonServiceExceptionConversor.toNotAllowedException(
+							new NotAllowedException("This method is not supported")),
+					null);
+		  
+		  return;
+	  }
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)

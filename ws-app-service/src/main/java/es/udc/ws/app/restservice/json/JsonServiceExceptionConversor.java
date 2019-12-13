@@ -11,6 +11,7 @@ import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.restservice.exceptions.NotAllowedException;
 import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
 import es.udc.ws.app.restservice.exceptions.ParsingRentException;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -130,6 +131,17 @@ public class JsonServiceExceptionConversor {
 		dataObject.put("message ", ex.getMessage());
 
 		exceptionObject.set("ParsingBikeException", dataObject);
+
+		return exceptionObject;
+	}
+	
+	public static JsonNode toNotAllowedException (NotAllowedException ex) {
+		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
+		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
+		
+		dataObject.put("message ", ex.getMessage());
+
+		exceptionObject.set("NotAllowedException", dataObject);
 
 		return exceptionObject;
 	}
