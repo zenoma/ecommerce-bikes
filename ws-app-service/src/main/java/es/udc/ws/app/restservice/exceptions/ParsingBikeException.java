@@ -4,7 +4,7 @@ public class ParsingBikeException extends Exception{
 	private String texto;
 
 	public ParsingBikeException(String texto) {
-		this.texto = texto + " Not found ";
+		this.texto = texto;
 	}
 
 	@Override

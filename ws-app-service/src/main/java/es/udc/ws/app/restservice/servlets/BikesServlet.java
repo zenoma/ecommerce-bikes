@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonParseException;
+
 import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.model.bike.Bike;
 import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
@@ -46,12 +48,10 @@ public class BikesServlet extends HttpServlet {
 		try {
 			bikeDto = JsonServiceBikeDtoConversor
 					.toServiceBikeDtoPost(req.getInputStream());
-		} catch (ParsingException ex) {
-			ServletUtils.writeServiceResponse(resp,
-					HttpServletResponse.SC_BAD_REQUEST,
-					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException(ex.getMessage())),
-					null);
+		}catch(ParsingException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toParsingBikeException(
+							new ParsingBikeException(ex.getMessage())), null);
 			return;
 		} catch (ParsingBikeException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
@@ -69,7 +69,7 @@ public class BikesServlet extends HttpServlet {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor
-							.toInputValidationException(ex),
+							.toInputValidationException( new InputValidationException("Imposible to add Bike, caused by: " + ex.getLocalizedMessage())),
 					null);
 			return;
 		} catch (NumberOfBikesException ex) {
@@ -117,16 +117,20 @@ public class BikesServlet extends HttpServlet {
 					null);
 			return;
 		}
-		ServiceBikeDto bikeDto;
+		ServiceBikeDto bikeDto = null;
 		try {
 			bikeDto = JsonServiceBikeDtoConversor
 					.toServiceBikeDtoPut(req.getInputStream());
 			bikeDto.setBikeId(bikeId);
-		} catch (ParsingException ex) {
+		} catch (ParsingBikeException ex) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
-					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException("PUT Invalid Request: " + 
-									"Json not well formed")), null);
+					JsonServiceExceptionConversor.toParsingBikeException(
+							ex), null);
+			return;
+		}catch(ParsingException ex) {
+			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST, 
+					JsonServiceExceptionConversor.toParsingBikeException(
+							new ParsingBikeException(ex.getMessage())), null);
 			return;
 		}
 
@@ -222,7 +226,18 @@ public class BikesServlet extends HttpServlet {
 			String bikeIdString = path.substring(1);
 			Long bikeId;
 			if (bikeIdString != null) {
-				bikeId = Long.valueOf(bikeIdString);
+				try {
+					bikeId = Long.valueOf(bikeIdString);
+				}catch (NumberFormatException ex) {
+					ServletUtils.writeServiceResponse(resp,
+							HttpServletResponse.SC_BAD_REQUEST,
+							JsonServiceExceptionConversor.toInputValidationException(
+									new InputValidationException("PUT Invalid Request: "
+											+ "invalid bike id, not a number '"
+											+ bikeIdString + "'")),
+							null);
+					return;
+				}
 				try {
 					Bike bike = BikeServiceFactory.getService().findBike(bikeId);
 					ServiceBikeDto bikeDto = BikeToBikeDtoConversor.toBikeDto(bike);

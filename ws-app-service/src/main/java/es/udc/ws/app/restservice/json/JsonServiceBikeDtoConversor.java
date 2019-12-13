@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
+import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.json.ObjectMapperFactory;
 import es.udc.ws.util.json.exceptions.ParsingException;
 
@@ -50,11 +52,16 @@ public class JsonServiceBikeDtoConversor {
 	}
 
 	public static ServiceBikeDto toServiceBikeDtoPut(InputStream jsonBike)
-			throws ParsingException {
-		try {
+			throws ParsingBikeException, IOException {
+		
 			ObjectMapper objectMapper = ObjectMapperFactory.instance();
-
-			JsonNode rootNode = objectMapper.readTree(jsonBike);
+			JsonNode rootNode = null;
+			try {
+				rootNode = objectMapper.readTree(jsonBike);
+			}catch(JsonParseException ex) {
+				throw new ParsingException(
+						"Unrecognized JSON (malformed)");
+			}
 			if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
 				throw new ParsingException(
 						"Unrecognized JSON (object expected)");
@@ -64,45 +71,75 @@ public class JsonServiceBikeDtoConversor {
 				Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue(): null;
 
 				JsonNode modelNameNode = bikeObject.get("modelName");
-				String modelName = (modelNameNode != null) ? modelNameNode.textValue().trim() : null;
+				String modelName = null; 
+				if (modelNameNode != null) {
+					try {
+						modelName = modelNameNode.textValue().trim();
+					}catch(NullPointerException ex) {
+						throw new ParsingBikeException("Invalid ModelName value, Not a String");
+					}
+				}
 
 				JsonNode descriptionNode = bikeObject.get("description");
-				String description = (descriptionNode != null) ? descriptionNode.textValue().trim() : null;
+				String description =null; 
+				if(descriptionNode != null) {
+					try {
+						description = descriptionNode.textValue().trim();
+					}catch(NullPointerException ex) {
+						throw new ParsingBikeException("Invalid description value, Not a String");
+					}
+				}
 
 				JsonNode priceNode = bikeObject.get("price");
-				float price = (priceNode != null) ? priceNode.floatValue() : -1;
+				float price = -1;
+				if(priceNode != null) {
+					if (!priceNode.isTextual()) {
+						price = priceNode.floatValue();
+					} else {
+						throw new ParsingBikeException("Invalid price value, Not a String");
+					}
+				}
 				
 				JsonNode availableNumberNode = bikeObject.get("availableNumber");
-				int availableNumber = (availableNumberNode != null) ? availableNumberNode.intValue(): -1;
+				int availableNumber = -1;
+				if (availableNumberNode != null) {
+					if(!availableNumberNode.isTextual()) {
+						availableNumber = availableNumberNode.intValue();
+					}else {
+						throw new ParsingBikeException("Invalid availableNumber value, Not a String");
+					}
+				}
 
 				JsonNode calendarObjectNode = bikeObject.get("startDate");
 				Calendar date = null;
 				if (calendarObjectNode != null) {
 					 date = Calendar.getInstance();
-					date.set(calendarObjectNode.get("year").intValue(),
-							calendarObjectNode.get("month").intValue() - 1,
-							calendarObjectNode.get("day").intValue());}
+					date.set(calendarObjectNode.get("year").asInt(),
+							calendarObjectNode.get("month").asInt() - 1,
+							calendarObjectNode.get("day").asInt());
+				}else {
+					throw new ParsingBikeException("date Not found");
+				}
 				
 				return new ServiceBikeDto(bikeId, modelName, description, date,
 						price, availableNumber);
 			}
-		} catch (ParsingException ex) {
-			throw ex;
-		} catch (Exception e) {
-			throw new ParsingException(e);
-		}
 	}
 
 	public static ServiceBikeDto toServiceBikeDtoPost(InputStream jsonBike)
 			throws ParsingBikeException, IOException {
 		ObjectMapper objectMapper = ObjectMapperFactory.instance();
-
-		JsonNode rootNode = objectMapper.readTree(jsonBike);
+		JsonNode rootNode = null;
+		try {
+			rootNode = objectMapper.readTree(jsonBike);
+		}catch(JsonParseException ex) {
+			throw new ParsingException(
+					"Unrecognized JSON (malformed)");
+		}
 		if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
 			throw new ParsingException(
 					"Unrecognized JSON (object expected)");
 		} else {
-			
 			ObjectNode bikeObject = (ObjectNode) rootNode;
 			JsonNode bikeIdNode = bikeObject.get("bikeId");
 			Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue(): null;
@@ -110,44 +147,64 @@ public class JsonServiceBikeDtoConversor {
 			JsonNode modelNameNode = bikeObject.get("modelName");
 			String modelName;
 			if (modelNameNode != null) {
-				modelName = modelNameNode.textValue().trim();
+				try {
+					modelName = modelNameNode.textValue().trim();
+				}catch (NullPointerException ex) {
+					throw new ParsingBikeException("Invalid ModelName value, Not a String");
+				}
 			}else {
-				throw new ParsingBikeException("modelName");
+				throw new ParsingBikeException("modelName Not found");
 			}
 
 			JsonNode descriptionNode = bikeObject.get("description");
 			String description;
 			if (descriptionNode != null) {
-				description = descriptionNode.textValue().trim();
+				try {
+					description = descriptionNode.textValue().trim();
+				}catch (NullPointerException ex) {
+					throw new ParsingBikeException("Invalid description value, not a String");
+			}
 			}else {
-				throw new ParsingBikeException("description");
+				throw new ParsingBikeException("description Not found");
 			}
 
 			JsonNode priceNode = bikeObject.get("price");
 			float price;
 			if (priceNode != null) {
-				price = priceNode.floatValue();
+				if(!priceNode.isTextual()) {
+					price = priceNode.floatValue();
+				}else {
+					throw new ParsingBikeException("Invalid price value, not a number");
+				}
 			}else {
-				throw new ParsingBikeException("price");
+				throw new ParsingBikeException("price Not found");
 			}
 			
 			JsonNode availableNumberNode = bikeObject.get("availableNumber");
 			int availableNumber;
 			if (availableNumberNode != null) {
-				availableNumber = availableNumberNode.intValue();
+				if (!availableNumberNode.isTextual()) {
+					availableNumber = availableNumberNode.intValue();
+				}else {
+					throw new ParsingBikeException("Invalid availableNumber value, not a number");
+				}
 			}else {
-				throw new ParsingBikeException("availableNumber");
+				throw new ParsingBikeException("availableNumber Not found");
 			}
 
 			JsonNode calendarObjectNode = bikeObject.get("startDate");
 			Calendar date = null;
 			if (calendarObjectNode != null) {
-				 date = Calendar.getInstance();
-				date.set(calendarObjectNode.get("year").intValue(),
+				date = Calendar.getInstance();
+				//try {
+					date.set(calendarObjectNode.get("year").intValue(),
 						calendarObjectNode.get("month").intValue() - 1,
 						calendarObjectNode.get("day").intValue());
+				//}catch (NullPointerException ex) {
+				//	throw new ParsingBikeException("Invalid startDate value, one or more values aren't numbers");
+				//}
 			}else {
-				throw new ParsingBikeException("date");
+				throw new ParsingBikeException("date Not found");
 			}
 			
 			return new ServiceBikeDto(bikeId, modelName, description, date,
