@@ -32,7 +32,12 @@ public class BikeServiceClient {
 
                 System.out.println("Bike " + bikeId + " created sucessfully");
                 
-            } catch (NumberFormatException | InputValidationException ex) {
+            
+            } catch (InputValidationException ex) {
+            	System.out.println("ERROR: ");
+            	System.out.println(ex.getMessage());
+            } catch (NumberFormatException ex) {
+            	System.out.println(ex);
                 ex.printStackTrace(System.err);
             } catch (Exception ex) {
                 ex.printStackTrace(System.err);
@@ -51,6 +56,9 @@ public class BikeServiceClient {
 
 	                System.out.println("Bike " + args[1] + " updated sucessfully");
 
+	            } catch (InputValidationException ex) {
+	            	System.out.println("ERROR:");
+	            	System.out.println(ex.getMessage());
 	            } catch (NumberFormatException | InstanceNotFoundException ex) {
 	                ex.printStackTrace(System.err);
 	            } catch (Exception ex) {
@@ -95,7 +103,7 @@ public class BikeServiceClient {
 		int[] numericArguments = {4, 5};
 		
 		if (expectedArgs > args.length) {
-			System.out.println("Inserted number of arguments less than necessary");
+			System.out.println("ERROR: \n" + "Inserted number of arguments less than necessary");
 			System.out.println("Usage: -addBike <name> <description> <availabilityDate> <price> <units>");
 			System.exit(-1);
 		} 
