@@ -54,7 +54,7 @@ public class RestClientBikeService implements ClientBikeService {
 
 	@Override
 	public void updateBike(Long bikeId, String modelName, String description, Calendar startDate, float price,
-			int availableNumber) throws InstanceNotFoundException {
+			int availableNumber) throws InstanceNotFoundException, InputValidationException {
 		
 		try {
 
@@ -65,6 +65,8 @@ public class RestClientBikeService implements ClientBikeService {
 
             validateStatusCode(HttpStatus.SC_NO_CONTENT, response);
 
+        } catch (InputValidationException e) {
+        	throw e;
         } catch (InstanceNotFoundException e) {
             throw e;
         } catch (Exception e) {

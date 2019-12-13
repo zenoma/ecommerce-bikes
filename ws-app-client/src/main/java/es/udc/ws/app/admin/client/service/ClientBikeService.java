@@ -12,7 +12,7 @@ public interface ClientBikeService {
 			Calendar startDate, float price, int availableNumber) throws InputValidationException;
 	
 	public void updateBike(Long bikeId, String modelName, String description,
-			Calendar startDate, float price, int availableNumber) throws InstanceNotFoundException;
+			Calendar startDate, float price, int availableNumber) throws InstanceNotFoundException, InputValidationException;
 	
 	public ClientBikeDto findBike(Long bikeId);
 
