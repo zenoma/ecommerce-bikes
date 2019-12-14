@@ -216,7 +216,7 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public Long rentBike(String email, Long creditCard, Long bikeId,
+	public Long rentBike(String email, String creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
 			throws InputValidationException, InvalidRentPeriodException,
 			InstanceNotFoundException, NumberOfBikesException {

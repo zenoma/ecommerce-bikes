@@ -38,7 +38,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			i = 1;
 			String userEmail = resultSet.getString(i++);
 			Long bikeId = resultSet.getLong(i++);
-			Long creditCard = resultSet.getLong(i++);
+			String creditCard = resultSet.getString(i++);
 			Calendar startRentDate = Calendar.getInstance();
 			startRentDate.setTime(resultSet.getTimestamp(i++));
 			Calendar finishRentDate = Calendar.getInstance();
@@ -76,7 +76,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 				i = 1;
 				Long rentId = resultSet.getLong(i++);
 				Long bikeId = resultSet.getLong(i++);
-				Long creditCard = resultSet.getLong(i++);
+				String creditCard = resultSet.getString(i++);
 				Calendar startRentDate = Calendar.getInstance();
 				startRentDate.setTime(resultSet.getTimestamp(i++));
 				Calendar finishRentDate = Calendar.getInstance();
@@ -113,7 +113,7 @@ public abstract class AbstractSqlRentDao implements SqlRentDao {
 			int i = 1;
 			preparedStatement.setString(i++, rent.getUserEmail());
 			preparedStatement.setLong(i++, rent.getBikeId());
-			preparedStatement.setLong(i++, rent.getCreditCard());
+			preparedStatement.setString(i++, rent.getCreditCard());
 			Timestamp timestamp = rent.getStartRentDate() != null
 					? new Timestamp(rent.getStartRentDate().getTime().getTime())
 					: null;

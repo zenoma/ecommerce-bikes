@@ -90,17 +90,16 @@ public class JsonClientBikeDtoConversor {
 
 			int numberOfRents = bikeObject.get("numberOfRents").intValue();
 
-			double totalScore = bikeObject.get("totalScore").doubleValue();
-
+			double averageScore = bikeObject.get("averageScore").doubleValue();
+			
 			return new ClientBikeDto(bikeId, modelName, description, date,
-					price, availableNumber, numberOfRents, totalScore);
+					price, availableNumber, numberOfRents, averageScore);
 		}
 	}
 
 	public static List<ClientBikeDto> toClientBikeDtos(InputStream jsonBikes)
 			throws ParsingException {
 		try {
-
 			ObjectMapper objectMapper = ObjectMapperFactory.instance();
 			JsonNode rootNode = objectMapper.readTree(jsonBikes);
 			if (rootNode.getNodeType() != JsonNodeType.ARRAY) {

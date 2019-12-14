@@ -19,46 +19,55 @@ public class BikeServiceClient {
 		ClientBikeService clientBikeService = ClientBikeServiceFactory
 				.getService();
 		if ("-findBikes".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 3, new int[] {});
+			String keywords = "";
+			Calendar date = null;
+			if (args.length == 2) {
+				keywords = "";
+				date = stringToCalendar(args[1]);
+			} else {
+				validateArgs(args, 3, new int[] {}, args[0]);
+				keywords = args[1];
+				date = stringToCalendar(args[2]);
+			}
 			try {
-				List<ClientBikeDto> bikes = clientBikeService.findBikes(args[1],
-						stringToCalendar(args[2]));
+				List<ClientBikeDto> bikes = clientBikeService
+						.findBikes(keywords, date);
 				System.out.println(
 						"Found " + bikes.size() + " bikes(s) with keywords '"
-								+ args[1] + "' and date '" + args[2] + "'");
+								+ keywords + "' and date '" + date.getTime() + "'");
 				for (int i = 0; i < bikes.size(); i++) {
 					ClientBikeDto bikesDto = bikes.get(i);
-					System.out.println("Id: " + bikesDto.getBikeId()
+					System.out.println("[Id: " + bikesDto.getBikeId()
 							+ ", ModelName: " + bikesDto.getModelName()
 							+ ", Description: " + bikesDto.getDescription()
-							+ ", Start Date: " + bikesDto.getStartDate()
-							+ ", Price: " + bikesDto.getPrice()
-							+ ", Available Number: "
+							+ ", Start Date: "
+							+ bikesDto.getStartDate().getTime() + ", Price: "
+							+ bikesDto.getPrice() + ", Available Number: "
 							+ bikesDto.getAvailableNumber()
 							+ ", Number Of Rents: "
 							+ bikesDto.getNumberOfRents() + ", Average Score: "
-							+ bikesDto.getTotalScore());
+							+ bikesDto.getTotalScore() + "]");
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
 		} else if ("-reserve".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 7, new int[] { 2, 6 });
+			validateArgs(args, 7, new int[] { 2, 6 }, args[0]);
 
 			Long rentId;
 			try {
 				rentId = clientBikeService.rentBike(args[1],
-						Long.parseLong(args[3]), Long.parseLong(args[2]),
+						args[3], Long.parseLong(args[2]),
 						stringToCalendar(args[4]), stringToCalendar(args[5]),
 						Short.valueOf(args[6]));
-				System.out.println("Bike +" + args[2]
-						+ "rented sucessfully with rent number " + rentId);
+				System.out.println("\nBike with ID '" + args[2]
+						+ "' rented sucessfully. Rent Code: '" + rentId +"'\n");
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
 
 		} else if ("-rateReservation".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 4, new int[] { 1, 3 });
+			validateArgs(args, 4, new int[] { 1, 3 }, args[0]);
 
 			try {
 				clientBikeService.rateRent(Long.valueOf(args[1]),
@@ -70,7 +79,7 @@ public class BikeServiceClient {
 			}
 
 		} else if ("-findReservations".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] {});
+			validateArgs(args, 2, new int[] {}, args[0]);
 
 			try {
 				List<ClientRentDto> rents = clientBikeService
@@ -97,9 +106,30 @@ public class BikeServiceClient {
 	}
 
 	public static void validateArgs(String[] args, int expectedArgs,
-			int[] numericArguments) {
+			int[] numericArguments, String method) {
+
 		if (expectedArgs != args.length) {
-			printUsageAndExit();
+			System.out.println("Please check your input format:\n");
+			switch (method) {
+			case "-findBikes":
+				System.out.println("-findBikes <keywords> <date>");
+				break;
+			case "-reserve":
+				System.out.println(
+						"-reserve <userEmail> <bikeId> <creditCardNumber> <startDate> <endDate> <units>");
+				break;
+			case "-rateReservation":
+				System.out.println(
+						"-rateReservation <id|code> <userEmail> <points>");
+				break;
+			case "-findReservations":
+				System.out.println(" -findReservations <userEmail>");
+				break;
+			default:
+				printUsageAndExit();
+				break;
+			}
+			System.exit(-1);
 		}
 		for (int i = 0; i < numericArguments.length; i++) {
 			int position = numericArguments[i];
@@ -112,11 +142,13 @@ public class BikeServiceClient {
 	}
 
 	public static Calendar stringToCalendar(String s) {
+
 		String delims = "[-,']";
 		String[] tokens = s.split(delims);
+		Short month = Short.valueOf(tokens[1]);
+		Short day = Short.valueOf(tokens[0]);
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Integer.parseInt(tokens[2]),
-				Integer.parseInt(tokens[1]) - 1, Integer.parseInt(tokens[2]));
+		calendar.set(Integer.parseInt(tokens[2]), month - 1, day);
 
 		return calendar;
 	}
@@ -127,8 +159,7 @@ public class BikeServiceClient {
 	}
 
 	public static void printUsage() {
-		System.err.println("Usage:\n"
-				+ "    -findBikes <keywords> <date>\n"
+		System.err.println("Usage:\n" + "    -findBikes <keywords> <date>\n"
 				+ "    -reserve <userEmail> <bikeId> <creditCardNumber> <startDate> <endDate> <units>\n"
 				+ "    -rateReservation <id|code> <userEmail> <points>\n"
 				+ "    -findReservations <userEmail>\n");

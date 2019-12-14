@@ -8,14 +8,14 @@ public class Rent {
 	private Long rentId; // No actualizable
 	private String userEmail; // No actualizable
 	private Long bikeId; // No actualizable
-	private Long creditCard; // No actualizable
+	private String creditCard; // No actualizable
 	private Calendar startRentDate; // No actualizable
 	private Calendar finishRentDate; // No actualizable
 	private int numberOfBikes; // No actualizable
 	private Calendar rentDate; // No actualizable
 	private float price; // No actualizable
 
-	public Rent(String userEmail, Long bikeId, Long creditCard,
+	public Rent(String userEmail, Long bikeId, String creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
 			Calendar rentDate, float price) {
 		this.userEmail = userEmail;
@@ -28,7 +28,7 @@ public class Rent {
 		this.price = price;
 	}
 
-	public Rent(Long rentId, String userEmail, Long bikeId, Long creditCard,
+	public Rent(Long rentId, String userEmail, Long bikeId, String creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
 			Calendar rentDate, float price) {
 		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
@@ -61,11 +61,11 @@ public class Rent {
 		this.bikeId = bikeId;
 	}
 
-	public Long getCreditCard() {
+	public String getCreditCard() {
 		return creditCard;
 	}
 
-	public void setCreditCard(Long creditCard) {
+	public void setCreditCard(String creditCard) {
 		this.creditCard = creditCard;
 	}
 

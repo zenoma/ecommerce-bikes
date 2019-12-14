@@ -92,7 +92,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 				queryString += " AND";
 			else
 				queryString += " WHERE";
-			queryString += " startDate >= (?)";
+			queryString += " DATE(startDate) <= (?)";
 		}
 		queryString += " ORDER BY modelName";
 

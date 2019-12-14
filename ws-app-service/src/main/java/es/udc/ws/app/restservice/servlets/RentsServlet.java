@@ -84,8 +84,8 @@ public class RentsServlet extends HttpServlet{
 		Map<String, String> headers = new HashMap<>(1);
 		headers.put("Location", rentURL);
 		
-		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK, 
-				JsonServiceRentDtoConversor.toJsonObject(rentDto), null);
+		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED, 
+				JsonServiceRentDtoConversor.toJsonObject(rentDto), headers);
 	}
 	
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) 

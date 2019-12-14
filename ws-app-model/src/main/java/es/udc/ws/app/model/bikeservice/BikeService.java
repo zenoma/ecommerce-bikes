@@ -22,7 +22,7 @@ public interface BikeService {
 
 	public List<Bike> findBikes(String keywords, Calendar date);
 
-	public Long rentBike(String email, Long creditCard, Long bikeId,
+	public Long rentBike(String email, String creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes)
 			throws InputValidationException, NumberOfBikesException,
 			InvalidRentPeriodException, InstanceNotFoundException;

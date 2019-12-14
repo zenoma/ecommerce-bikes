@@ -37,8 +37,8 @@ public class BikeServiceTest {
 	private final long NON_EXISTENT_BIKE_ID = -1;
 	final String USER_EMAIL = "ws@email.com";
 
-	private final long VALID_CREDIT_CARD_NUMBER = 1234_5678_9012_3456L;
-	private final long INVALID_CREDIT_CARD_NUMBER = 1L;
+	private final String VALID_CREDIT_CARD_NUMBER = "1234567890123456";
+	private final String INVALID_CREDIT_CARD_NUMBER = "1";
 
 	private static BikeService bikeService = null;
 
@@ -530,7 +530,7 @@ public class BikeServiceTest {
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(Calendar.SECOND, 0);
-			calendar.add(Calendar.DAY_OF_YEAR, +2);
+			calendar.add(Calendar.DAY_OF_YEAR, +15);
 			bike3 = createBike("bike 3", "Bike Description", calendar);
 
 			calendar = Calendar.getInstance();
