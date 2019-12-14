@@ -32,9 +32,9 @@ public class BikeServiceClient {
 			try {
 				List<ClientBikeDto> bikes = clientBikeService
 						.findBikes(keywords, date);
-				System.out.println(
-						"Found " + bikes.size() + " bikes(s) with keywords '"
-								+ keywords + "' and date '" + date.getTime() + "'");
+				System.out.println("Found " + bikes.size()
+						+ " bikes(s) with keywords '" + keywords
+						+ "' and date '" + date.getTime() + "'");
 				for (int i = 0; i < bikes.size(); i++) {
 					ClientBikeDto bikesDto = bikes.get(i);
 					System.out.println("[Id: " + bikesDto.getBikeId()
@@ -56,12 +56,12 @@ public class BikeServiceClient {
 
 			Long rentId;
 			try {
-				rentId = clientBikeService.rentBike(args[1],
-						args[3], Long.parseLong(args[2]),
-						stringToCalendar(args[4]), stringToCalendar(args[5]),
-						Short.valueOf(args[6]));
+				rentId = clientBikeService.rentBike(args[1], args[3],
+						Long.parseLong(args[2]), stringToCalendar(args[4]),
+						stringToCalendar(args[5]), Short.valueOf(args[6]));
 				System.out.println("\nBike with ID '" + args[2]
-						+ "' rented sucessfully. Rent Code: '" + rentId +"'\n");
+						+ "' rented sucessfully. Rent Code: '" + rentId
+						+ "'\n");
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
@@ -72,8 +72,9 @@ public class BikeServiceClient {
 			try {
 				clientBikeService.rateRent(Long.valueOf(args[1]),
 						Short.valueOf(args[3]));
-				System.out.println("Rent " + args[1]
-						+ "rated sucessfully with the score number " + args[3]);
+				System.out.println("\nRent '" + args[1]
+						+ "' rated sucessfully with the score number '"
+						+ args[3] + "'\n");
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
@@ -91,12 +92,12 @@ public class BikeServiceClient {
 					System.out.println("Id: " + rentDto.getRentId()
 							+ ", Email: " + rentDto.getUserEmail()
 							+ ", Duration: "
-							+ getRentDays(rentDto.getStartRentDate(),
-									rentDto.getFinishRentDate())
+							+ getRentDays(rentDto.getFinishRentDate(),
+									rentDto.getStartRentDate())
 							+ ", Credit Card: " + rentDto.getCreditCard()
 							+ ", Number of Rented Bikes: "
 							+ rentDto.getNumberOfBikes() + ", Rent Date: "
-							+ rentDto.getRentDate() + ", Price: "
+							+ rentDto.getRentDate().getTime() + ", Price: "
 							+ rentDto.getPrice());
 				}
 			} catch (Exception ex) {
@@ -169,6 +170,6 @@ public class BikeServiceClient {
 			Calendar finishDateRent) {
 		Long value = startDateRent.getTimeInMillis()
 				- finishDateRent.getTimeInMillis();
-		return (int) (value / (1000 * 60 * 60 * 24));
+		return (int) (value / (1000 * 60 * 60 * 24) + 1);
 	}
 }

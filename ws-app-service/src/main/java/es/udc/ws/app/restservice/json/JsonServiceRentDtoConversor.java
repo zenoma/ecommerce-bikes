@@ -37,7 +37,7 @@ public class JsonServiceRentDtoConversor {
 				.put("bikeId",rent.getBikeId())
 				.put("creditCard", rent.getCreditCard())
 				.set("startRentDate", getRentDate(rent.getStartRentDate()));
-		rentObject.set("finishRent",getRentDate(rent.getFinishRentDate()));
+		rentObject.set("finishRentDate",getRentDate(rent.getFinishRentDate()));
 		rentObject.put("numberOfBikes", rent.getNumberOfBikes())
 				.set("rentDate", getRentDate(rent.getRentDate()));
 		rentObject.put("price", rent.getPrice());

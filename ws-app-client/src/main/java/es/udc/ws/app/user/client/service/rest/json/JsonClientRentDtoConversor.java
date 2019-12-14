@@ -1,15 +1,16 @@
 package es.udc.ws.app.user.client.service.rest.json;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import es.udc.ws.app.admin.client.service.dto.ClientBikeDto;
 import es.udc.ws.app.user.client.service.dto.ClientRentDto;
 import es.udc.ws.util.json.ObjectMapperFactory;
 import es.udc.ws.util.json.exceptions.ParsingException;
@@ -72,7 +73,103 @@ public class JsonClientRentDtoConversor {
 			ObjectNode rentObject = (ObjectNode) rentNode;
 			JsonNode rentIdNode = rentObject.get("rentId");
 			Long rentId = (rentIdNode != null) ? rentIdNode.longValue() : null;
-			return new ClientRentDto(rentId);
+
+			String userEmail;
+			if (rentObject.get("userEmail") != null) {
+				userEmail = rentObject.get("userEmail").textValue().trim();
+			} else {
+				throw new ParsingException("userEmail");
+			}
+
+			String creditCard;
+			if (rentObject.get("creditCard") != null) {
+				creditCard = rentObject.get("creditCard").textValue();
+			} else {
+				throw new ParsingException("creditCard");
+			}
+
+			Long bikeId;
+			if (rentObject.get("bikeId") != null) {
+				bikeId = rentObject.get("bikeId").longValue();
+			} else {
+				throw new ParsingException("bikeId");
+			}
+
+			JsonNode calendarObjectNode = rentObject.get("startRentDate");
+			Calendar startRentDate = null;
+			if (calendarObjectNode != null) {
+				startRentDate = Calendar.getInstance();
+				startRentDate.set(calendarObjectNode.get("year").intValue(),
+						calendarObjectNode.get("month").intValue() - 1,
+						calendarObjectNode.get("day").intValue());
+			} else {
+				throw new ParsingException("startRentDate");
+			}
+
+			calendarObjectNode = rentObject.get("finishRentDate");
+			Calendar finishRentDate = null;
+			if (calendarObjectNode != null) {
+				finishRentDate = Calendar.getInstance();
+				finishRentDate.set(calendarObjectNode.get("year").intValue(),
+						calendarObjectNode.get("month").intValue() - 1,
+						calendarObjectNode.get("day").intValue());
+			} else {
+				throw new ParsingException("finishRentDate");
+			}
+
+			int numberOfBikes;
+			if (rentObject.get("numberOfBikes") != null) {
+				numberOfBikes = rentObject.get("numberOfBikes").intValue();
+			} else {
+				throw new ParsingException("numberOfBikes");
+			}
+
+			calendarObjectNode = rentObject.get("rentDate");
+			Calendar rentDate = null;
+			if (calendarObjectNode != null) {
+				rentDate = Calendar.getInstance();
+				rentDate.set(calendarObjectNode.get("year").intValue(),
+						calendarObjectNode.get("month").intValue() - 1,
+						calendarObjectNode.get("day").intValue());
+			} else {
+				throw new ParsingException("rentDate");
+			}
+
+			int price;
+			if (rentObject.get("price") != null) {
+				price = rentObject.get("price").intValue();
+			} else {
+				throw new ParsingException("price");
+			}
+
+			return new ClientRentDto(rentId, userEmail, bikeId, creditCard,
+					startRentDate, finishRentDate, numberOfBikes, rentDate,
+					price);
+		}
+	}
+
+	public static List<ClientRentDto> toClientRentDtos(InputStream jsonBikes)
+			throws ParsingException {
+		try {
+			ObjectMapper objectMapper = ObjectMapperFactory.instance();
+			JsonNode rootNode = objectMapper.readTree(jsonBikes);
+			if (rootNode.getNodeType() != JsonNodeType.ARRAY) {
+				throw new ParsingException(
+						"Unrecognized JSON (array expected)");
+			} else {
+				ArrayNode bikesArray = (ArrayNode) rootNode;
+				List<ClientRentDto> bikeDtos = new ArrayList<>(
+						bikesArray.size());
+				for (JsonNode bikeNode : bikesArray) {
+					bikeDtos.add(toClientRentDto(bikeNode));
+				}
+
+				return bikeDtos;
+			}
+		} catch (ParsingException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new ParsingException(e);
 		}
 	}
 

@@ -84,14 +84,45 @@ public class RestClientBikeService implements ClientBikeService {
 	@Override
 	public List<ClientRentDto> findRents(String email)
 			throws InputValidationException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			HttpResponse response = Request
+					.Get(getEndpointAddress() + "rents?userEmail="
+							+ URLEncoder.encode(email.toString(), "UTF-8"))
+					.execute().returnResponse();
+			validateStatusCode(HttpStatus.SC_OK, response);
+
+			return JsonClientRentDtoConversor
+					.toClientRentDtos((response.getEntity().getContent()));
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	@Override
 	public void rateRent(Long rentId, int score) {
-		// TODO Auto-generated method stub
+		try {
+			HttpResponse response = Request
+					.Put(getEndpointAddress() + "rents/"
+							+ URLEncoder.encode(rentId.toString(), "UTF-8")
+							+ "?score="
+							+ URLEncoder.encode(
+									Integer.valueOf(score).toString(), "UTF-8"))
+					.execute().returnResponse();
 
+			validateStatusCode(HttpStatus.SC_NO_CONTENT, response);
+
+		} catch (InputValidationException e) {
+			System.out.println(e);
+			;
+		} catch (InstanceNotFoundException e) {
+			System.out.println("ERROR:");
+			System.out.println("Rent not found. Id = " + rentId);
+			System.exit(-1);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private synchronized String getEndpointAddress() {
