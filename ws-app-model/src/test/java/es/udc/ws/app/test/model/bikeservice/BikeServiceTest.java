@@ -530,7 +530,7 @@ public class BikeServiceTest {
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(Calendar.SECOND, 0);
-			calendar.add(Calendar.DAY_OF_YEAR, +2);
+			calendar.add(Calendar.DAY_OF_YEAR, +15);
 			bike3 = createBike("bike 3", "Bike Description", calendar);
 
 			calendar = Calendar.getInstance();

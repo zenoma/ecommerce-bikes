@@ -17,16 +17,22 @@ public class ClientRentDto {
 	public ClientRentDto(Long rentId, String userEmail, Long bikeId,
 			Long creditCard, Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes, Calendar rentDate, float price) {
-		super();
+		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
+				numberOfBikes);
+		this.rentDate = rentDate;
+		this.price = price;
 		this.rentId = rentId;
+	}
+
+	public ClientRentDto(String userEmail, Long bikeId, Long creditCard,
+			Calendar startRentDate, Calendar finishRentDate,
+			int numberOfBikes) {
 		this.userEmail = userEmail;
 		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
-		this.rentDate = rentDate;
-		this.price = price;
 	}
 
 	public Long getRentId() {
