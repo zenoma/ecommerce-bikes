@@ -203,7 +203,16 @@ public class BikesServlet extends HttpServlet {
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 				String keywords = req.getParameter("keywords");
-				Calendar calendar = getDate(req.getParameter("date"));
+				Calendar calendar = null;
+				try {
+					calendar = getDate(req.getParameter("date"));
+				}catch (ParsingException ex) {
+					ServletUtils.writeServiceResponse(resp,
+							HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+							JsonServiceExceptionConversor.toInputValidationException(
+									new InputValidationException(ex.getMessage())
+							),null);
+				}
 				List<Bike> bikes = BikeServiceFactory.getService()
 						.findBikes(keywords, calendar);
 				List<ServiceBikeDto> bikesDto = BikeToBikeDtoConversor
@@ -247,19 +256,22 @@ public class BikesServlet extends HttpServlet {
 	 	}
 	 }
 
-
 	private static Calendar getDate(String date) {
 		String[] dateSplit = date.split("-");
-
-		int day = Integer.valueOf(dateSplit[0]);
-		int month = Integer.valueOf(dateSplit[1]);
-		int year = Integer.valueOf(dateSplit[2]);
-
-		Calendar dateAvailableAux = Calendar.getInstance();
-		dateAvailableAux.set(Calendar.DAY_OF_MONTH, day);
-		dateAvailableAux.set(Calendar.MONTH, month - 1);
-		dateAvailableAux.set(Calendar.YEAR, year);
-
+		Calendar dateAvailableAux = null;
+		if (date != null) {
+			try {
+				int day =  Integer.valueOf(dateSplit[0]);
+				int month =  Integer.valueOf(dateSplit[1]);
+				int year =  Integer.valueOf(dateSplit[2]);
+				dateAvailableAux = Calendar.getInstance();
+				dateAvailableAux.set(Calendar.DAY_OF_MONTH, day);
+				dateAvailableAux.set(Calendar.MONTH, month - 1);
+				dateAvailableAux.set(Calendar.YEAR, year);
+			}catch(Exception ex) {
+				throw new ParsingException("Wrong Date format");
+			}
+		}
 		return dateAvailableAux;
 	}
 

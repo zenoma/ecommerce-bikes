@@ -11,6 +11,8 @@ import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
 import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
 import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentAlreadyRatedException;
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidUserRateException;
 import es.udc.ws.app.restservice.exceptions.NotAllowedException;
 import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
 import es.udc.ws.app.restservice.exceptions.ParsingRentException;
@@ -77,6 +79,7 @@ public class JsonServiceExceptionConversor {
 		dataObject.put("bikeId",
 				(ex.getBikeId() != null) ? ex.getBikeId() : null);
 		dataObject.put("numberOfBikes", ex.getNumberOfBikes());
+		exceptionObject.set("NumberOfBikesException", dataObject);
 		return exceptionObject;
 	}
 
@@ -85,8 +88,9 @@ public class JsonServiceExceptionConversor {
 		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
 		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
 
-		dataObject.put("saleId",
-				(ex.getRentId() != null) ? ex.getRentId() : null);
+		dataObject.put("rentId",
+				(ex.getRentId() != null) ?  ex.getMessage() : null);
+		exceptionObject.set("RentExpirationException", dataObject);
 		return exceptionObject;
 	}
 
@@ -142,6 +146,28 @@ public class JsonServiceExceptionConversor {
 		dataObject.put("message ", ex.getMessage());
 
 		exceptionObject.set("NotAllowedException", dataObject);
+
+		return exceptionObject;
+	}
+	
+	public static JsonNode toRentAlreadyRatedException (RentAlreadyRatedException ex) {
+		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
+		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
+		
+		dataObject.put("message ", ex.getMessage());
+
+		exceptionObject.set("RentAlreadyRatedException", dataObject);
+
+		return exceptionObject;
+	}
+	
+	public static JsonNode toInvalidUserRateException (InvalidUserRateException ex) {
+		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
+		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
+		
+		dataObject.put("message ", ex.getMessage());
+
+		exceptionObject.set("InvalidUserRateException", dataObject);
 
 		return exceptionObject;
 	}

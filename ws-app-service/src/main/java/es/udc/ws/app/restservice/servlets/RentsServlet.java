@@ -21,7 +21,10 @@ import es.udc.ws.app.restservice.json.JsonServiceRentDtoConversor;
 import es.udc.ws.app.serviceutil.RentToRentDtoConversor;
 import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
 import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidUserRateException;
 import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentAlreadyRatedException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.app.model.rent.Rent;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -121,6 +124,15 @@ public class RentsServlet extends HttpServlet {
 									"PUT Invalid Request: " + "invalid score")),
 					null);
 		}
+		
+		if (userEmail == null) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor.toInputValidationException(
+							new InputValidationException(
+									"PUT Invalid Request: " + "invalid empty email")),
+					null);
+		}
 
 		Long rentId;
 		try {
@@ -138,11 +150,40 @@ public class RentsServlet extends HttpServlet {
 
 		try {
 			BikeServiceFactory.getService().rateRent(rentId, score, userEmail);
-		} catch (ParsingException ex) {
-			throw ex;
-		} catch (Exception e) {
-			throw new ParsingException(e);
-		}
+		} catch (ParsingException | InputValidationException ex) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor.toParsingRentException(
+							new ParsingRentException ("PUT Invalid Request: "
+									+ "invalid format")),
+					null);
+			return;
+		}  catch (InstanceNotFoundException e) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_NOT_FOUND,
+					JsonServiceExceptionConversor.toInstanceNotFoundException(e),
+					null);
+			return;
+		} catch (RentExpirationException e) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_FORBIDDEN,
+					JsonServiceExceptionConversor.toRentExpirationException(e),
+					null);
+			return;
+		} catch (RentAlreadyRatedException e) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_FORBIDDEN,
+					JsonServiceExceptionConversor.toRentAlreadyRatedException(e),
+					null);
+			return;
+		} catch (InvalidUserRateException e) {
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_FORBIDDEN,
+					JsonServiceExceptionConversor.toInvalidUserRateException(e),
+					null);
+			return;
+		} 
+		
 		ServletUtils.writeServiceResponse(resp,
 				HttpServletResponse.SC_NO_CONTENT, null, null);
 	}

@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
-import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.json.ObjectMapperFactory;
 import es.udc.ws.util.json.exceptions.ParsingException;
 
