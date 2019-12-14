@@ -29,7 +29,6 @@ public class RestClientBikeService implements ClientBikeService {
 	@Override
 	public List<ClientBikeDto> findBikes(String keywords, Calendar calendar) {
 		try {
-			// FIXME Cambiar calendar al formato DD-MM-YYY
 			HttpResponse response = Request
 					.Get(getEndpointAddress() + "bikes?keywords="
 							+ URLEncoder.encode(keywords.toString(), "UTF-8")

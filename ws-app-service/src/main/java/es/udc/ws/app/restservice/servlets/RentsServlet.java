@@ -34,7 +34,6 @@ public class RentsServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Rent Post
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path != null && path.length() > 0) {
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
@@ -143,7 +142,6 @@ public class RentsServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Rent Get
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 			String rentEmail = req.getParameter("userEmail");

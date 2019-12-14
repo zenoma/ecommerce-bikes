@@ -200,7 +200,6 @@ public class BikesServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// FIXME Añadir fechas OBLIGATORIAS
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 				String keywords = req.getParameter("keywords");
