@@ -32,7 +32,6 @@ public class BikeServiceClient {
 
 			} catch (InputValidationException ex) {
 				System.out.println("ERROR: ");
-				System.out.println("fdsasdfg");
 				System.out.println(ex.getMessage());
 			} catch (NumberFormatException ex) {
 				System.out.println(ex);
