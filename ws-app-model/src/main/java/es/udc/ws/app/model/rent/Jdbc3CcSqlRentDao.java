@@ -24,7 +24,7 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 			int i = 1;
 			preparedStatement.setString(i++, rent.getUserEmail());
 			preparedStatement.setLong(i++, rent.getBikeId());
-			preparedStatement.setLong(i++, rent.getCreditCard());
+			preparedStatement.setString(i++, rent.getCreditCard());
 			Timestamp timeStamp = rent.getStartRentDate() != null
 					? new Timestamp(rent.getStartRentDate().getTime().getTime())
 					: null;

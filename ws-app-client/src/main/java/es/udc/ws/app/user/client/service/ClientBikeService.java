@@ -11,7 +11,7 @@ public interface ClientBikeService {
 
 	public List<ClientBikeDto> findBikes(String keywords, Calendar calendar);
 
-	public Long rentBike(String email, Long creditCard, Long bikeId,
+	public Long rentBike(String email, String creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes);
 
 	public List<ClientRentDto> findRents(String email)

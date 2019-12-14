@@ -37,7 +37,7 @@ CREATE TABLE Rent (
 	rentId BIGINT NOT NULL AUTO_INCREMENT,
 	userEmail VARCHAR(255) COLLATE latin1_bin NOT NULL,
 	bikeId BIGINT NOT NULL,
-	creditCard BIGINT NOT NULL,
+	creditCard VARCHAR(16) COLLATE latin1_bin NOT NULL,
 	startRentDate DATETIME NOT NULL,
 	finishRentDate DATETIME NOT NULL,
 	numberOfBikes INT NOT NULL,

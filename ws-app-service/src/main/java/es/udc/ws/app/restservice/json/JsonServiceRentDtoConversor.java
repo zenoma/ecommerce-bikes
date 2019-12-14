@@ -67,8 +67,8 @@ public class JsonServiceRentDtoConversor {
 				JsonNode userEmailNode = rentObject.get("userEmail");
 				String userEmail = (userEmailNode != null) ? userEmailNode.textValue().trim() : null;
 				
-				JsonNode creditCardNode = rentObject.get("creditCardNumber");
-				Long creditCard = (creditCardNode != null) ? creditCardNode.longValue() : null;
+				JsonNode creditCardNode = rentObject.get("creditCard");
+				String creditCard = (creditCardNode != null) ? creditCardNode.textValue() : null;
 				
 				JsonNode bikeIdNode = rentObject.get("bikeId");
 				Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue() : null;
@@ -113,7 +113,6 @@ public class JsonServiceRentDtoConversor {
 					"Unrecognized JSON (object expected)");
 		}else {
 			ObjectNode rentObject = (ObjectNode) rootNode;
-			
 			String userEmail; 
 			if (rentObject.get("userEmail") != null) {
 				userEmail = rentObject.get("userEmail").textValue().trim();
@@ -121,11 +120,11 @@ public class JsonServiceRentDtoConversor {
 				throw new ParsingRentException("userEmail");
 			}
 			
-			Long creditCard;
-			if (rentObject.get("creditCardNumber") != null) {
-				creditCard = rentObject.get("creditCardNumber").longValue();
+			String creditCard;
+			if (rentObject.get("creditCard") != null) {
+				creditCard = rentObject.get("creditCard").textValue();
 			}else {
-				throw new ParsingRentException("creditCardNumber");
+				throw new ParsingRentException("creditCard");
 			}
 			
 			Long bikeId;

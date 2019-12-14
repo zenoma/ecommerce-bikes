@@ -37,8 +37,8 @@ public class BikeServiceTest {
 	private final long NON_EXISTENT_BIKE_ID = -1;
 	final String USER_EMAIL = "ws@email.com";
 
-	private final long VALID_CREDIT_CARD_NUMBER = 1234_5678_9012_3456L;
-	private final long INVALID_CREDIT_CARD_NUMBER = 1L;
+	private final String VALID_CREDIT_CARD_NUMBER = "1234567890123456";
+	private final String INVALID_CREDIT_CARD_NUMBER = "1";
 
 	private static BikeService bikeService = null;
 

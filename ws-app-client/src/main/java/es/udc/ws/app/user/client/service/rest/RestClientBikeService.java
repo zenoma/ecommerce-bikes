@@ -44,7 +44,6 @@ public class RestClientBikeService implements ClientBikeService {
 							+ "&date=" + URLEncoder.encode(
 									calendarToString(calendar), "UTF-8"))
 					.execute().returnResponse();
-
 			validateStatusCode(HttpStatus.SC_OK, response);
 
 			return JsonClientBikeDtoConversor
@@ -55,7 +54,7 @@ public class RestClientBikeService implements ClientBikeService {
 	}
 
 	@Override
-	public Long rentBike(String email, Long creditCard, Long bikeId,
+	public Long rentBike(String email, String creditCard, Long bikeId,
 			Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes) {
 		try {
@@ -66,6 +65,9 @@ public class RestClientBikeService implements ClientBikeService {
 							ContentType.create("application/json"))
 					.execute().returnResponse();
 			validateStatusCode(HttpStatus.SC_CREATED, response);
+			return JsonClientRentDtoConversor
+					.toClientRentDto(response.getEntity().getContent())
+					.getRentId();
 		} catch (InputValidationException e) {
 			System.out.println(e.getMessage());
 			System.exit(-1);
@@ -76,8 +78,7 @@ public class RestClientBikeService implements ClientBikeService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		// TODO Auto-generated method stub
-		return null;
+		return -1L;
 	}
 
 	@Override
@@ -106,14 +107,11 @@ public class RestClientBikeService implements ClientBikeService {
 			ParsingException {
 
 		try {
-
 			int statusCode = response.getStatusLine().getStatusCode();
-
 			/* Success? */
 			if (statusCode == successCode) {
 				return;
 			}
-
 			/* Handler error. */
 			switch (statusCode) {
 
@@ -140,13 +138,11 @@ public class RestClientBikeService implements ClientBikeService {
 	private InputStream toInputStream(ClientRentDto rentDto) {
 
 		try {
-
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ObjectMapper objectMapper = ObjectMapperFactory.instance();
 			objectMapper.writer(new DefaultPrettyPrinter()).writeValue(
 					outputStream,
 					JsonClientRentDtoConversor.toJsonObject(rentDto));
-
 			return new ByteArrayInputStream(outputStream.toByteArray());
 
 		} catch (IOException e) {

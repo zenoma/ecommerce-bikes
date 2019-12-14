@@ -91,12 +91,11 @@ public final class BikesPropertyValidator {
 		}
 	}
 
-	public static void validateCreditCard(String propertyName, Long creditCard)
+	public static void validateCreditCard(String propertyName, String creditCard)
 			throws InputValidationException {
-
-		if (String.valueOf(creditCard).length() != 16) {
+		if (creditCard.length() != 16) {
 			throw new InputValidationException(
-					"Invalid " + propertyName + " size (it must be 16)");
+					"Invalid " + propertyName + " size (it must have 16 characters)");
 		}
 	}
 

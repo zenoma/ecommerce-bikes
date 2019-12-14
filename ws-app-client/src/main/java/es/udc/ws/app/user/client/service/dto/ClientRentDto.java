@@ -7,15 +7,19 @@ public class ClientRentDto {
 	private Long rentId;
 	private String userEmail;
 	private Long bikeId;
-	private Long creditCard;
+	private String creditCard;
 	private Calendar startRentDate;
 	private Calendar finishRentDate;
 	private int numberOfBikes;
 	private Calendar rentDate;
 	private float price;
 
+	public ClientRentDto(Long rentId) {
+		this.rentId = rentId;
+	}
+
 	public ClientRentDto(Long rentId, String userEmail, Long bikeId,
-			Long creditCard, Calendar startRentDate, Calendar finishRentDate,
+			String creditCard, Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes, Calendar rentDate, float price) {
 		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
 				numberOfBikes);
@@ -24,7 +28,7 @@ public class ClientRentDto {
 		this.rentId = rentId;
 	}
 
-	public ClientRentDto(String userEmail, Long bikeId, Long creditCard,
+	public ClientRentDto(String userEmail, Long bikeId, String creditCard,
 			Calendar startRentDate, Calendar finishRentDate,
 			int numberOfBikes) {
 		this.userEmail = userEmail;
@@ -59,11 +63,11 @@ public class ClientRentDto {
 		this.bikeId = bikeId;
 	}
 
-	public Long getCreditCard() {
+	public String getCreditCard() {
 		return creditCard;
 	}
 
-	public void setCreditCard(Long creditCard) {
+	public void setCreditCard(String creditCard) {
 		this.creditCard = creditCard;
 	}
 

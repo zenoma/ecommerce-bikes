@@ -57,11 +57,11 @@ public class BikeServiceClient {
 			Long rentId;
 			try {
 				rentId = clientBikeService.rentBike(args[1],
-						Long.parseLong(args[3]), Long.parseLong(args[2]),
+						args[3], Long.parseLong(args[2]),
 						stringToCalendar(args[4]), stringToCalendar(args[5]),
 						Short.valueOf(args[6]));
-				System.out.println("Bike +" + args[2]
-						+ "rented sucessfully with rent number " + rentId);
+				System.out.println("\nBike with ID '" + args[2]
+						+ "' rented sucessfully. Rent Code: '" + rentId +"'\n");
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}

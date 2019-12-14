@@ -22,7 +22,6 @@ import es.udc.ws.util.json.exceptions.ParsingException;
 public class JsonServiceBikeDtoConversor {
 
 	public static ObjectNode toObjectNode(ServiceBikeDto bike) {
-
 		ObjectNode bikeObject = JsonNodeFactory.instance.objectNode();
 
 		if (bike.getBikeId() != null) {
