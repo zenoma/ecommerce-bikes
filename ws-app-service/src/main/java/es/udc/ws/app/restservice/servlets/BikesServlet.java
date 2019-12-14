@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonParseException;
-
 import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.model.bike.Bike;
 import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
@@ -70,7 +68,8 @@ public class BikesServlet extends HttpServlet {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor
-							.toInputValidationException( new InputValidationException("POST Imposible to add Bike, caused by: " + ex.getLocalizedMessage())),
+							.toInputValidationException( new InputValidationException(
+									"POST Imposible to add Bike, caused by: " + ex.getLocalizedMessage())),
 					null);
 			return;
 		} catch (NumberOfBikesException ex) {

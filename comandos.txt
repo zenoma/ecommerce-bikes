@@ -1,0 +1,142 @@
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args= ""
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args= ""
+
+
+1. Añadir modelo de bicicleta (AdminXXXClient)
+// bikeId=1 creado
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-addBike 'Bicicleta 1' 'Bicicleta de montaña' '15-02-2020' 10 8"
+
+// bikeId=2 creado
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-addBike 'Bicicleta 2' 'Modelo de paseo' '15-02-2020' 12 10"
+
+// bikeId=3 creado
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-addBike 'Bicicleta 3' 'Bicicleta de carreras' '01-03-2020' 15 3"
+
+// Falla (fecha inválida)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-addBike 'Bicicleta 4' 'Bicicleta de montaña 2' '01-01-2019' 10 3"
+
+// Falla (unidades inv.)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-addBike 'Bicicleta 5' 'Bicicleta de carreras 2' '01-03-2020' 15 0"
+
+// Falla (descripción inválida)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-addBike 'Bicicleta 6' '' '01-03-2020' 8 3"
+
+
+2. Buscar modelos de bicicleta por palabras clave y fecha (UserXXXClient)
+// Devuelve modelo con id 1 (Sin media; Puntuaciones=0)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-findBikes 'De CLeta' '15-02-2020'"
+
+// Devuelve modelos con id 1 y 2 (Sin media; Puntuaciones=0)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-findBikes '' '15-02-2020'"
+
+
+
+3. Reservar modelo de bicicleta (UserXXXClient)
+// resId=1 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user1@udc.es' 1 '0123456789111111' '21-02-2020' '22-02-2020' 2"
+
+// resId=2 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user1@udc.es' 2 '0123456789111111' '28-02-2020' '05-03-2020' 3"
+
+// resId=3 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user2@udc.es' 1 '0123456789222222' '20-02-2020' '22-02-2020' 1"
+
+// resId=4 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user3@udc.es' 1 '0123456789333333' '20-02-2020' '27-02-2020' 2"
+
+// resId=5 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user4@udc.es' 1 '0123456789444444' '21-02-2020' '24-02-2020' 2"
+
+// resId=6 creada
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user5@udc.es' 1 '0123456789555555' '22-02-2020' '25-02-2020' 2"
+
+// Falla (no hay unidades suficientes)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user6@udc.es' 1 '0123456789666666' '01-03-2020' '10-03-2020' 15"
+
+// Falla (no disponible aún)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user6@udc.es' 3 '0123456789666666' '20-02-2020' '25-02-2020' 1"
+
+// Falla (>15 días)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user6@udc.es' 1 '0123456789666666' '20-02-2020' '20-03-2020' 1"
+
+// Falla (fecha inicio pasada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user6@udc.es' 1 '0123456789666666' '01-11-2019' '03-11-2019' 1"
+
+// Falla (endDate<startDate)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user6@udc.es' 1 '0123456789666666' '15-02-2020' '10-02-2020' 1"
+
+// Falla (no encontrada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-reserve 'user6@udc.es' 9999 '0123456789333333' '15-02-2020' '20-02-2020' 1"
+
+4. Actualizar modelo de bicicleta (AdminXXXClient)
+
+// Si integración con red social, debe haberse actualizado la entrada de este modelo
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-updateBike 1 'Bicicleta 1 bis' 'Bicicleta de montaña modificada' '10-02-2020' 9 10"
+
+// Falla (no se puede retrasar fecha disponibilidad)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-updateBike 2 'Bicicleta 2 bis' 'Bicicleta de paseo' '15-03-2020' 10 10"
+
+// Falla (no encontrada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-updateBike 9999 'Bicicleta 7' 'Bicicleta nueva' '01-07-2020' 12 4"
+
+// Falla (precio inválido)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-updateBike 3 'Bicicleta 3 bis' 'Bicicleta de carreras modificada' '01-07-2020' 0 4"
+
+// Falla (nombre inválido)5. Puntuar reserva (UserXXXClient)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-updateBike 3 '' 'Bicicleta modificada' '01-07-2020' 0 4"
+
+
+
+
+5. Puntuar reserva (UserXXXClient)
+Antes de ejecutar este bloque de pruebas es necesario cambiar la fecha del Sistema Operativo a 01/03/2020 para obtener los resultados que se muestran
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 1 'user1@udc.es' 4"
+
+// Falla (usuario inválido)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 3 'user1@udc.es' 4"
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 3 'user2@udc.es' 8"
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 4 'user3@udc.es' 9"
+
+// Falla (ya puntuada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 1 'user1@udc.es' 1"
+
+// Falla (aún no finalizada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 2 'user1@udc.es' 4"
+
+// Falla (no encontrada)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 9999 6 'user3@udc.es'"
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 5 'user4@udc.es' 6"
+
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-rate 6 'user5@udc.es' 8"
+// Si integración con red social, debe haberse añadido un comentario en la entrada
+// correspondiente al modelo con id 1
+
+IMPORTANTE: Restaurar la fecha del Sistema Operativo después de ejecutar este bloque de pruebas
+
+
+
+
+6. Buscar reservas (UserXXXClient)
+// Devuelve reservas con id 1 (Puntuación=4; Duración=2) e id 2 (Sin puntuar; Duración=7)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-findReservations 'user1@udc.es'"
+
+// Lista vacía
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.user.client.ui.BikeServiceClient" -Dexec.args="-findReservations 'user6@udc.es'"
+
+
+
+
+7. Buscar modelo de bicicleta por identificador (AdminXXXClient)
+Si se ha realizado el trabajo tutelado de integración con la red social, antes de ejecutar este
+bloque de pruebas darle a “like” con dos usuarios distintos a la entrada correspondiente al
+modelo con id 1
+
+// Datos: Nombre='Bicicleta 1 bis'; Media=7; Puntuaciones=5 [; Likes=2], etc.
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-findBike 1"
+
+// Falla (no se encuentra)
+mvn exec:java -Dexec.mainClass="es.udc.ws.app.admin.client.ui.BikeServiceClient" -Dexec.args="-findShow 9999"

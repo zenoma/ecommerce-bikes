@@ -57,18 +57,19 @@ public class RestClientBikeService implements ClientBikeService {
 			int availableNumber) throws InstanceNotFoundException, InputValidationException {
 		
 		try {
-
 			ClientBikeDto bike = new ClientBikeDto(bikeId, modelName, description, startDate, price, availableNumber);
             HttpResponse response = Request.Put(getEndpointAddress() + "bikes/" + bike.getBikeId()).
                     bodyStream(toInputStream(bike), ContentType.create("application/json")).
                     execute().returnResponse();
-
+            
             validateStatusCode(HttpStatus.SC_NO_CONTENT, response);
-
+            
         } catch (InputValidationException e) {
         	throw e;
         } catch (InstanceNotFoundException e) {
-            throw e;
+        	System.out.println("ERROR:");
+        	System.out.println("Bike not found. Id = " + bikeId);
+        	System.exit(-1);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -88,9 +89,15 @@ public class RestClientBikeService implements ClientBikeService {
             return JsonClientBikeDtoConversor.toClientBikeDto(response.getEntity()
                     .getContent());
 
+		} catch (InstanceNotFoundException ex) {
+        	System.out.println("ERROR:");
+        	System.out.println("Bike not found. Id = " + bikeId);
+        	System.exit(-1);
+        	
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+		return null;
 		
     }
 	
@@ -107,18 +114,17 @@ public class RestClientBikeService implements ClientBikeService {
             InputValidationException, ParsingException {
 
         try {
-
             int statusCode = response.getStatusLine().getStatusCode();
-
+            
             /* Success? */
             if (statusCode == successCode) {
                 return;
             }
-
+            
             /* Handler error. */
             switch (statusCode) {
-
-                case HttpStatus.SC_NOT_FOUND:
+            
+                case HttpStatus.SC_NOT_FOUND: 
                     throw JsonClientExceptionConversor.fromInstanceNotFoundException(
                             response.getEntity().getContent());
 

@@ -35,7 +35,6 @@ public class JsonClientExceptionConversor {
     public static InstanceNotFoundException fromInstanceNotFoundException(InputStream ex) 
             throws ParsingException {
         try {
-
         	ObjectMapper objectMapper = ObjectMapperFactory.instance();
 			JsonNode rootNode = objectMapper.readTree(ex);
 			if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
@@ -44,7 +43,8 @@ public class JsonClientExceptionConversor {
 				JsonNode data = rootNode.get("instanceNotFoundException");
 				String instanceId = data.get("instanceId").textValue();
 				String instanceType = data.get("instanceType").textValue();
-	            return new InstanceNotFoundException(instanceId, instanceType);
+				
+				return new InstanceNotFoundException(instanceId, instanceType);
 			}
 
         } catch (Exception e) {
