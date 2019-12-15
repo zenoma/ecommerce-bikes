@@ -19,22 +19,13 @@ public class BikeServiceClient {
 		ClientBikeService clientBikeService = ClientBikeServiceFactory
 				.getService();
 		if ("-findBikes".equalsIgnoreCase(args[0])) {
-			String keywords = "";
-			Calendar date = null;
-			if (args.length == 2) {
-				keywords = "";
-				date = stringToCalendar(args[1]);
-			} else {
-				validateArgs(args, 3, new int[] {}, args[0]);
-				keywords = args[1];
-				date = stringToCalendar(args[2]);
-			}
+			validateArgs(args, 3, new int[] {}, args[0]);
 			try {
 				List<ClientBikeDto> bikes = clientBikeService
-						.findBikes(keywords, date);
+						.findBikes(args[1], stringToCalendar(args[2]));
 				System.out.println("Found " + bikes.size()
-						+ " bikes(s) with keywords '" + keywords
-						+ "' and date '" + date.getTime() + "'");
+						+ " bikes(s) with keywords '" + args[1]
+						+ "' and date '" + stringToCalendar(args[2]).getTime() + "'");
 				for (int i = 0; i < bikes.size(); i++) {
 					ClientBikeDto bikesDto = bikes.get(i);
 					System.out.println("[Id: " + bikesDto.getBikeId()

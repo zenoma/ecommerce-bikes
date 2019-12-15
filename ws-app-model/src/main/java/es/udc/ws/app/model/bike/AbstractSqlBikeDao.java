@@ -88,7 +88,7 @@ public abstract class AbstractSqlBikeDao implements SqlBikeDao {
 		} // Si keywords es null o 0, devolvemos todas las tuplas.
 
 		if (searchDate != null) {
-			if (words != null)
+			if (words != null && words.length > 0)
 				queryString += " AND";
 			else
 				queryString += " WHERE";

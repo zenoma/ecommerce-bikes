@@ -247,8 +247,11 @@ public class BikeServiceImpl implements BikeService {
 						bike.getPrice() * numberOfBikes, 0);
 				validateRent(rent);
 				Rent createdRent = rentDao.create(connection, rent);
-				bike.setAvailableNumber(
-						bike.getAvailableNumber() - numberOfBikes);
+				int availableNumber = bike.getAvailableNumber() - numberOfBikes;
+				if (availableNumber < 0) {
+					throw new NumberOfBikesException(bikeId, numberOfBikes);
+				}
+				bike.setAvailableNumber(availableNumber);
 				bike.setNumberOfRents(bike.getNumberOfRents() + 1);
 				validateBike(bike);
 				bikeDao.update(connection, bike);
