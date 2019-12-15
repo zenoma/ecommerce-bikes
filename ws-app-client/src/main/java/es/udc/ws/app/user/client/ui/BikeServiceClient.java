@@ -3,6 +3,7 @@ package es.udc.ws.app.user.client.ui;
 import es.udc.ws.app.user.client.service.ClientBikeServiceFactory;
 import es.udc.ws.app.user.client.service.dto.ClientBikeDto;
 import es.udc.ws.app.user.client.service.dto.ClientRentDto;
+import es.udc.ws.app.user.client.service.exception.NumberOfBikesException;
 
 import java.util.Calendar;
 import java.util.List;
@@ -21,11 +22,11 @@ public class BikeServiceClient {
 		if ("-findBikes".equalsIgnoreCase(args[0])) {
 			validateArgs(args, 3, new int[] {}, args[0]);
 			try {
-				List<ClientBikeDto> bikes = clientBikeService
-						.findBikes(args[1], stringToCalendar(args[2]));
+				List<ClientBikeDto> bikes = clientBikeService.findBikes(args[1],
+						stringToCalendar(args[2]));
 				System.out.println("Found " + bikes.size()
-						+ " bikes(s) with keywords '" + args[1]
-						+ "' and date '" + stringToCalendar(args[2]).getTime() + "'");
+						+ " bikes(s) with keywords '" + args[1] + "' and date '"
+						+ stringToCalendar(args[2]).getTime() + "'");
 				for (int i = 0; i < bikes.size(); i++) {
 					ClientBikeDto bikesDto = bikes.get(i);
 					System.out.println("[Id: " + bikesDto.getBikeId()
@@ -53,7 +54,7 @@ public class BikeServiceClient {
 				System.out.println("\nBike with ID '" + args[2]
 						+ "' rented sucessfully. Rent Code: '" + rentId
 						+ "'\n");
-			} catch (Exception ex) {
+			}catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
 

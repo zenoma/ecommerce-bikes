@@ -171,7 +171,7 @@ public class RentsServlet extends HttpServlet {
 			return;
 		} catch (RentAlreadyRatedException e) {
 			ServletUtils.writeServiceResponse(resp,
-					HttpServletResponse.SC_BAD_REQUEST,
+					HttpServletResponse.SC_FORBIDDEN,
 					JsonServiceExceptionConversor
 							.toRentAlreadyRatedException(e),
 					null);

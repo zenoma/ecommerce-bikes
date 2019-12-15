@@ -24,7 +24,13 @@ import es.udc.ws.app.user.client.service.rest.json.JsonClientRentDtoConversor;
 import es.udc.ws.app.user.client.service.ClientBikeService;
 import es.udc.ws.app.user.client.service.dto.ClientBikeDto;
 import es.udc.ws.app.user.client.service.dto.ClientRentDto;
+import es.udc.ws.app.user.client.service.exception.InvalidRentPeriodException;
+import es.udc.ws.app.user.client.service.exception.InvalidUserRateException;
 import es.udc.ws.app.user.client.service.exception.NotAllowedException;
+import es.udc.ws.app.user.client.service.exception.NumberOfBikesException;
+import es.udc.ws.app.user.client.service.exception.RentAlreadyRatedException;
+import es.udc.ws.app.user.client.service.exception.RentExpirationException;
+import es.udc.ws.app.user.client.service.exception.UpdateReservedBikeException;
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -76,6 +82,18 @@ public class RestClientBikeService implements ClientBikeService {
 			System.out.println("ERROR:");
 			System.out.println(e.getMessage());
 			System.exit(-1);
+		} catch (NumberOfBikesException ex) {
+			System.out.println("ERROR:");
+			System.out.println(ex.getMessage());
+			System.exit(-1);
+		} catch (InvalidRentPeriodException ex) {
+			System.out.println("ERROR:");
+			System.out.println(ex.getMessage());
+			System.exit(-1);
+		} catch (RentExpirationException e) {
+			System.out.println("ERROR:");
+			System.out.println(e.getMessage());
+			System.exit(-1);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -118,9 +136,21 @@ public class RestClientBikeService implements ClientBikeService {
 		} catch (InputValidationException e) {
 			System.out.println(e);
 			System.exit(-1);
+		} catch (InvalidUserRateException e) {
+			System.out.println("ERROR:");
+			System.out.println(e.getMessage());
+			System.exit(-1);
 		} catch (InstanceNotFoundException e) {
 			System.out.println("ERROR:");
 			System.out.println("Rent not found. Id = " + rentId);
+			System.exit(-1);
+		} catch (RentAlreadyRatedException e) {
+			System.out.println("ERROR:");
+			System.out.println(e.getMessage());
+			System.exit(-1);
+		} catch (RentExpirationException e) {
+			System.out.println("ERROR:");
+			System.out.println(e.getMessage());
 			System.exit(-1);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -136,41 +166,35 @@ public class RestClientBikeService implements ClientBikeService {
 	}
 
 	private void validateStatusCode(int successCode, HttpResponse response)
-			throws InstanceNotFoundException, InputValidationException,
-			ParsingException, UnsupportedOperationException,
-			NotAllowedException {
+			throws Exception {
 
-		try {
-			int statusCode = response.getStatusLine().getStatusCode();
-			/* Success? */
-			if (statusCode == successCode) {
-				return;
-			}
-			/* Handler error. */
-			switch (statusCode) {
+		int statusCode = response.getStatusLine().getStatusCode();
+		/* Success? */
+		if (statusCode == successCode) {
+			return;
+		}
+		/* Handler error. */
+		switch (statusCode) {
 
-			case HttpStatus.SC_NOT_FOUND:
-				throw JsonClientExceptionConversor
-						.fromInstanceNotFoundException(
-								response.getEntity().getContent());
+		case HttpStatus.SC_NOT_FOUND:
+			throw JsonClientExceptionConversor.fromInstanceNotFoundException(
+					response.getEntity().getContent());
 
-			case HttpStatus.SC_BAD_REQUEST:
-				throw JsonClientExceptionConversor.fromInputValidationException(
-						response.getEntity().getContent());
+		case HttpStatus.SC_BAD_REQUEST:
+			throw JsonClientExceptionConversor
+					.from400(response.getEntity().getContent());
 
-			case HttpStatus.SC_FORBIDDEN:
+		case HttpStatus.SC_FORBIDDEN:
+			throw JsonClientExceptionConversor
+					.from403(response.getEntity().getContent());
 
-			case HttpStatus.SC_METHOD_NOT_ALLOWED:
-				throw JsonClientExceptionConversor.fromNotAllowedException(
-						response.getEntity().getContent());
+		case HttpStatus.SC_METHOD_NOT_ALLOWED:
+			throw JsonClientExceptionConversor
+					.fromNotAllowedException(response.getEntity().getContent());
 
-			default:
-				throw new RuntimeException(
-						"HTTP error; status code = " + statusCode);
-			}
-
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		default:
+			throw new RuntimeException(
+					"HTTP error; status code = " + statusCode);
 		}
 
 	}

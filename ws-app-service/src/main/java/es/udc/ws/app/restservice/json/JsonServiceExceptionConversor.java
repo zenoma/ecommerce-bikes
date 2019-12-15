@@ -114,6 +114,7 @@ public class JsonServiceExceptionConversor {
 			dataObject.set("startDate", null);
 		}
 
+		exceptionObject.set("UpdateReservedBikeException", dataObject);
 		return exceptionObject;
 	}
 	
@@ -121,7 +122,7 @@ public class JsonServiceExceptionConversor {
 		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
 		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
 		
-		dataObject.put("message ", ex.getMessage());
+		dataObject.put("message", ex.getMessage());
 
 		exceptionObject.set("ParsingBikeException", dataObject);
 
@@ -132,7 +133,7 @@ public class JsonServiceExceptionConversor {
 		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
 		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
 		
-		dataObject.put("message ", ex.getMessage());
+		dataObject.put("message", ex.getMessage());
 
 		exceptionObject.set("ParsingBikeException", dataObject);
 
@@ -143,7 +144,7 @@ public class JsonServiceExceptionConversor {
 		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
 		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
 		
-		dataObject.put("message ", ex.getMessage());
+		dataObject.put("message", ex.getMessage());
 
 		exceptionObject.set("NotAllowedException", dataObject);
 
@@ -154,7 +155,7 @@ public class JsonServiceExceptionConversor {
 		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
 		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
 		
-		dataObject.put("message ", ex.getMessage());
+		dataObject.put("message", ex.getMessage());
 
 		exceptionObject.set("RentAlreadyRatedException", dataObject);
 
@@ -165,7 +166,7 @@ public class JsonServiceExceptionConversor {
 		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
 		ObjectNode dataObject = JsonNodeFactory.instance.objectNode();
 		
-		dataObject.put("message ", ex.getMessage());
+		dataObject.put("message", ex.getMessage());
 
 		exceptionObject.set("InvalidUserRateException", dataObject);
 

@@ -782,7 +782,7 @@ public class BikeServiceTest {
 		}
 	}
 
-	@Test(expected = InputValidationException.class)
+	@Test(expected = NumberOfBikesException.class)
 	public void testRentWithOverMaxAvailableBikes()
 			throws InputValidationException, NumberOfBikesException,
 			InvalidRentPeriodException, InstanceNotFoundException {

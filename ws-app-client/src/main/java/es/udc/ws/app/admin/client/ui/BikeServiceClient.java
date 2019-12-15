@@ -2,6 +2,7 @@ package es.udc.ws.app.admin.client.ui;
 
 import es.udc.ws.app.admin.client.service.ClientBikeServiceFactory;
 import es.udc.ws.app.admin.client.service.dto.ClientBikeDto;
+import es.udc.ws.app.user.client.service.exception.UpdateReservedBikeException;
 import es.udc.ws.app.admin.client.service.ClientBikeService;
 
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -60,7 +61,10 @@ public class BikeServiceClient {
 				System.out.println(ex.getMessage());
 			} catch (NumberFormatException ex) {
 				ex.printStackTrace(System.err);
-			} catch (Exception ex) {
+			}catch (UpdateReservedBikeException ex) {
+				System.out.println("ERROR:");
+				System.out.println(ex.getMessage());
+			}catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
 		} else if ("-findBike".equalsIgnoreCase(args[0])) {

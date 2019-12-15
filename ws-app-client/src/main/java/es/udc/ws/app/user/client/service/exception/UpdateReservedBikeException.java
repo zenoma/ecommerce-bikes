@@ -1,18 +1,17 @@
-package es.udc.ws.app.model.bikeservice.exceptions;
-
-import java.util.Calendar;
+package es.udc.ws.app.user.client.service.exception;
 
 @SuppressWarnings("serial")
 public class UpdateReservedBikeException extends Exception {
 
 	private Long bikeId;
-	private Calendar date;
-	private Calendar startDate;
+	private String date;
+	private String startDate;
 
-	public UpdateReservedBikeException(Long bikeId, Calendar date,
-			Calendar startDate) {
+	public UpdateReservedBikeException(Long bikeId, String date,
+			String startDate) {
 		super("Bike with id=\"" + bikeId + "\" can't delay the rent day to \""
-				+ date.getTime() + "\".(Actual bike rent day = \"" + startDate.getTime() + ")");
+				+ date + "\".(Actual bike rent day = \""
+				+ startDate + ")");
 		this.bikeId = bikeId;
 		this.date = date;
 		this.startDate = startDate;
@@ -26,19 +25,19 @@ public class UpdateReservedBikeException extends Exception {
 		this.bikeId = bikeId;
 	}
 
-	public Calendar getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Calendar date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
-	public Calendar getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Calendar startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
