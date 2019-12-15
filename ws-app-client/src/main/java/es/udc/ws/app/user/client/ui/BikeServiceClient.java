@@ -71,10 +71,10 @@ public class BikeServiceClient {
 
 			try {
 				clientBikeService.rateRent(Long.valueOf(args[1]),
-						Short.valueOf(args[3]));
-				System.out.println("\nRent '" + args[1]
-						+ "' rated sucessfully with the score number '"
-						+ args[3] + "'\n");
+						Short.valueOf(args[3]), args[2]);
+				System.out.println("\nThe user '" + args[2]
+						+ "' has succesfully rated the rent '" + args[1]
+						+ "'  with score '" + args[3] + "'\n");
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
@@ -98,7 +98,8 @@ public class BikeServiceClient {
 							+ ", Number of Rented Bikes: "
 							+ rentDto.getNumberOfBikes() + ", Rent Date: "
 							+ rentDto.getRentDate().getTime() + ", Price: "
-							+ rentDto.getPrice());
+							+ rentDto.getPrice() + ", Rent Score: "
+							+ rentDto.getRentScore());
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);

@@ -94,14 +94,12 @@ public class JsonClientBikeDtoConversor {
 					calendarObject.get("day").intValue());
 			float price = bikeObject.get("price").floatValue();
 			int availableNumber = bikeObject.get("availableNumber").intValue();
-			//int numberOfRents = bikeObject.get("nomberOfRents").intValue();
-			//double averageScore = bikeObject.get("averageScore").doubleValue();
+			int numberOfRents = bikeObject.get("numberOfRents").intValue();
+			double averageScore = bikeObject.get("averageScore").doubleValue();
 			 
-//			return new ClientBikeDto(bikeId, modelName, description, date, 
-//					price, availableNumber, numberOfRents, averageScore);
-			
 			return new ClientBikeDto(bikeId, modelName, description, date, 
-					price, availableNumber);
+					price, availableNumber, numberOfRents, averageScore);
+			
 		}
 	}
 	

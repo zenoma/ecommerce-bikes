@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import es.udc.ws.app.user.client.service.exception.NotAllowedException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -57,7 +58,27 @@ public class JsonClientExceptionConversor {
 			throw new ParsingException(e);
 		}
 	}
-	
+
+	public static NotAllowedException fromNotAllowedException(InputStream ex)
+			throws ParsingException {
+		try {
+
+			ObjectMapper objectMapper = ObjectMapperFactory.instance();
+			JsonNode rootNode = objectMapper.readTree(ex);
+			if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
+				throw new ParsingException(
+						"Unrecognized JSON (object expected)");
+			} else {
+				JsonNode data = rootNode.get("instanceNotFoundException");
+				String texto = data.get("texto").textValue();
+				return new NotAllowedException(texto);
+			}
+
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
+	}
+
 	// FIXME Faltan excepciones
 //	public static JsonNode toNumberOfBikesException(NumberOfBikesException ex) {
 //		ObjectNode exceptionObject = JsonNodeFactory.instance.objectNode();
@@ -68,5 +89,5 @@ public class JsonClientExceptionConversor {
 //		dataObject.put("numberOfBikes", ex.getNumberOfBikes());
 //		return exceptionObject;
 //	}
-	
+
 }

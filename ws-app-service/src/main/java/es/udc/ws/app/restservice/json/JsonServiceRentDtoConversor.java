@@ -19,15 +19,6 @@ import es.udc.ws.util.json.exceptions.ParsingException;
 
 public class JsonServiceRentDtoConversor {
 
-	public static JsonNode toJsonObject(ServiceRentDto rent) {
-		ObjectNode rentNode = JsonNodeFactory.instance.objectNode();
-
-		if (rent.getRentId() != null) {
-			rentNode.put("rentId", rent.getRentId());
-		}
-		return rentNode;
-	}
-
 	public static ObjectNode toObjectNode(ServiceRentDto rent) {
 		ObjectNode rentObject = JsonNodeFactory.instance.objectNode();
 		if (rent.getRentId() != null) {
@@ -38,10 +29,14 @@ public class JsonServiceRentDtoConversor {
 				.put("creditCard", rent.getCreditCard())
 				.set("startRentDate", getRentDate(rent.getStartRentDate()));
 		rentObject.set("finishRentDate", getRentDate(rent.getFinishRentDate()));
-		rentObject.put("numberOfBikes", rent.getNumberOfBikes()).set("rentDate",
-				getRentDate(rent.getRentDate()));
-		rentObject.put("price", rent.getPrice()).put("rentScore",
-				rent.getRentScore());
+		rentObject.put("numberOfBikes", rent.getNumberOfBikes());
+		if (rent.getRentDate() != null) {
+			rentObject.set("rentDate", getRentDate(rent.getRentDate()));
+		}
+		if (rent.getPrice() != 0.0) {
+			rentObject.put("price", rent.getPrice());
+		}
+		rentObject.put("rentScore", rent.getRentScore());
 		return rentObject;
 	}
 

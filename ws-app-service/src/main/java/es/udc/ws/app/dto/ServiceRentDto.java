@@ -90,8 +90,16 @@ public class ServiceRentDto {
 		this.rentScore = rentScore;
 	}
 
-	public ServiceRentDto(Long rentId) {
+	public ServiceRentDto(Long rentId, String userEmail,
+			String creditCard, Long bikeId, Calendar startRentDate,
+			Calendar finishRentDate, int numberOfBikes) {
 		this.rentId = rentId;
+		this.userEmail = userEmail;
+		this.bikeId = bikeId;
+		this.creditCard = creditCard;
+		this.startRentDate = startRentDate;
+		this.finishRentDate = finishRentDate;
+		this.numberOfBikes = numberOfBikes;
 	}
 
 	public Long getRentId() {

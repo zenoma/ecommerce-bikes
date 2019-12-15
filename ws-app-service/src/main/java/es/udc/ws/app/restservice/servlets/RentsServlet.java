@@ -10,12 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.dto.ServiceRentDto;
 import es.udc.ws.app.restservice.exceptions.NotAllowedException;
-import es.udc.ws.app.restservice.exceptions.ParsingBikeException;
 import es.udc.ws.app.restservice.exceptions.ParsingRentException;
-import es.udc.ws.app.restservice.json.JsonServiceBikeDtoConversor;
 import es.udc.ws.app.restservice.json.JsonServiceExceptionConversor;
 import es.udc.ws.app.restservice.json.JsonServiceRentDtoConversor;
 import es.udc.ws.app.serviceutil.RentToRentDtoConversor;
@@ -89,13 +86,14 @@ public class RentsServlet extends HttpServlet {
 			return;
 		} catch (InvalidRentPeriodException ex) {
 			ServletUtils.writeServiceResponse(resp,
-					HttpServletResponse.SC_FORBIDDEN,
+					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor
 							.toInvalidRentPeriodException(ex),
 					null);
 			return;
 		}
-		rentDto = RentToRentDtoConversor.toRentDto(rentLong);
+		rent.setRentId(rentLong);
+		rentDto = RentToRentDtoConversor.toRentDto(rent);
 		String rentURL = ServletUtils.normalizePath(
 				req.getRequestURI().toString()) + "/" + rent.getRentId();
 
@@ -103,7 +101,7 @@ public class RentsServlet extends HttpServlet {
 		headers.put("Location", rentURL);
 
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED,
-				JsonServiceRentDtoConversor.toJsonObject(rentDto), headers);
+				JsonServiceRentDtoConversor.toObjectNode(rentDto), headers);
 	}
 
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
@@ -124,13 +122,13 @@ public class RentsServlet extends HttpServlet {
 									"PUT Invalid Request: " + "invalid score")),
 					null);
 		}
-		
+
 		if (userEmail == null) {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInputValidationException(
-							new InputValidationException(
-									"PUT Invalid Request: " + "invalid empty email")),
+							new InputValidationException("PUT Invalid Request: "
+									+ "invalid empty email")),
 					null);
 		}
 
@@ -154,14 +152,15 @@ public class RentsServlet extends HttpServlet {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toParsingRentException(
-							new ParsingRentException ("PUT Invalid Request: "
+							new ParsingRentException("PUT Invalid Request: "
 									+ "invalid format")),
 					null);
 			return;
-		}  catch (InstanceNotFoundException e) {
+		} catch (InstanceNotFoundException e) {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_NOT_FOUND,
-					JsonServiceExceptionConversor.toInstanceNotFoundException(e),
+					JsonServiceExceptionConversor
+							.toInstanceNotFoundException(e),
 					null);
 			return;
 		} catch (RentExpirationException e) {
@@ -172,18 +171,19 @@ public class RentsServlet extends HttpServlet {
 			return;
 		} catch (RentAlreadyRatedException e) {
 			ServletUtils.writeServiceResponse(resp,
-					HttpServletResponse.SC_FORBIDDEN,
-					JsonServiceExceptionConversor.toRentAlreadyRatedException(e),
+					HttpServletResponse.SC_BAD_REQUEST,
+					JsonServiceExceptionConversor
+							.toRentAlreadyRatedException(e),
 					null);
 			return;
 		} catch (InvalidUserRateException e) {
 			ServletUtils.writeServiceResponse(resp,
-					HttpServletResponse.SC_FORBIDDEN,
+					HttpServletResponse.SC_BAD_REQUEST,
 					JsonServiceExceptionConversor.toInvalidUserRateException(e),
 					null);
 			return;
-		} 
-		
+		}
+
 		ServletUtils.writeServiceResponse(resp,
 				HttpServletResponse.SC_NO_CONTENT, null, null);
 	}
@@ -212,9 +212,9 @@ public class RentsServlet extends HttpServlet {
 				try {
 					rents = BikeServiceFactory.getService()
 							.findRents(rentEmail);
-				} catch (InputValidationException e) {
+				} catch (InputValidationException ex) {
 					ServletUtils.writeServiceResponse(resp,
-							HttpServletResponse.SC_NOT_FOUND,
+							HttpServletResponse.SC_BAD_REQUEST,
 							JsonServiceExceptionConversor
 									.toInputValidationException(
 											new InputValidationException(

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.MethodNotSupportedException;
+
 import es.udc.ws.app.dto.ServiceBikeDto;
 import es.udc.ws.app.model.bike.Bike;
 import es.udc.ws.app.model.bikeservice.BikeServiceFactory;
@@ -208,7 +210,7 @@ public class BikesServlet extends HttpServlet {
 					calendar = getDate(req.getParameter("date"));
 				}catch (ParsingException ex) {
 					ServletUtils.writeServiceResponse(resp,
-							HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+							HttpServletResponse.SC_BAD_REQUEST,
 							JsonServiceExceptionConversor.toInputValidationException(
 									new InputValidationException(ex.getMessage())
 							),null);

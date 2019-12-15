@@ -13,6 +13,7 @@ public class ClientRentDto {
 	private int numberOfBikes;
 	private Calendar rentDate;
 	private float price;
+	private int rentScore;
 
 	public ClientRentDto(Long rentId) {
 		this.rentId = rentId;
@@ -20,12 +21,13 @@ public class ClientRentDto {
 
 	public ClientRentDto(Long rentId, String userEmail, Long bikeId,
 			String creditCard, Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes, Calendar rentDate, float price) {
+			int numberOfBikes, Calendar rentDate, float price, int rentScore) {
 		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
 				numberOfBikes);
 		this.rentDate = rentDate;
 		this.price = price;
 		this.rentId = rentId;
+		this.setRentScore(rentScore);
 	}
 
 	public ClientRentDto(String userEmail, Long bikeId, String creditCard,
@@ -181,6 +183,14 @@ public class ClientRentDto {
 		} else if (!userEmail.equals(other.userEmail))
 			return false;
 		return true;
+	}
+
+	public int getRentScore() {
+		return rentScore;
+	}
+
+	public void setRentScore(int rentScore) {
+		this.rentScore = rentScore;
 	}
 
 }

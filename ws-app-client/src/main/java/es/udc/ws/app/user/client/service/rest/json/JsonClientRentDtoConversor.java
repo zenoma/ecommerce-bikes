@@ -25,6 +25,11 @@ public class JsonClientRentDtoConversor {
 				.set("startRentDate", getRentDate(rent.getStartRentDate()));
 		rentNode.set("finishRentDate", getRentDate(rent.getFinishRentDate()));
 		rentNode.put("numberOfBikes", rent.getNumberOfBikes());
+		if (rent.getRentDate() != null) {
+			rentNode.set("rentDate", getRentDate(rent.getRentDate()));
+		}
+		rentNode.put("price", rent.getPrice()).put("rentScore",
+				rent.getRentScore());
 		return rentNode;
 	}
 
@@ -125,26 +130,25 @@ public class JsonClientRentDtoConversor {
 			}
 
 			calendarObjectNode = rentObject.get("rentDate");
-			Calendar rentDate = null;
+			Calendar rentDate = Calendar.getInstance();
 			if (calendarObjectNode != null) {
 				rentDate = Calendar.getInstance();
 				rentDate.set(calendarObjectNode.get("year").intValue(),
 						calendarObjectNode.get("month").intValue() - 1,
 						calendarObjectNode.get("day").intValue());
-			} else {
-				throw new ParsingException("rentDate");
 			}
 
-			int price;
+			int price = 0;
 			if (rentObject.get("price") != null) {
 				price = rentObject.get("price").intValue();
-			} else {
-				throw new ParsingException("price");
 			}
-
+			int rentScore = 0;
+			if (rentObject.get("rentScore") != null) {
+				rentScore = rentObject.get("rentScore").intValue();
+			}
 			return new ClientRentDto(rentId, userEmail, bikeId, creditCard,
 					startRentDate, finishRentDate, numberOfBikes, rentDate,
-					price);
+					price, rentScore);
 		}
 	}
 

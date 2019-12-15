@@ -17,5 +17,5 @@ public interface ClientBikeService {
 	public List<ClientRentDto> findRents(String email)
 			throws InputValidationException;
 
-	public void rateRent(Long rentId, int score);
+	public void rateRent(Long rentId, int score, String email);
 }

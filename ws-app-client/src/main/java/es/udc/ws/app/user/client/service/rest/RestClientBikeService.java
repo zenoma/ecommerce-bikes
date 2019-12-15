@@ -24,6 +24,7 @@ import es.udc.ws.app.user.client.service.rest.json.JsonClientRentDtoConversor;
 import es.udc.ws.app.user.client.service.ClientBikeService;
 import es.udc.ws.app.user.client.service.dto.ClientBikeDto;
 import es.udc.ws.app.user.client.service.dto.ClientRentDto;
+import es.udc.ws.app.user.client.service.exception.NotAllowedException;
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -93,7 +94,7 @@ public class RestClientBikeService implements ClientBikeService {
 
 			return JsonClientRentDtoConversor
 					.toClientRentDtos((response.getEntity().getContent()));
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -101,21 +102,22 @@ public class RestClientBikeService implements ClientBikeService {
 	}
 
 	@Override
-	public void rateRent(Long rentId, int score) {
+	public void rateRent(Long rentId, int score, String email) {
 		try {
 			HttpResponse response = Request
 					.Put(getEndpointAddress() + "rents/"
 							+ URLEncoder.encode(rentId.toString(), "UTF-8")
 							+ "?score="
 							+ URLEncoder.encode(
-									Integer.valueOf(score).toString(), "UTF-8"))
+									Integer.valueOf(score).toString(), "UTF-8")
+							+ "&userEmail=" + URLEncoder.encode(email, "UTF-8"))
 					.execute().returnResponse();
 
 			validateStatusCode(HttpStatus.SC_NO_CONTENT, response);
 
 		} catch (InputValidationException e) {
 			System.out.println(e);
-			;
+			System.exit(-1);
 		} catch (InstanceNotFoundException e) {
 			System.out.println("ERROR:");
 			System.out.println("Rent not found. Id = " + rentId);
@@ -135,7 +137,8 @@ public class RestClientBikeService implements ClientBikeService {
 
 	private void validateStatusCode(int successCode, HttpResponse response)
 			throws InstanceNotFoundException, InputValidationException,
-			ParsingException {
+			ParsingException, UnsupportedOperationException,
+			NotAllowedException {
 
 		try {
 			int statusCode = response.getStatusLine().getStatusCode();
@@ -153,6 +156,12 @@ public class RestClientBikeService implements ClientBikeService {
 
 			case HttpStatus.SC_BAD_REQUEST:
 				throw JsonClientExceptionConversor.fromInputValidationException(
+						response.getEntity().getContent());
+
+			case HttpStatus.SC_FORBIDDEN:
+
+			case HttpStatus.SC_METHOD_NOT_ALLOWED:
+				throw JsonClientExceptionConversor.fromNotAllowedException(
 						response.getEntity().getContent());
 
 			default:
