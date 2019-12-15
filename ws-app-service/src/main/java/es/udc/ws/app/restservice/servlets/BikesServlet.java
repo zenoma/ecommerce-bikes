@@ -232,7 +232,7 @@ public class BikesServlet extends HttpServlet {
 					ServletUtils.writeServiceResponse(resp,
 							HttpServletResponse.SC_BAD_REQUEST,
 							JsonServiceExceptionConversor.toInputValidationException(
-									new InputValidationException("PUT Invalid Request: "
+									new InputValidationException("GET Invalid Request: "
 											+ "invalid bike id, not a number '"
 											+ bikeIdString + "'")),
 							null);
