@@ -15,8 +15,8 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 		// Create queryString
 		String queryString = "INSERT INTO Rent"
 				+ "(userEmail, bikeId, creditCard, startRentDate, "
-				+ "finishRentDate, numberOfBikes, rentDate, price)"
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "finishRentDate, numberOfBikes, rentDate, price, rentScore)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				queryString, Statement.RETURN_GENERATED_KEYS)) {
@@ -40,6 +40,7 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 					: null;
 			preparedStatement.setTimestamp(i++, timeStamp);
 			preparedStatement.setFloat(i++, rent.getPrice());
+			preparedStatement.setInt(i++, rent.getRentScore());
 
 			// execute query
 			preparedStatement.executeUpdate();
@@ -54,7 +55,7 @@ public class Jdbc3CcSqlRentDao extends AbstractSqlRentDao {
 			return new Rent(rentId, rent.getUserEmail(), rent.getBikeId(),
 					rent.getCreditCard(), rent.getStartRentDate(),
 					rent.getFinishRentDate(), rent.getNumberOfBikes(),
-					rent.getRentDate(), rent.getPrice());
+					rent.getRentDate(), rent.getPrice(), rent.getRentScore());
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

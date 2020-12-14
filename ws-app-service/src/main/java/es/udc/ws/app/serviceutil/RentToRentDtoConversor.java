@@ -13,7 +13,7 @@ public class RentToRentDtoConversor {
 		return new ServiceRentDto(rent.getRentId(), rent.getUserEmail(),
 				rent.getBikeId(), rent.getCreditCard(), rent.getStartRentDate(),
 				rent.getFinishRentDate(), rent.getNumberOfBikes(),
-				rent.getRentDate(), rent.getPrice());
+				rent.getRentDate(), rent.getPrice(), rent.getRentScore());
 	}
 	
 	public static Rent toRent(ServiceRentDto rent) {
@@ -21,7 +21,7 @@ public class RentToRentDtoConversor {
 		return new Rent(rent.getRentId(), rent.getUserEmail(),
 				rent.getBikeId(), rent.getCreditCard(), rent.getStartRentDate(),
 				rent.getFinishRentDate(), rent.getNumberOfBikes(),
-				rent.getRentDate(), rent.getPrice());
+				rent.getRentDate(), rent.getPrice(), rent.getRentScore());
 	}
 	
 	public static ServiceRentDto toRentDto(Long rent) {

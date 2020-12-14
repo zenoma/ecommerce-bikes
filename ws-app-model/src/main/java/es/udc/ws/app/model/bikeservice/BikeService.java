@@ -29,8 +29,8 @@ public interface BikeService {
 
 	public List<Rent> findRents(String email) throws InputValidationException;
 
-	public void rateRent(Long rentId, int score)
+	public void rateRent(Long rentId, int score, String userEmail)
 			throws InputValidationException, InstanceNotFoundException,
-			RentExpirationException;
+			RentExpirationException, RentAlreadyRatedException, InvalidUserRateException;
 
 }

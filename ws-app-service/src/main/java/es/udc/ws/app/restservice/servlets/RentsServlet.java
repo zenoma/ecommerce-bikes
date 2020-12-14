@@ -108,6 +108,7 @@ public class RentsServlet extends HttpServlet {
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		String rentIdAsString = path.substring(1);
 		String scoreString = (req.getParameter("score"));
+		String userEmail = (req.getParameter("userEmail"));
 
 		int score = 0;
 		if (scoreString != null) {
@@ -134,16 +135,16 @@ public class RentsServlet extends HttpServlet {
 					null);
 			return;
 		}
-		
+
 		try {
-			BikeServiceFactory.getService().rateRent(rentId, score);
+			BikeServiceFactory.getService().rateRent(rentId, score, userEmail);
 		} catch (ParsingException ex) {
 			throw ex;
 		} catch (Exception e) {
 			throw new ParsingException(e);
 		}
-		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_NO_CONTENT,
-				null, null);
+		ServletUtils.writeServiceResponse(resp,
+				HttpServletResponse.SC_NO_CONTENT, null, null);
 	}
 
 	@Override

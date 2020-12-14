@@ -55,7 +55,8 @@ public final class BikesPropertyValidator {
 		} else {
 			if (propertyValue.before(now)) {
 				throw new InputValidationException("Invalid " + propertyName
-						+ " value (it must be a past date): " + propertyValue.getTime());
+						+ " value (it must be a past date): "
+						+ propertyValue.getTime());
 			}
 		}
 	}
@@ -68,9 +69,10 @@ public final class BikesPropertyValidator {
 					+ "and " + calendarPost + " values cannot be null");
 		} else {
 			if (calendarPrev.after(calendarPost)) {
-				throw new InputValidationException("Invalid date: calendarPrev "
-						+ calendarPrev.getTime() + " must be previous than calendarPost) "
-						+ calendarPost.getTime());
+				throw new InputValidationException(
+						"Invalid date: calendarPrev " + calendarPrev.getTime()
+								+ " must be previous than calendarPost) "
+								+ calendarPost.getTime());
 			}
 		}
 	}
@@ -91,11 +93,11 @@ public final class BikesPropertyValidator {
 		}
 	}
 
-	public static void validateCreditCard(String propertyName, String creditCard)
-			throws InputValidationException {
+	public static void validateCreditCard(String propertyName,
+			String creditCard) throws InputValidationException {
 		if (creditCard.length() != 16) {
-			throw new InputValidationException(
-					"Invalid " + propertyName + " size (it must have 16 characters)");
+			throw new InputValidationException("Invalid " + propertyName
+					+ " size (it must have 16 characters)");
 		}
 	}
 
@@ -121,13 +123,14 @@ public final class BikesPropertyValidator {
 			Calendar finishDate)
 			throws InputValidationException, InvalidRentPeriodException {
 		if (startDate == null || finishDate == null) {
-			throw new InputValidationException("Invalid " + startDate.getTime() + "or "
-					+ finishDate.getTime() + " values cannot be null");
+			throw new InputValidationException("Invalid " + startDate.getTime()
+					+ "or " + finishDate.getTime() + " values cannot be null");
 		}
 		if (startDate.after(finishDate)) {
-			throw new InputValidationException("Invalid date: calendarPrev "
-					+ startDate.getTime() + " must be previous than calendarPost)"
-					+ finishDate.getTime());
+			throw new InputValidationException(
+					"Invalid date: calendarPrev " + startDate.getTime()
+							+ " must be previous than calendarPost)"
+							+ finishDate.getTime());
 		}
 		long days = ChronoUnit.DAYS.between(startDate.toInstant(),
 				finishDate.toInstant());

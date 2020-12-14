@@ -13,8 +13,34 @@ public class ServiceRentDto {
 	private int numberOfBikes;
 	private Calendar rentDate;
 	private float price;
+	private int rentScore;
 
 	public ServiceRentDto() {
+	}
+
+	ServiceRentDto(Long rentId, String userEmail, Long bikeId,
+			String creditCard, Calendar startRentDate, Calendar finishRentDate,
+			int numberOfBikes, Calendar rentDate, float price) {
+		this.rentId = rentId;
+		this.userEmail = userEmail;
+		this.bikeId = bikeId;
+		this.creditCard = creditCard;
+		this.startRentDate = startRentDate;
+		this.finishRentDate = finishRentDate;
+		this.numberOfBikes = numberOfBikes;
+		this.rentDate = rentDate;
+		this.price = price;
+	}
+
+	public ServiceRentDto(String userEmail, Long bikeId, String creditCard,
+			Calendar startRentDate, Calendar finishRentDate,
+			int numberOfBikes) {
+		this.userEmail = userEmail;
+		this.bikeId = bikeId;
+		this.creditCard = creditCard;
+		this.startRentDate = startRentDate;
+		this.finishRentDate = finishRentDate;
+		this.numberOfBikes = numberOfBikes;
 	}
 
 	/**
@@ -33,9 +59,9 @@ public class ServiceRentDto {
 
 	public ServiceRentDto(Long rentId, String userEmail, Long bikeId,
 			String creditCard, Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes, Calendar rentDate, float price) {
+			int numberOfBikes, Calendar rentDate, float price, int rentScore) {
 		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
-				numberOfBikes);
+				numberOfBikes, rentScore);
 		this.rentId = rentId;
 		this.rentDate = rentDate;
 		this.price = price;
@@ -53,17 +79,16 @@ public class ServiceRentDto {
 	 */
 
 	public ServiceRentDto(String userEmail, Long bikeId, String creditCard,
-			Calendar startRentDate, Calendar finishRentDate,
-			int numberOfBikes) {
+			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
+			int rentScore) {
 		this.userEmail = userEmail;
 		this.bikeId = bikeId;
 		this.creditCard = creditCard;
 		this.startRentDate = startRentDate;
 		this.finishRentDate = finishRentDate;
 		this.numberOfBikes = numberOfBikes;
+		this.rentScore = rentScore;
 	}
-	
-	
 
 	public ServiceRentDto(Long rentId) {
 		this.rentId = rentId;
@@ -141,6 +166,14 @@ public class ServiceRentDto {
 		this.price = price;
 	}
 
+	public int getRentScore() {
+		return rentScore;
+	}
+
+	public void setRentScore(int rentScore) {
+		this.rentScore = rentScore;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -155,6 +188,7 @@ public class ServiceRentDto {
 		result = prime * result
 				+ ((rentDate == null) ? 0 : rentDate.hashCode());
 		result = prime * result + ((rentId == null) ? 0 : rentId.hashCode());
+		result = prime * result + rentScore;
 		result = prime * result
 				+ ((startRentDate == null) ? 0 : startRentDate.hashCode());
 		result = prime * result
@@ -199,6 +233,8 @@ public class ServiceRentDto {
 			if (other.rentId != null)
 				return false;
 		} else if (!rentId.equals(other.rentId))
+			return false;
+		if (rentScore != other.rentScore)
 			return false;
 		if (startRentDate == null) {
 			if (other.startRentDate != null)

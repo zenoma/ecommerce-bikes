@@ -14,10 +14,11 @@ public class Rent {
 	private int numberOfBikes; // No actualizable
 	private Calendar rentDate; // No actualizable
 	private float price; // No actualizable
+	private int rentScore; // No actualizable
 
 	public Rent(String userEmail, Long bikeId, String creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
-			Calendar rentDate, float price) {
+			Calendar rentDate, float price, int rentScore) {
 		this.userEmail = userEmail;
 		this.bikeId = bikeId;
 		this.creditCard = creditCard;
@@ -26,13 +27,14 @@ public class Rent {
 		this.numberOfBikes = numberOfBikes;
 		this.rentDate = rentDate;
 		this.price = price;
+		this.rentScore = rentScore;
 	}
 
 	public Rent(Long rentId, String userEmail, Long bikeId, String creditCard,
 			Calendar startRentDate, Calendar finishRentDate, int numberOfBikes,
-			Calendar rentDate, float price) {
+			Calendar rentDate, float price, int rentScore) {
 		this(userEmail, bikeId, creditCard, startRentDate, finishRentDate,
-				numberOfBikes, rentDate, price);
+				numberOfBikes, rentDate, price, rentScore);
 		this.rentId = rentId;
 	}
 
@@ -109,6 +111,14 @@ public class Rent {
 		this.price = price;
 	}
 
+	public int getRentScore() {
+		return rentScore;
+	}
+
+	public void setRentScore(int rentScore) {
+		this.rentScore = rentScore;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -123,6 +133,7 @@ public class Rent {
 		result = prime * result
 				+ ((rentDate == null) ? 0 : rentDate.hashCode());
 		result = prime * result + ((rentId == null) ? 0 : rentId.hashCode());
+		result = prime * result + rentScore;
 		result = prime * result
 				+ ((startRentDate == null) ? 0 : startRentDate.hashCode());
 		result = prime * result
@@ -167,6 +178,8 @@ public class Rent {
 			if (other.rentId != null)
 				return false;
 		} else if (!rentId.equals(other.rentId))
+			return false;
+		if (rentScore != other.rentScore)
 			return false;
 		if (startRentDate == null) {
 			if (other.startRentDate != null)

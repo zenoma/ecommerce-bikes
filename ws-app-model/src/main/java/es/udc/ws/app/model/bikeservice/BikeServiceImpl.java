@@ -14,7 +14,9 @@ import es.udc.ws.app.model.bike.Bike;
 import es.udc.ws.app.model.bike.SqlBikeDao;
 import es.udc.ws.app.model.bike.SqlBikeDaoFactory;
 import es.udc.ws.app.model.bikeservice.exceptions.InvalidRentPeriodException;
+import es.udc.ws.app.model.bikeservice.exceptions.InvalidUserRateException;
 import es.udc.ws.app.model.bikeservice.exceptions.NumberOfBikesException;
+import es.udc.ws.app.model.bikeservice.exceptions.RentAlreadyRatedException;
 import es.udc.ws.app.model.bikeservice.exceptions.RentExpirationException;
 import es.udc.ws.app.model.bikeservice.exceptions.UpdateReservedBikeException;
 import es.udc.ws.app.model.rent.Rent;
@@ -171,7 +173,6 @@ public class BikeServiceImpl implements BikeService {
 					throw new InputValidationException(
 							"Available Number must be greater than 0");
 				}
-
 				validateBike(bike);
 				bikeDao.update(connection, bike);
 
@@ -243,7 +244,7 @@ public class BikeServiceImpl implements BikeService {
 
 				Rent rent = new Rent(email, bikeId, creditCard, startRentDate,
 						finishRentDate, numberOfBikes, calendar,
-						bike.getPrice() * numberOfBikes);
+						bike.getPrice() * numberOfBikes, 0);
 				validateRent(rent);
 				Rent createdRent = rentDao.create(connection, rent);
 				bike.setAvailableNumber(
@@ -282,12 +283,20 @@ public class BikeServiceImpl implements BikeService {
 	}
 
 	@Override
-	public void rateRent(Long rentId, int score)
+	public void rateRent(Long rentId, int score, String userEmail)
 			throws InputValidationException, InstanceNotFoundException,
-			RentExpirationException {
+			RentExpirationException, RentAlreadyRatedException, InvalidUserRateException {
 		BikesPropertyValidator.validateScore("score", score);
 		try (Connection connection = dataSource.getConnection()) {
 			Rent rent = rentDao.find(connection, rentId);
+			if (!rent.getUserEmail().equals(userEmail)) {
+				throw new InvalidUserRateException(rentId, userEmail);
+			}
+			if (rent.getRentScore() != 0) {
+				throw new RentAlreadyRatedException(rentId);
+			}else {
+				rent.setRentScore(score);
+			}
 			BikesPropertyValidator.validateRateRent("Rate Rent", rent);
 			Bike bike = bikeDao.find(connection, rent.getBikeId());
 
@@ -301,6 +310,7 @@ public class BikeServiceImpl implements BikeService {
 			}
 			bike.setTotalScore(aux);
 			bikeDao.update(connection, bike);
+			rentDao.update(connection, rent);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

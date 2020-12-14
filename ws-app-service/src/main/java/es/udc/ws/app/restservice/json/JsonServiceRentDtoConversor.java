@@ -27,23 +27,24 @@ public class JsonServiceRentDtoConversor {
 		}
 		return rentNode;
 	}
-	
+
 	public static ObjectNode toObjectNode(ServiceRentDto rent) {
 		ObjectNode rentObject = JsonNodeFactory.instance.objectNode();
 		if (rent.getRentId() != null) {
 			rentObject.put("rentId", rent.getRentId());
 		}
-		rentObject.put("userEmail",rent.getUserEmail())
-				.put("bikeId",rent.getBikeId())
+		rentObject.put("userEmail", rent.getUserEmail())
+				.put("bikeId", rent.getBikeId())
 				.put("creditCard", rent.getCreditCard())
 				.set("startRentDate", getRentDate(rent.getStartRentDate()));
-		rentObject.set("finishRentDate",getRentDate(rent.getFinishRentDate()));
-		rentObject.put("numberOfBikes", rent.getNumberOfBikes())
-				.set("rentDate", getRentDate(rent.getRentDate()));
-		rentObject.put("price", rent.getPrice());
+		rentObject.set("finishRentDate", getRentDate(rent.getFinishRentDate()));
+		rentObject.put("numberOfBikes", rent.getNumberOfBikes()).set("rentDate",
+				getRentDate(rent.getRentDate()));
+		rentObject.put("price", rent.getPrice()).put("rentScore",
+				rent.getRentScore());
 		return rentObject;
 	}
-	
+
 	public static ArrayNode toArrayNode(List<ServiceRentDto> rents) {
 		ArrayNode rentNode = JsonNodeFactory.instance.arrayNode();
 		for (int i = 0; i < rents.size(); i++) {
@@ -53,25 +54,31 @@ public class JsonServiceRentDtoConversor {
 		}
 		return rentNode;
 	}
-	
-	public static ServiceRentDto toServiceRentDtoPut(InputStream jsonRent)  throws ParsingException{
+
+	public static ServiceRentDto toServiceRentDtoPut(InputStream jsonRent)
+			throws ParsingException {
 		try {
 			ObjectMapper objectMapper = ObjectMapperFactory.instance();
 			JsonNode rootNode = objectMapper.readTree(jsonRent);
 			if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
 				throw new ParsingException(
 						"Unrecognized JSON (object expected)");
-			}else {
+			} else {
 				ObjectNode rentObject = (ObjectNode) rootNode;
-				
+
 				JsonNode userEmailNode = rentObject.get("userEmail");
-				String userEmail = (userEmailNode != null) ? userEmailNode.textValue().trim() : null;
-				
+				String userEmail = (userEmailNode != null)
+						? userEmailNode.textValue().trim()
+						: null;
+
 				JsonNode creditCardNode = rentObject.get("creditCard");
-				String creditCard = (creditCardNode != null) ? creditCardNode.textValue() : null;
-				
+				String creditCard = (creditCardNode != null)
+						? creditCardNode.textValue()
+						: null;
+
 				JsonNode bikeIdNode = rentObject.get("bikeId");
-				Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue() : null;
+				Long bikeId = (bikeIdNode != null) ? bikeIdNode.longValue()
+						: null;
 
 				JsonNode calendarObjectNode = rentObject.get("startRentDate");
 				Calendar startRentDate = null;
@@ -86,51 +93,53 @@ public class JsonServiceRentDtoConversor {
 				Calendar finishRentDate = null;
 				if (calendarObjectNode != null) {
 					finishRentDate = Calendar.getInstance();
-					finishRentDate.set(calendarObjectNode.get("year").intValue(),
+					finishRentDate.set(
+							calendarObjectNode.get("year").intValue(),
 							calendarObjectNode.get("month").intValue() - 1,
 							calendarObjectNode.get("day").intValue());
 				}
-				
+
 				JsonNode numberOfBikesNode = rentObject.get("numberOfBikes");
-				int numberOfBikes = (numberOfBikesNode != null) ? numberOfBikesNode.intValue(): -1;
-				
-				return new ServiceRentDto(userEmail, bikeId, creditCard, 
+				int numberOfBikes = (numberOfBikesNode != null)
+						? numberOfBikesNode.intValue()
+						: -1;
+
+				return new ServiceRentDto(userEmail, bikeId, creditCard,
 						startRentDate, finishRentDate, numberOfBikes);
 			}
-		}catch(ParsingException ex) {
+		} catch (ParsingException ex) {
 			throw ex;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new ParsingException(e);
 		}
 	}
-	
-	public static ServiceRentDto toServiceRentDtoPost(InputStream jsonRent)  
-			throws ParsingRentException, IOException{
+
+	public static ServiceRentDto toServiceRentDtoPost(InputStream jsonRent)
+			throws ParsingRentException, IOException {
 		ObjectMapper objectMapper = ObjectMapperFactory.instance();
 		JsonNode rootNode = objectMapper.readTree(jsonRent);
 		if (rootNode.getNodeType() != JsonNodeType.OBJECT) {
-			throw new ParsingException(
-					"Unrecognized JSON (object expected)");
-		}else {
+			throw new ParsingException("Unrecognized JSON (object expected)");
+		} else {
 			ObjectNode rentObject = (ObjectNode) rootNode;
-			String userEmail; 
+			String userEmail;
 			if (rentObject.get("userEmail") != null) {
 				userEmail = rentObject.get("userEmail").textValue().trim();
-			}else {
+			} else {
 				throw new ParsingRentException("userEmail");
 			}
-			
+
 			String creditCard;
 			if (rentObject.get("creditCard") != null) {
 				creditCard = rentObject.get("creditCard").textValue();
-			}else {
+			} else {
 				throw new ParsingRentException("creditCard");
 			}
-			
+
 			Long bikeId;
 			if (rentObject.get("bikeId") != null) {
 				bikeId = rentObject.get("bikeId").longValue();
-			}else {
+			} else {
 				throw new ParsingRentException("bikeId");
 			}
 
@@ -141,7 +150,7 @@ public class JsonServiceRentDtoConversor {
 				startRentDate.set(calendarObjectNode.get("year").intValue(),
 						calendarObjectNode.get("month").intValue() - 1,
 						calendarObjectNode.get("day").intValue());
-			}else {
+			} else {
 				throw new ParsingRentException("startRentDate");
 			}
 
@@ -152,21 +161,21 @@ public class JsonServiceRentDtoConversor {
 				finishRentDate.set(calendarObjectNode.get("year").intValue(),
 						calendarObjectNode.get("month").intValue() - 1,
 						calendarObjectNode.get("day").intValue());
-			}else {
+			} else {
 				throw new ParsingRentException("finishRentDate");
 			}
-			
+
 			int numberOfBikes;
 			if (rentObject.get("numberOfBikes") != null) {
 				numberOfBikes = rentObject.get("numberOfBikes").intValue();
-			}else {
+			} else {
 				throw new ParsingRentException("numberOfBikes");
 			}
 
-			return new ServiceRentDto(userEmail, bikeId, creditCard, 
+			return new ServiceRentDto(userEmail, bikeId, creditCard,
 					startRentDate, finishRentDate, numberOfBikes);
 		}
-		
+
 	}
 
 	public static ObjectNode getRentDate(Calendar date) {
